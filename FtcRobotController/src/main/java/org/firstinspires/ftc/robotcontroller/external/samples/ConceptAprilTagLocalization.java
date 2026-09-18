@@ -26,6 +26,34 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+/* Copyright (c) 2024 Dryw Wade. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted (subject to the limitations in the disclaimer below) provided that
+ * the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this list
+ * of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice, this
+ * list of conditions and the following disclaimer in the documentation and/or
+ * other materials provided with the distribution.
+ *
+ * Neither the name of FIRST nor the names of its contributors may be used to endorse or
+ * promote products derived from this software without specific prior written permission.
+ *
+ * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
+ * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 package org.firstinspires.ftc.robotcontroller.external.samples;
 
@@ -43,6 +71,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import org.firstinspires.ftc.vision.apriltag.AprilTagSingleDetection;
 
 import java.util.List;
 
@@ -177,7 +206,7 @@ public class ConceptAprilTagLocalization extends LinearOpMode {
         aprilTag = new AprilTagProcessor.Builder()
 
                 // The following default settings are available to un-comment and edit as needed.
-                //.setDrawAxes(false)
+                //.setDrawAxes(true)  // changed in V12.0
                 //.setDrawCubeProjection(false)
                 //.setDrawTagOutline(true)
                 //.setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
@@ -247,22 +276,23 @@ public class ConceptAprilTagLocalization extends LinearOpMode {
 
         // Step through the list of detections and display info for each one.
         for (AprilTagDetection detection : currentDetections) {
-            if (detection.metadata != null) {
-                telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
-                // Only use tags that don't have Obelisk in them
-                if (!detection.metadata.name.contains("Obelisk")) {
-                    telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)",
+            if (detection instanceof AprilTagSingleDetection) {
+                AprilTagSingleDetection singleDet = (AprilTagSingleDetection) detection;
+
+                if (singleDet.metadata != null) {
+                    telemetry.addLine(String.format("\n==== (ID %d) %s", singleDet.id, singleDet.metadata.name));
+                    telemetry.addLine(String.format("Robot XYZ %6.1f %6.1f %6.1f  (inch)",
                             detection.robotPose.getPosition().x,
                             detection.robotPose.getPosition().y,
                             detection.robotPose.getPosition().z));
-                    telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)",
+                    telemetry.addLine(String.format("Robot PRY %6.1f %6.1f %6.1f  (deg)",
                             detection.robotPose.getOrientation().getPitch(AngleUnit.DEGREES),
                             detection.robotPose.getOrientation().getRoll(AngleUnit.DEGREES),
                             detection.robotPose.getOrientation().getYaw(AngleUnit.DEGREES)));
+                } else {
+                    telemetry.addLine(String.format("\n==== (ID %d) Unknown", singleDet.id));
+                    telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", singleDet.center.x, singleDet.center.y));
                 }
-            } else {
-                telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
-                telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
             }
         }   // end for() loop
 

@@ -38,8 +38,10 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraCompatibil
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.internal.usb.UsbConstants;
 import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagClusterDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import org.firstinspires.ftc.vision.apriltag.AprilTagSingleDetection;
 
 import java.util.List;
 
@@ -149,21 +151,21 @@ public class ConceptAprilTag extends LinearOpMode {
         // Create the AprilTag processor.
         aprilTag = new AprilTagProcessor.Builder()
 
-            // The following default settings are available to un-comment and edit as needed.
-            //.setDrawAxes(false)
-            //.setDrawCubeProjection(false)
-            //.setDrawTagOutline(true)
-            //.setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
-            //.setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
-            //.setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
+                // The following default settings are available to un-comment and edit as needed.
+                //.setDrawAxes(true) // Changed in V12.0
+                //.setDrawTagOutline(true)
+                //.setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
+                //.setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
+                //.setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
+                //.setDrawCubeProjection(false)
 
-            // == CAMERA CALIBRATION ==
-            // If you do not manually specify calibration parameters, the SDK will attempt
-            // to load a predefined calibration for your camera.
-            //.setLensIntrinsics(578.272, 578.272, 402.145, 221.506)
-            // ... these parameters are fx, fy, cx, cy.
+                // == CAMERA CALIBRATION ==
+                // If you do not manually specify calibration parameters, the SDK will attempt
+                // to load a predefined calibration for your camera.
+                //.setLensIntrinsics(578.272, 578.272, 402.145, 221.506)
+                // ... these parameters are fx, fy, cx, cy.
 
-            .build();
+                .build();
 
         // Adjust Image Decimation to trade-off detection-range for detection-rate.
         // eg: Some typical detection data using a Logitech C920 WebCam
@@ -220,14 +222,25 @@ public class ConceptAprilTag extends LinearOpMode {
 
         // Step through the list of detections and display info for each one.
         for (AprilTagDetection detection : currentDetections) {
-            if (detection.metadata != null) {
-                telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
+            if (detection instanceof AprilTagSingleDetection) {
+                AprilTagSingleDetection singleDet = (AprilTagSingleDetection) detection;
+
+                if (singleDet.metadata != null) {
+                    telemetry.addLine(String.format("\n==== (ID %d) %s", singleDet.id, singleDet.metadata.name));
+                    telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
+                    telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
+                    telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
+                } else {
+                    telemetry.addLine(String.format("\n==== (ID %d) Unknown", singleDet.id));
+                    telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", singleDet.center.x, singleDet.center.y));
+                }
+            } else {
+                AprilTagClusterDetection clusterDet = (AprilTagClusterDetection) detection;
+                telemetry.addLine(String.format("\n==== Tag Cluster (%s)", clusterDet.metadata.name));
+                telemetry.addLine(String.format("Percent tags found: %d", clusterDet.percentClusterFound));
                 telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
                 telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
                 telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
-            } else {
-                telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
-                telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
             }
         }   // end for() loop
 
