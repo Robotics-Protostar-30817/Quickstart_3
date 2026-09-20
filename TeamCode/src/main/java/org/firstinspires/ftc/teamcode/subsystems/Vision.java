@@ -4,13 +4,19 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Quaternion;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagClusterDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagPoseFtc;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
@@ -35,8 +41,9 @@ public class Vision implements Subsystem{
     public void init(HardwareMap hardwareMap, Telemetry telemetry){
         this.telemetry = telemetry;
         aprilTag = new AprilTagProcessor.Builder()
-                    .setOutputUnits(DistanceUnit.CM, AngleUnit.DEGREES)
+                    .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
                     .setCameraPose(cameraPosition,cameraAngles)
+                .setCameraPose(cameraPosition,cameraAngles)
                     .build();
         WebcamName webcam = hardwareMap.get(WebcamName.class, "Webcam1");
         visionPortal = new VisionPortal.Builder()
@@ -52,15 +59,38 @@ public class Vision implements Subsystem{
             telemetry.addData("AprilTags Detected",detections.size());
             for (AprilTagDetection detection: detections){
                 if (detection instanceof AprilTagClusterDetection){
-                    AprilTagClusterDetection cluster = (AprilTagClusterDetection) detection;
-                    if (cluster.metadata!=null){
-                        AprilTagClusterDetection clusterDet = (AprilTagClusterDetection) detection;
-                        telemetry.addLine(String.format("\n==== Tag Cluster (%s)", clusterDet.metadata.name));
-                        telemetry.addLine(String.format("Percent tags found: %d", clusterDet.percentClusterFound));
-                        telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
-                        telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
-                        telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
-                    }
+                    AprilTagClusterDetection clusterDet = (AprilTagClusterDetection) detection;
+                    VectorF fieldPos = clusterDet.metadata.fieldPosition;
+                    Quaternion q = clusterDet.metadata.fieldOrientation;
+                    Orientation angles = q.toOrientation(AxesReference.INTRINSIC,
+                            AxesOrder.YXZ,AngleUnit.DEGREES);
+                    DistanceUnit distanceU = clusterDet.metadata.distanceUnit;
+
+                    telemetry.addLine(String.format("\n==== Tag Cluster (%s)", clusterDet.metadata.name));
+                    telemetry.addLine(String.format("Percent tags found: %d", clusterDet.percentClusterFound));
+                    telemetry.addLine(String.format("Cluster FieldPosition XYZ: %6.1f %6.1f %6.1f (%s)",
+                            fieldPos.get(0),fieldPos.get(1),fieldPos.get(2), distanceU));
+                    telemetry.addLine(String.format("Cluster Orientation PRY %6.1f %6.1f %6.1f (deg)",
+                            angles.firstAngle,angles.secondAngle,angles.thirdAngle));
+
+                    telemetry.addLine("Cluster's pos relative to the camera in FTC driver-centric metrics");
+                    telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)",
+                            detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
+                    telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)",
+                            detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
+                    telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)",
+                            detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
+
+                    telemetry.addLine("Robot's center relative to the field origin by Camera offset");
+                    telemetry.addLine(String.format("Robot XYZ %6.1f %6.1f %6.1f (inch)",
+                            detection.robotPose.getPosition().x,
+                            detection.robotPose.getPosition().y,
+                            detection.robotPose.getPosition().z));
+                    telemetry.addLine(String.format("Robot PRY %6.1f %6.1f %6.1f (deg)",
+                            detection.robotPose.getOrientation().getPitch(AngleUnit.DEGREES),
+                            detection.robotPose.getOrientation().getRoll(AngleUnit.DEGREES),
+                            detection.robotPose.getOrientation().getYaw(AngleUnit.DEGREES)));
+
                 }
             }
             // Add "key" information to telemetry
@@ -72,10 +102,7 @@ public class Vision implements Subsystem{
         telemetry.update();
     }
 
-
-
-
-    public List<AprilTagDetection> getDections(){
+    public List<AprilTagDetection> getDetections(){
         if (aprilTag == null){
             return java.util.Collections.emptyList();
         }

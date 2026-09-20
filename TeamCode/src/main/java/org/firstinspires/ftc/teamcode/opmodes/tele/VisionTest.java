@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.vision.apriltag.AprilTagClusterDetection;
 
 @TeleOp(name="VisionTest",group="Test")
 public class VisionTest extends OpMode {
@@ -17,7 +18,9 @@ public class VisionTest extends OpMode {
 
     @Override
     public void loop(){
+        //vision.periodic() displays the actual cluster pose returned by the SDK.
         Robot.INSTANCE.vision.periodic();
+
     }
 
     @Override
