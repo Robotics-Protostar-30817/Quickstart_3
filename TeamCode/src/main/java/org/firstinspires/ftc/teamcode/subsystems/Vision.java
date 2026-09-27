@@ -31,10 +31,10 @@ public class Vision implements Subsystem{
 
     //final camera position on robot
     //+x= robot right, +y = robot forward, +z = robot up, should be updated later
-    private final Position cameraPosition  = new Position(DistanceUnit.INCH,0,0,0,0);
-    //camera pointing horizontally forward, it should be updated if it points upward.
+    private final Position cameraPosition  = new Position(DistanceUnit.INCH,-4,0,0,0);
+    //camera is mounted to 4 incles left of the robot center, facing forward, no twist, no vertical offset.
     private final YawPitchRollAngles cameraAngles = new YawPitchRollAngles(AngleUnit.DEGREES,
-            0,-90,0,0);
+            0,-45,0,0);//tilted upward 45 degree
     private Vision(){
 
     }
@@ -43,7 +43,6 @@ public class Vision implements Subsystem{
         aprilTag = new AprilTagProcessor.Builder()
                     .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
                     .setCameraPose(cameraPosition,cameraAngles)
-                .setCameraPose(cameraPosition,cameraAngles)
                     .build();
         WebcamName webcam = hardwareMap.get(WebcamName.class, "Webcam1");
         visionPortal = new VisionPortal.Builder()
