@@ -29,3 +29,32 @@ dependencies {
     implementation 'dev.nextftc:ftc:1.1.0'
     implementation 'dev.nextftc:hardware:1.1.0'
 }
+
+// ============================================================
+// Javadoc
+// ============================================================
+
+tasks.register("generateJavadoc", Javadoc) {
+
+    source = android.sourceSets.main.java.srcDirs
+
+    destinationDir = file("$rootDir/docs/javadoc")
+
+    // Do not stop the entire task because of a Javadoc warning/error.
+    failOnError = false
+
+    options {
+        encoding = "UTF-8"
+        charSet = "UTF-8"
+        author = true
+        version = true
+    }
+
+    // Android + FTC + NextFTC compile classpath
+    doFirst {
+        classpath = files(
+                android.bootClasspath,
+                configurations.debugCompileClasspath
+        )
+    }
+}
