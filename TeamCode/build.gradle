@@ -36,7 +36,11 @@ dependencies {
 
 tasks.register("generateJavadoc", Javadoc) {
 
-    source = android.sourceSets.main.java.srcDirs
+    dependsOn "compileDebugJavaWithJavac"
+
+    source = fileTree("src/main/java"){
+        include "**/*.java"
+    }
 
     destinationDir = file("$rootDir/docs/javadoc")
 
@@ -52,9 +56,14 @@ tasks.register("generateJavadoc", Javadoc) {
 
     // Android + FTC + NextFTC compile classpath
     doFirst {
+        def javaCompile = project.tasks.getByName("compileDebugJavaWithJavac")
         classpath = files(
                 android.bootClasspath,
-                configurations.debugCompileClasspath
+                javaCompile.classpath
         )
     }
+}
+
+tasks.named("build"){
+    finalizedBy("generateJavadoc")
 }
