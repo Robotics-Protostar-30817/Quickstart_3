@@ -17,6 +17,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import java.util.List;
 
+/**
+ * 
+ */
 public class ThreeWheelIMUTuner extends Procedure {
 
     private static String leftEncoderName = "lf";
@@ -28,11 +31,17 @@ public class ThreeWheelIMUTuner extends Procedure {
     private static RevHubOrientationOnRobot.UsbFacingDirection usbDirection =
             RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
 
+    /**
+     * 
+     */
     public ThreeWheelIMUTuner() {
         super("Three Wheel + IMU Tuner", "Tune three odometry pods with an IMU");
     }
 
     @Override
+    /**
+     * 
+     */
     public void run() throws InterruptedException {
         Inputs setup = inputs("Encoder + IMU Setup",
                 "Set encoder motor ports, IMU HardwareMap name, and Control Hub orientation.");
@@ -199,6 +208,9 @@ public class ThreeWheelIMUTuner extends Procedure {
     }
 }
 
+/**
+ * 
+ */
 class ThreeWheelIMUResolution extends TuningOpMode<List<Double>> {
 
     String pod;
@@ -213,6 +225,10 @@ class ThreeWheelIMUResolution extends TuningOpMode<List<Double>> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected List<Double> runTuningOpMode() {
         ThreeWheelIMUConfig config = ThreeWheelIMUTuner.config(!pod.equals("Right"), 1.0, 1.0,
                 Encoder.FORWARD, Encoder.FORWARD, Encoder.FORWARD);
@@ -237,6 +253,9 @@ class ThreeWheelIMUResolution extends TuningOpMode<List<Double>> {
     }
 }
 
+/**
+ * 
+ */
 class ThreeWheelIMUOffsets extends TuningOpMode<List<Double>> {
 
     boolean left;
@@ -260,6 +279,10 @@ class ThreeWheelIMUOffsets extends TuningOpMode<List<Double>> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected List<Double> runTuningOpMode() {
         ThreeWheelIMUConfig config = ThreeWheelIMUTuner.config(left, forward, strafe,
                 leftDirection, rightDirection, strafeDirection);
@@ -287,6 +310,9 @@ class ThreeWheelIMUOffsets extends TuningOpMode<List<Double>> {
     }
 }
 
+/**
+ * 
+ */
 class ThreeWheelIMUTurn extends TuningOpMode<Double> {
 
     ThreeWheelIMUConfig config;
@@ -299,6 +325,10 @@ class ThreeWheelIMUTurn extends TuningOpMode<Double> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected Double runTuningOpMode() {
         boolean previousUseIMU = ThreeWheelIMULocalizer.useIMU;
         ThreeWheelIMULocalizer.useIMU = false;

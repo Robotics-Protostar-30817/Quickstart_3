@@ -11,17 +11,29 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.*;
 
+/**
+ * 
+ */
 public class PinpointTuner extends Procedure {
+    /**
+     * 
+     */
     enum PodType {
         SWING_ARM,
         FOUR_BAR,
         CUSTOM
     }
+    /**
+     * 
+     */
     public PinpointTuner() {
         super("Pinpoint Tuner", "A procedure for tuning the Pinpoint localizer.");
     }
 
     @Override
+    /**
+     * 
+     */
     public void run() throws InterruptedException {
         Inputs inputs = inputs("Setup", "Set Pinpoint HardwareMap Name and Odometry Pod Type");
         Inputs.Field<String> pinpointName = inputs.s("HardwareMap Name").withDefault("pinpoint");
@@ -69,11 +81,19 @@ public class PinpointTuner extends Procedure {
     }
 }
 
+/**
+ * 
+ */
 class PinpointCustomPodScalar extends TuningOpMode<Double> {
 
     String name;
     double distance;
 
+    /**
+     * 
+     * @param distance 
+     * @param name 
+     */
     public PinpointCustomPodScalar(Double distance, String name) {
         super("Custom Scalar Identification",
                 "Determines the scalar for the custom pods of the Pinpoint localizer. \n"
@@ -84,6 +104,10 @@ class PinpointCustomPodScalar extends TuningOpMode<Double> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected Double runTuningOpMode() {
         PinpointConfig config = new PinpointConfig(c -> {
             c.name.set(name);
@@ -103,11 +127,20 @@ class PinpointCustomPodScalar extends TuningOpMode<Double> {
     }
 }
 
+/**
+ * 
+ */
 class PinpointForwardDirection extends TuningOpMode<Boolean> {
     String name;
     PinpointTuner.PodType podType;
     OptionalDouble customPodScalar;
 
+    /**
+     * 
+     * @param name 
+     * @param podType 
+     * @param customPodScalar 
+     */
     public PinpointForwardDirection(String name, PinpointTuner.PodType podType, OptionalDouble customPodScalar) {
         super("Forward Direction Identification",
                 "Determines if your forward pod needs to be reversed. \n"
@@ -119,6 +152,10 @@ class PinpointForwardDirection extends TuningOpMode<Boolean> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected Boolean runTuningOpMode() {
         PinpointConfig config = new PinpointConfig(c -> {
             c.name.set(name);
@@ -145,11 +182,20 @@ class PinpointForwardDirection extends TuningOpMode<Boolean> {
     }
 }
 
+/**
+ * 
+ */
 class PinpointStrafeDirection extends TuningOpMode<Boolean> {
     String name;
     PinpointTuner.PodType podType;
     OptionalDouble customPodScalar;
 
+    /**
+     * 
+     * @param name 
+     * @param podType 
+     * @param customPodScalar 
+     */
     public PinpointStrafeDirection(String name, PinpointTuner.PodType podType, OptionalDouble customPodScalar) {
         super("Strafe Direction Identification",
                 "Determines if your strafe pod needs to be reversed. \n"
@@ -161,6 +207,10 @@ class PinpointStrafeDirection extends TuningOpMode<Boolean> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected Boolean runTuningOpMode() {
         PinpointConfig config = new PinpointConfig(c -> {
             c.name.set(name);
@@ -186,6 +236,9 @@ class PinpointStrafeDirection extends TuningOpMode<Boolean> {
     }
 }
 
+/**
+ * 
+ */
 class PinpointOffsets extends TuningOpMode<List<Double>> {
     String name;
     PinpointTuner.PodType podType;
@@ -193,6 +246,14 @@ class PinpointOffsets extends TuningOpMode<List<Double>> {
     boolean forwardPodReversed, strafePodReversed;
     private Pose previous = Pose.zero();
 
+    /**
+     * 
+     * @param name 
+     * @param podType 
+     * @param customPodScalar 
+     * @param forwardPodReversed 
+     * @param strafePodReversed 
+     */
     public PinpointOffsets(String name, PinpointTuner.PodType podType, OptionalDouble customPodScalar, Boolean forwardPodReversed, Boolean strafePodReversed) {
         super("Offsets Identification",
                 "Automatically identifies the offsets for your Pinpoint localizer. \n"
@@ -208,6 +269,10 @@ class PinpointOffsets extends TuningOpMode<List<Double>> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected List<Double> runTuningOpMode() {
         PinpointConfig config = new PinpointConfig(c -> {
             c.name.set(name);

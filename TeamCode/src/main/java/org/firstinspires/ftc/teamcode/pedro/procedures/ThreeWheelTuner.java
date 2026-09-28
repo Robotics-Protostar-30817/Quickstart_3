@@ -15,17 +15,26 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import java.util.List;
 
+/**
+ * 
+ */
 public class ThreeWheelTuner extends Procedure {
 
     private static String leftEncoderName = "lf";
     private static String rightEncoderName = "rr";
     private static String strafeEncoderName = "lr";
 
+    /**
+     * 
+     */
     public ThreeWheelTuner() {
         super("Three Wheel Tuner", "Tune three odometry pods");
     }
 
     @Override
+    /**
+     * 
+     */
     public void run() throws InterruptedException {
         Inputs setup = inputs("Encoder Setup",
                 "Set the motor ports that the three odometry encoders are plugged into.");
@@ -173,6 +182,9 @@ public class ThreeWheelTuner extends Procedure {
     }
 }
 
+/**
+ * 
+ */
 class ThreeWheelResolution extends TuningOpMode<List<Double>> {
 
     String pod;
@@ -187,6 +199,10 @@ class ThreeWheelResolution extends TuningOpMode<List<Double>> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected List<Double> runTuningOpMode() {
         ThreeWheelConfig config = ThreeWheelTuner.config(!pod.equals("Right"), 1.0, 1.0,
                 Encoder.FORWARD, Encoder.FORWARD, Encoder.FORWARD);
@@ -211,6 +227,9 @@ class ThreeWheelResolution extends TuningOpMode<List<Double>> {
     }
 }
 
+/**
+ * 
+ */
 class ThreeWheelOffsets extends TuningOpMode<List<Double>> {
 
     boolean left;
@@ -234,6 +253,10 @@ class ThreeWheelOffsets extends TuningOpMode<List<Double>> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected List<Double> runTuningOpMode() {
         ThreeWheelConfig config = ThreeWheelTuner.config(left, forward, strafe,
                 leftDirection, rightDirection, strafeDirection);
@@ -255,6 +278,9 @@ class ThreeWheelOffsets extends TuningOpMode<List<Double>> {
     }
 }
 
+/**
+ * 
+ */
 class ThreeWheelTurn extends TuningOpMode<Double> {
 
     ThreeWheelConfig config;
@@ -267,6 +293,10 @@ class ThreeWheelTurn extends TuningOpMode<Double> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected Double runTuningOpMode() {
         ThreeWheelLocalizer localizer = ThreeWheelTuner.localizer(hardwareMap, config);
         localizer.setPose(new Pose(0, 0));

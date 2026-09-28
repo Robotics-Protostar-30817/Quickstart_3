@@ -19,9 +19,14 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagPoseFtc;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
+import java.util.Collections;
 import java.util.List;
 
 import dev.nextftc.core.subsystems.Subsystem;
+/**
+ * Subsystem for robot vision processing using an AprilTag processor and VisionPortal.
+ * Manages camera stream initialization, target tracking, telemetry output, and cell detection.
+ */
 public class Vision implements Subsystem{
 
     public static final Vision INSTANCE = new Vision();
@@ -32,18 +37,25 @@ public class Vision implements Subsystem{
     //final camera position on robot
     //+x= robot right, +y = robot forward, +z = robot up, should be updated later
     private final Position cameraPosition  = new Position(DistanceUnit.INCH,-4,0,0,0);
-    //camera is mounted to 4 incles left of the robot center, facing forward, no twist, no vertical offset.
+    //camera is mounted to 4 inches left of the robot center, facing forward, no twist, no vertical offset.
     private final YawPitchRollAngles cameraAngles = new YawPitchRollAngles(AngleUnit.DEGREES,
             0,-41,0,0);//tilted upward 49 degree
 
     /*static class Cell for the best cell identified by AprilTagClusterDetection
-
+     * Represents a detected cell identified via an AprilTag cluster detection.
+     * Stores the cell's name, scorable status, relative position metrics, color, and location.
      */
     public static class Cell{
+        /**
+         * Represents the color classification of a cell.
+         */
         public enum Color{
             RED, BLUE,UNKNOWN
         }
 
+        /**
+         * Represents the field location classification of a cell.
+         */
         public enum Location{
             AUDIENCE, SCORING, UNKNOWN
         }
@@ -56,6 +68,15 @@ public class Vision implements Subsystem{
         private final Color color;
         private final Location location;
 
+        /**
+         * Constructs a Cell with the specified properties and determines its color and location based on its name.
+         * 
+         * @param name the name identifier of the cell, used to derive color and location
+         * @param scorable true if the cell is in a scorable orientation, false otherwise
+         * @param range the distance from the camera to the cell in inches
+         * @param bearing the horizontal angle to the cell in degrees
+         * @param elevation the vertical angle to the cell in degrees
+         */
         public Cell(String name, boolean scorable, double range, double bearing, double elevation){
             this.name = name;
             this.scorable = scorable;
@@ -81,46 +102,101 @@ public class Vision implements Subsystem{
             }
         }
 
+        /**
+         * Gets the name identifier of the cell.
+         * 
+         * @return the cell name string
+         */
         public String getName() {
             return name;
         }
 
+        /**
+         * Indicates whether the cell is in a scorable orientation.
+         * 
+         * @return true if scorable, false otherwise
+         */
         public boolean isScorable() {
             return scorable;
         }
 
+        /**
+         * Gets the range (distance) to the cell.
+         * 
+         * @return the distance to the cell in inches
+         */
         public double getRange() {
             return range;
         }
 
+        /**
+         * Gets the color classification of the cell.
+         * 
+         * @return the {@link Color} of the cell
+         */
         public Color getColor() {
             return color;
         }
 
+        /**
+         * Gets the horizontal bearing angle to the cell.
+         * 
+         * @return the bearing angle in degrees
+         */
         public double getBearing() {
             return bearing;
         }
 
+        /**
+         * Gets the vertical elevation angle to the cell.
+         * 
+         * @return the elevation angle in degrees
+         */
         public double getElevation() {
             return elevation;
         }
 
+        /**
+         * Gets the field location classification of the cell.
+         * 
+         * @return the {@link Location} of the cell
+         */
         public Location getLocation() {
             return location;
         }
 
+         /**
+          * Checks if the cell is in the audience location.
+          * 
+          * @return true if the location is {@link Location#AUDIENCE}, false otherwise
+          */
          public boolean isAudience(){
             return location==Location.AUDIENCE;
          }
 
+         /**
+          * Checks if the cell is in the scoring location.
+          * 
+          * @return true if the location is {@link Location#SCORING}, false otherwise
+          */
          public boolean isScoring(){
             return location==Location.SCORING;
          }
 
+         /**
+          * Checks if the cell color is red.
+          * 
+          * @return true if the color is {@link Color#RED}, false otherwise
+          */
          public boolean isRed(){
             return color==Color.RED;
          }
 
+         /**
+          * Checks if the cell color is blue.
+          * 
+          * @return true if the color is {@link Color#BLUE}, false otherwise
+          */
          public boolean isBlue(){
             return color==Color.BLUE;
          }
@@ -128,6 +204,13 @@ public class Vision implements Subsystem{
     private Vision(){
 
     }
+    /**
+     * Initializes the AprilTag processor and VisionPortal camera stream.
+     * Configures output units in inches and degrees with preset camera offset poses.
+     * 
+     * @param hardwareMap the robot hardware map used to access "Webcam1"
+     * @param telemetry the telemetry instance for logging vision data
+     */
     public void init(HardwareMap hardwareMap, Telemetry telemetry){
         this.telemetry = telemetry;
         aprilTag = new AprilTagProcessor.Builder()
@@ -141,6 +224,11 @@ public class Vision implements Subsystem{
                 .build();
     }
 
+    /**
+     * Runs periodically to update telemetry with AprilTag and cluster detection metrics,
+     * including count, camera-relative XYZ position in inches, PRY rotation in degrees,
+     * and RBE metrics (range in inches, bearing in degrees, elevation in degrees).
+     */
     @Override
     public void periodic(){
         if (aprilTag != null){
@@ -191,9 +279,14 @@ public class Vision implements Subsystem{
         telemetry.update();
     }
 
+    /**
+     * Retrieves the current list of detected AprilTags.
+     * 
+     * @return a list of {@link AprilTagDetection} objects, or an empty list if processor is null
+     */
     public List<AprilTagDetection> getDetections(){
         if (aprilTag == null){
-            return java.util.Collections.emptyList();
+            return Collections.emptyList();
         }
         return aprilTag.getDetections();
     }
@@ -221,6 +314,11 @@ public class Vision implements Subsystem{
         return best;
     }
 
+    /**
+     * Evaluates detected AprilTag clusters and returns a {@link Cell} for the best detected cluster.
+     * 
+     * @return the best detected {@link Cell} containing range (inches), bearing (degrees), elevation (degrees), or null if none detected
+     */
     public Cell getBestCell(){
         AprilTagClusterDetection cluster = getBestCellCluster();
         if (cluster == null || cluster.ftcPose == null || cluster.metadata == null){
@@ -235,6 +333,12 @@ public class Vision implements Subsystem{
     /* Return true if the best detected CELL is in a scorable orientation
     *
      */
+    /**
+     * Determines whether an AprilTag cluster detection is in a scorable orientation.
+     * 
+     * @param best the {@link AprilTagClusterDetection} to check
+     * @return true if non-null, has pose information, and absolute roll angle is less than 90.0 degrees; false otherwise
+     */
     public boolean isCellScorable(AprilTagClusterDetection best){
 
         if (best == null || best.ftcPose == null)
@@ -242,14 +346,27 @@ public class Vision implements Subsystem{
         return Math.abs(best.ftcPose.roll)< 90.0;
     }
 
+    /**
+     * Gets the VisionPortal instance managing the camera stream.
+     * 
+     * @return the {@link VisionPortal} instance, or null if uninitialized
+     */
     public VisionPortal getVisionPortal(){
         return visionPortal;
     }
 
+    /**
+     * Gets the AprilTagProcessor instance used for tag detection.
+     * 
+     * @return the {@link AprilTagProcessor} instance, or null if uninitialized
+     */
     public AprilTagProcessor getAprilTagProcessor(){
         return aprilTag;
     }
 
+    /**
+     * Closes the active VisionPortal camera stream if open.
+     */
     public void close(){
         if (visionPortal !=null){
             visionPortal.close();

@@ -10,6 +10,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 import dev.nextftc.core.subsystems.Subsystem;
 
+/**
+ * 
+ */
 public class Odom implements Subsystem {
 
     public static final Odom INSTANCE = new Odom();
@@ -20,6 +23,11 @@ public class Odom implements Subsystem {
     private Odom() {
     }
 
+    /**
+     * 
+     * @param hardwareMap 
+     * @param telemetry 
+     */
     public void init(HardwareMap hardwareMap, Telemetry telemetry) {
 
         this.telemetry = telemetry;
@@ -38,6 +46,9 @@ public class Odom implements Subsystem {
     }
 
     @Override
+    /**
+     * 
+     */
     public void periodic() {
 
         if (pinpoint != null) {
@@ -63,10 +74,17 @@ public class Odom implements Subsystem {
         }
     }
 
+    /**
+     * 
+     * @return 
+     */
     public GoBildaPinpointDriver getPinpoint() {
         return pinpoint;
     }
 
+    /**
+     * 
+     */
     public void resetPosition() {
 
         pinpoint.setPosition(

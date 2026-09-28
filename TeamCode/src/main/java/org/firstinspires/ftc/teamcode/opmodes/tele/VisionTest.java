@@ -8,8 +8,14 @@ import org.firstinspires.ftc.teamcode.subsystems.Vision;
 import org.firstinspires.ftc.vision.apriltag.AprilTagClusterDetection;
 
 @TeleOp(name="VisionTest",group="Test")
+/**
+ * 
+ */
 public class VisionTest extends OpMode {
     @Override
+    /**
+     * 
+     */
     public void init(){
         Robot.INSTANCE.vision.init(hardwareMap, telemetry);
         telemetry.addLine("Vision initialized");
@@ -18,6 +24,9 @@ public class VisionTest extends OpMode {
     }
 
     @Override
+    /**
+     * 
+     */
     public void loop(){
         //vision.periodic() displays the actual cluster pose returned by the SDK.
         //Robot.INSTANCE.vision.periodic();
@@ -41,6 +50,9 @@ public class VisionTest extends OpMode {
     }
 
     @Override
+    /**
+     * 
+     */
     public void stop(){
         Robot.INSTANCE.vision.close();
     }

@@ -4,17 +4,29 @@ import com.pedropathing.tuning.autotune.*;
 import com.pedropathing.tuning.autotune.Display.FourWheelBot.Wheel;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+/**
+ * 
+ */
 enum Direction {
     @DisplayName("Forward") FORWARD,
     @DisplayName("Reversed") REVERSE
 }
 
+/**
+ * 
+ */
 public class MecanumTuner extends Procedure {
+    /**
+     * 
+     */
     public MecanumTuner() {
         super("Mecanum Tuner", "A procedure to find the directions of mecanum wheels.");
     }
 
     @Override
+    /**
+     * 
+     */
     public void run() throws InterruptedException {
         Inputs motorNames = inputs("Mecanum Motor Names", "Enter the names in HardwareMap of your drivetrain motors.");
         Inputs.Field<String> frontLeftName = motorNames.s("Front Left Name");
@@ -74,9 +86,17 @@ public class MecanumTuner extends Procedure {
     }
 }
 
+/**
+ * 
+ */
 class SpinMotor extends TuningOpMode<Void> {
     private final String name;
 
+    /**
+     * 
+     * @param displayName 
+     * @param hardwareName 
+     */
     public SpinMotor(String displayName, String hardwareName) {
         super(displayName, "The " + displayName.toLowerCase() + " motor will spin. The interactive diagram shows which way is forward. Click stop when you know if it is spinning forward or reversed.", true);
         this.name = hardwareName;
@@ -84,6 +104,10 @@ class SpinMotor extends TuningOpMode<Void> {
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected Void runTuningOpMode() {
         DcMotor motor = hardwareMap.dcMotor.get(name);
         waitForStart();

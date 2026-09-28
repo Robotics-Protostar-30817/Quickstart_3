@@ -12,12 +12,21 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.List;
 
+/**
+ * 
+ */
 public class OTOSTuner extends Procedure {
+    /**
+     * 
+     */
     public OTOSTuner() {
         super("OTOS Tuner", "A procedure for tuning the OTOS localizer.");
     }
 
     @Override
+    /**
+     * 
+     */
     public void run() throws InterruptedException {
         Inputs inputs = inputs("Setup", "Set OTOS HardwareMap Name");
         Inputs.Field<String> name = inputs.s("HardwareMap Name").withDefault("otos");
@@ -66,10 +75,18 @@ public class OTOSTuner extends Procedure {
 
 }
 
+/**
+ * 
+ */
 class OTOSLinearScalar extends TuningOpMode<Double> {
     String name;
     double distance;
 
+    /**
+     * 
+     * @param name 
+     * @param distance 
+     */
     public OTOSLinearScalar(String name, double distance) {
         super("Linear Scalar Identification",
                 "Determines the linear scalar for the OTOS localizer. \n"
@@ -80,6 +97,10 @@ class OTOSLinearScalar extends TuningOpMode<Double> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected Double runTuningOpMode() {
         OTOSConfig config = new OTOSConfig(c -> {
             c.name.set(name);
@@ -110,11 +131,19 @@ class OTOSLinearScalar extends TuningOpMode<Double> {
     }
 }
 
+/**
+ * 
+ */
 class OTOSAngularScalar extends TuningOpMode<Double> {
     String name;
     int turns;
     double targetRadians;
 
+    /**
+     * 
+     * @param name 
+     * @param turns 
+     */
     public OTOSAngularScalar(String name, int turns) {
         super("Angular Scalar Identification",
                 "Determines the angular scalar for the OTOS localizer. \n"
@@ -126,6 +155,10 @@ class OTOSAngularScalar extends TuningOpMode<Double> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected Double runTuningOpMode() {
         OTOSConfig config = new OTOSConfig(c -> {
             c.name.set(name);
@@ -163,10 +196,19 @@ class OTOSAngularScalar extends TuningOpMode<Double> {
     }
 }
 
+/**
+ * 
+ */
 class OTOSOffsets extends TuningOpMode<List<Double>> {
     String name;
     double linearScalar, angularScalar;
 
+    /**
+     * 
+     * @param name 
+     * @param linearScalar 
+     * @param angularScalar 
+     */
     public OTOSOffsets(String name, double linearScalar, double angularScalar) {
         super("OTOS Offset Identification",
                 "Automatically identifies the X/Y offset for your OTOS localizer. \n"
@@ -178,6 +220,10 @@ class OTOSOffsets extends TuningOpMode<List<Double>> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected List<Double> runTuningOpMode() {
         OTOSConfig config = new OTOSConfig(c -> {
             c.name.set(name);

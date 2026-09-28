@@ -17,6 +17,9 @@ import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 @Autonomous
+/**
+ * 
+ */
 public class LargeExampleAuto extends OpMode {
 
     private Follower follower;
@@ -39,6 +42,9 @@ public class LargeExampleAuto extends OpMode {
                 follow(follower,park()));
     }
     @Override
+    /**
+     * 
+     */
     public void init(){
         Scheduler.reset();
         follower = Constants.create(hardwareMap);
@@ -47,11 +53,17 @@ public class LargeExampleAuto extends OpMode {
     }
 
     @Override
+    /**
+     * 
+     */
     public void start(){
         schedule(autoRoutine());
     }
 
     @Override
+    /**
+     * 
+     */
     public void loop(){
         follower.update();
         Scheduler.execute();

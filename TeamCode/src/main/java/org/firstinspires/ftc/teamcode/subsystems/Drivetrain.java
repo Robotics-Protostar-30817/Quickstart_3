@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.hardware.impl.MotorEx;
 
+/**
+ * 
+ */
 public class Drivetrain implements Subsystem {
 
 
@@ -31,18 +34,34 @@ public class Drivetrain implements Subsystem {
         // The motors are already created above.
     }
 
+    /**
+     * 
+     * @return 
+     */
     public MotorEx getLeftFrontMotor() {
         return leftFrontMotor;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public MotorEx getRightFrontMotor() {
         return rightFrontMotor;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public MotorEx getLeftBackMotor() {
         return leftBackMotor;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public MotorEx getRightBackMotor() {
         return rightBackMotor;
     }

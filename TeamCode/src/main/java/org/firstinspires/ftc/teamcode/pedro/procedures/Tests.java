@@ -22,7 +22,13 @@ import java.util.function.Supplier;
 import static com.pedropathing.api.Paths.curve;
 import static com.pedropathing.api.Paths.line;
 
+/**
+ * 
+ */
 public class Tests extends Procedure {
+    /**
+     * 
+     */
     enum Test {
         @DisplayName("Hold Test")
         HOLD,
@@ -46,6 +52,12 @@ public class Tests extends Procedure {
     Supplier<Algorithm> algorithmSupplier;
     Function<HardwareMap, Follower> followerFunction;
 
+    /**
+     * 
+     * @param drivetrainFunction 
+     * @param localizerFunction 
+     * @param algorithmSupplier 
+     */
     public Tests(Function<HardwareMap, Drivetrain> drivetrainFunction, Function<HardwareMap, Localizer> localizerFunction, Supplier<Algorithm> algorithmSupplier) {
         super("Tests", "A procedure for testing the Follower.");
         this.drivetrainFunction = drivetrainFunction;
@@ -54,6 +66,9 @@ public class Tests extends Procedure {
     }
 
     @Override
+    /**
+     * 
+     */
     public void run() throws InterruptedException {
         boolean completed = false;
         boolean algorithm = true, localizer = true, drivetrain = true;
@@ -129,15 +144,26 @@ public class Tests extends Procedure {
     }
 }
 
+/**
+ * 
+ */
 class TestsHold extends TuningOpMode<Boolean> {
     Function<HardwareMap, Follower> followerFunction;
 
+    /**
+     * 
+     * @param followerFunction 
+     */
     public TestsHold(Function<HardwareMap, Follower> followerFunction) {
         super("Hold Test", "Tests the Follower's ability to hold a position.", true);
         this.followerFunction = followerFunction;
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     public Boolean runTuningOpMode() throws InterruptedException {
         Follower follower = followerFunction.apply(hardwareMap);
         follower.setPose(Pose.zero());
@@ -150,10 +176,18 @@ class TestsHold extends TuningOpMode<Boolean> {
     }
 }
 
+/**
+ * 
+ */
 class TestsLine extends TuningOpMode<Boolean> {
     Function<HardwareMap, Follower> followerFunction;
     double distance;
 
+    /**
+     * 
+     * @param followerFunction 
+     * @param distance 
+     */
     public TestsLine(Function<HardwareMap, Follower> followerFunction, double distance) {
         super("Line Test", "Tests the Follower's ability to follow a line.", true);
         this.followerFunction = followerFunction;
@@ -161,6 +195,10 @@ class TestsLine extends TuningOpMode<Boolean> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     public Boolean runTuningOpMode() throws InterruptedException {
         Follower follower = followerFunction.apply(hardwareMap);
         follower.setPose(Pose.zero());
@@ -189,10 +227,18 @@ class TestsLine extends TuningOpMode<Boolean> {
     }
 }
 
+/**
+ * 
+ */
 class TestsCurve extends TuningOpMode<Boolean> {
     Function<HardwareMap, Follower> followerFunction;
     double distance;
 
+    /**
+     * 
+     * @param followerFunction 
+     * @param distance 
+     */
     public TestsCurve(Function<HardwareMap, Follower> followerFunction, double distance) {
         super("Curve Test", "Tests the Follower's ability to follow a curve.", true);
         this.followerFunction = followerFunction;
@@ -200,6 +246,10 @@ class TestsCurve extends TuningOpMode<Boolean> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     public Boolean runTuningOpMode() throws InterruptedException {
         Follower follower = followerFunction.apply(hardwareMap);
         follower.setPose(Pose.zero());
@@ -228,10 +278,18 @@ class TestsCurve extends TuningOpMode<Boolean> {
     }
 }
 
+/**
+ * 
+ */
 class TestsInterpolation extends TuningOpMode<Boolean> {
     Function<HardwareMap, Follower> followerFunction;
     double distance;
 
+    /**
+     * 
+     * @param followerFunction 
+     * @param distance 
+     */
     public TestsInterpolation(Function<HardwareMap, Follower> followerFunction, double distance) {
         super("Interpolation Curve Test", "Tests the Follower's ability to follow a curve with several interpolations.", true);
         this.followerFunction = followerFunction;
@@ -239,6 +297,10 @@ class TestsInterpolation extends TuningOpMode<Boolean> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     public Boolean runTuningOpMode() throws InterruptedException {
         Follower follower = followerFunction.apply(hardwareMap);
         follower.setPose(Pose.zero());
@@ -267,10 +329,18 @@ class TestsInterpolation extends TuningOpMode<Boolean> {
     }
 }
 
+/**
+ * 
+ */
 class TestsLocalization extends TuningOpMode<Boolean> {
     Function<HardwareMap, Drivetrain> drivetrainFunction;
     Function<HardwareMap, Localizer> localizerFunction;
 
+    /**
+     * 
+     * @param drivetrainFunction 
+     * @param localizerFunction 
+     */
     public TestsLocalization(Function<HardwareMap, Drivetrain> drivetrainFunction, Function<HardwareMap, Localizer> localizerFunction) {
         super("Localization Test", "Verifies localization and manual control.", true);
         this.drivetrainFunction = drivetrainFunction;
@@ -278,6 +348,10 @@ class TestsLocalization extends TuningOpMode<Boolean> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     public Boolean runTuningOpMode() throws InterruptedException {
         Localizer localizer = localizerFunction.apply(hardwareMap);
         Drivetrain drivetrain = drivetrainFunction.apply(hardwareMap);
@@ -296,10 +370,16 @@ class TestsLocalization extends TuningOpMode<Boolean> {
     }
 }
 
+/**
+ * 
+ */
 class TestsOdometry extends TuningOpMode<Boolean> {
     Function<HardwareMap, Drivetrain> drivetrainFunction;
     Function<HardwareMap, Localizer> localizerFunction;
 
+    /**
+     * 
+     */
     public enum Test {
         FORWARD,
         LEFT,
@@ -319,6 +399,11 @@ class TestsOdometry extends TuningOpMode<Boolean> {
     private boolean passedY = false;
     private boolean passedHeading = false;
 
+    /**
+     * 
+     * @param drivetrainFunction 
+     * @param localizerFunction 
+     */
     public TestsOdometry(Function<HardwareMap, Drivetrain> drivetrainFunction, Function<HardwareMap, Localizer> localizerFunction) {
         super("Localization Test", "Verifies localization and manual control.", true);
         this.drivetrainFunction = drivetrainFunction;
@@ -326,6 +411,10 @@ class TestsOdometry extends TuningOpMode<Boolean> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     public Boolean runTuningOpMode() throws InterruptedException {
         Localizer localizer = localizerFunction.apply(hardwareMap);
         Drivetrain drivetrain = drivetrainFunction.apply(hardwareMap);
@@ -423,15 +512,26 @@ class TestsOdometry extends TuningOpMode<Boolean> {
     }
 }
 
+/**
+ * 
+ */
 class TestsDriving extends TuningOpMode<Boolean> {
     Function<HardwareMap, Drivetrain> drivetrainFunction;
 
+    /**
+     * 
+     * @param drivetrainFunction 
+     */
     public TestsDriving(Function<HardwareMap, Drivetrain> drivetrainFunction) {
         super("Driving Test", "Tests raw drivetrain control without localization.", true);
         this.drivetrainFunction = drivetrainFunction;
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     public Boolean runTuningOpMode() throws InterruptedException {
         Drivetrain drivetrain = drivetrainFunction.apply(hardwareMap);
         waitForStart();
@@ -442,15 +542,26 @@ class TestsDriving extends TuningOpMode<Boolean> {
     }
 }
 
+/**
+ * 
+ */
 class TestsPose extends TuningOpMode<Boolean> {
     Function<HardwareMap, Localizer> localizerFunction;
 
+    /**
+     * 
+     * @param localizerFunction 
+     */
     public TestsPose(Function<HardwareMap, Localizer> localizerFunction) {
         super("Pose Test", "Verifies localizer output without a drivetrain.", true);
         this.localizerFunction = localizerFunction;
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     public Boolean runTuningOpMode() throws InterruptedException {
         Localizer localizer = localizerFunction.apply(hardwareMap);
         waitForStart();

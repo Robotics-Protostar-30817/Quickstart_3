@@ -12,13 +12,22 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 import java.util.List;
 
+/**
+ * 
+ */
 public class TwoWheelTuner extends Procedure {
 
+    /**
+     * 
+     */
     public TwoWheelTuner() {
         super("Two Wheel Tuner", "A procedure for tuning the Two Wheel localizer.");
     }
 
     @Override
+    /**
+     * 
+     */
     public void run() throws InterruptedException {
         Inputs setup = inputs("Setup", "Set encoder, IMU, and Control Hub orientation");
         Inputs.Field<String> forwardPodName = setup.s("Forward Encoder Motor Name").withDefault("lf");
@@ -138,6 +147,9 @@ public class TwoWheelTuner extends Procedure {
     }
 }
 
+/**
+ * 
+ */
 class TwoWheelSetup {
 
     String forwardPodName;
@@ -161,6 +173,9 @@ class TwoWheelSetup {
     }
 }
 
+/**
+ * 
+ */
 class TwoWheelForwardResolution extends TuningOpMode<Double> {
 
     TwoWheelSetup values;
@@ -177,6 +192,10 @@ class TwoWheelForwardResolution extends TuningOpMode<Double> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected Double runTuningOpMode() {
         TwoWheelConfig config = TwoWheelTuner.config(
                 values,
@@ -208,6 +227,9 @@ class TwoWheelForwardResolution extends TuningOpMode<Double> {
     }
 }
 
+/**
+ * 
+ */
 class TwoWheelStrafeResolution extends TuningOpMode<Double> {
 
     TwoWheelSetup values;
@@ -224,6 +246,10 @@ class TwoWheelStrafeResolution extends TuningOpMode<Double> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected Double runTuningOpMode() {
         TwoWheelConfig config = TwoWheelTuner.config(
                 values,
@@ -252,6 +278,9 @@ class TwoWheelStrafeResolution extends TuningOpMode<Double> {
     }
 }
 
+/**
+ * 
+ */
 class TwoWheelForwardDirection extends TuningOpMode<Boolean> {
 
     TwoWheelSetup values;
@@ -271,6 +300,10 @@ class TwoWheelForwardDirection extends TuningOpMode<Boolean> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected Boolean runTuningOpMode() {
         TwoWheelConfig config = TwoWheelTuner.config(
                 values,
@@ -294,6 +327,9 @@ class TwoWheelForwardDirection extends TuningOpMode<Boolean> {
     }
 }
 
+/**
+ * 
+ */
 class TwoWheelStrafeDirection extends TuningOpMode<Boolean> {
 
     TwoWheelSetup values;
@@ -313,6 +349,10 @@ class TwoWheelStrafeDirection extends TuningOpMode<Boolean> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected Boolean runTuningOpMode() {
         TwoWheelConfig config = TwoWheelTuner.config(
                 values,
@@ -336,6 +376,9 @@ class TwoWheelStrafeDirection extends TuningOpMode<Boolean> {
     }
 }
 
+/**
+ * 
+ */
 class TwoWheelOffsets extends TuningOpMode<List<Double>> {
 
     TwoWheelSetup values;
@@ -366,6 +409,10 @@ class TwoWheelOffsets extends TuningOpMode<List<Double>> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected List<Double> runTuningOpMode() {
         TwoWheelConfig config = TwoWheelTuner.config(
                 values,

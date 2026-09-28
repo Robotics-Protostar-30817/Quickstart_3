@@ -14,6 +14,9 @@ import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 @Autonomous
+/**
+ * 
+ */
 public class ExampleAuto extends OpMode {
 
     private Follower follower;
@@ -32,6 +35,9 @@ public class ExampleAuto extends OpMode {
     }
 
     @Override
+    /**
+     * 
+     */
     public void init(){
         Scheduler.reset();
 
@@ -41,11 +47,17 @@ public class ExampleAuto extends OpMode {
     }
 
     @Override
+    /**
+     * 
+     */
     public void start(){
         schedule(follow(follower,park()));
     }
 
     @Override
+    /**
+     * 
+     */
     public void loop(){
         follower.update();
         Scheduler.execute();

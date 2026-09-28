@@ -13,7 +13,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.List;
 
+/**
+ * 
+ */
 public class OctoQuadTuner extends Procedure {
+    /**
+     * 
+     */
     enum PodType {
         SWING_ARM,
         FOUR_BAR,
@@ -23,11 +29,17 @@ public class OctoQuadTuner extends Procedure {
     public static double SWING_ARM = 336.877962768;
     public static double FOUR_BAR = 505.316944406;
 
+    /**
+     * 
+     */
     public OctoQuadTuner() {
         super("OctoQuad Tuner", "A procedure for tuning the OctoQuad localizer.");
     }
 
     @Override
+    /**
+     * 
+     */
     public void run() throws InterruptedException {
         Inputs inputs = inputs("Setup", "Set OctoQuad HardwareMap Name and Odometry Pod Type");
         Inputs.Field<String> octoquadName = inputs.s("HardwareMap Name").withDefault("octoquad");
@@ -88,6 +100,9 @@ public class OctoQuadTuner extends Procedure {
     }
 }
 
+/**
+ * 
+ */
 class OctoQuadHeadingScalar extends TuningOpMode<Double> {
     String name;
     int turns;
@@ -96,6 +111,13 @@ class OctoQuadHeadingScalar extends TuningOpMode<Double> {
     int xPodPort;
     int yPodPort;
 
+    /**
+     * 
+     * @param name 
+     * @param turns 
+     * @param xPodPort 
+     * @param yPodPort 
+     */
     public OctoQuadHeadingScalar(String name, int turns, int xPodPort, int yPodPort) {
         super("Heading Scalar Identification",
                 "Determines the scalar for the custom pods of the OctoQuad localizer. \n"
@@ -108,6 +130,10 @@ class OctoQuadHeadingScalar extends TuningOpMode<Double> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected Double runTuningOpMode() throws InterruptedException {
         OctoQuadConfig config = new OctoQuadConfig(c -> {
             c.name.set(name);
@@ -137,11 +163,21 @@ class OctoQuadHeadingScalar extends TuningOpMode<Double> {
     }
 }
 
+/**
+ * 
+ */
 class OctoQuadCustomPodScalar extends TuningOpMode<Double> {
     String name;
     double distance;
     int xPodPort, yPodPort;
 
+    /**
+     * 
+     * @param distance 
+     * @param name 
+     * @param xPodPort 
+     * @param yPodPort 
+     */
     public OctoQuadCustomPodScalar(Double distance, String name, int xPodPort, int yPodPort) {
         super("Custom Scalar Identification",
                 "Determines the scalar for the custom pods of the OctoQuad localizer. \n"
@@ -154,6 +190,10 @@ class OctoQuadCustomPodScalar extends TuningOpMode<Double> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected Double runTuningOpMode() {
         OctoQuadConfig config = new OctoQuadConfig(c -> {
             c.name.set(name);
@@ -185,6 +225,9 @@ class OctoQuadCustomPodScalar extends TuningOpMode<Double> {
     }
 }
 
+/**
+ * 
+ */
 class OctoQuadForwardDirection extends TuningOpMode<Boolean> {
     String name;
     OctoQuadTuner.PodType podType;
@@ -207,6 +250,10 @@ class OctoQuadForwardDirection extends TuningOpMode<Boolean> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected Boolean runTuningOpMode() {
         OctoQuadConfig config = new OctoQuadConfig(c -> {
             c.name.set(name);
@@ -234,6 +281,9 @@ class OctoQuadForwardDirection extends TuningOpMode<Boolean> {
     }
 }
 
+/**
+ * 
+ */
 class OctoQuadStrafeDirection extends TuningOpMode<Boolean> {
     String name;
     OctoQuadTuner.PodType podType;
@@ -256,6 +306,10 @@ class OctoQuadStrafeDirection extends TuningOpMode<Boolean> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected Boolean runTuningOpMode() {
         OctoQuadConfig config = new OctoQuadConfig(c -> {
             c.name.set(name);
@@ -284,6 +338,9 @@ class OctoQuadStrafeDirection extends TuningOpMode<Boolean> {
     }
 }
 
+/**
+ * 
+ */
 class OctoQuadOffsets extends TuningOpMode<List<Double>> {
     String name;
     OctoQuadTuner.PodType podType;
@@ -310,6 +367,10 @@ class OctoQuadOffsets extends TuningOpMode<List<Double>> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected List<Double> runTuningOpMode() {
         OctoQuadConfig config = new OctoQuadConfig(c -> {
             c.name.set(name);

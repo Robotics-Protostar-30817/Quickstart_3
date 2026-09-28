@@ -19,10 +19,18 @@ import java.util.function.Function;
 import static com.pedropathing.utils.Utils.linearFit;
 import static com.pedropathing.utils.Utils.quadraticFit;
 
+/**
+ * 
+ */
 public class ForesightTuner extends Procedure {
     Function<HardwareMap, Localizer> localizerFunction;
     Function<HardwareMap, Drivetrain> drivetrainFunction;
 
+    /**
+     * 
+     * @param localizerFunction 
+     * @param drivetrainFunction 
+     */
     public ForesightTuner(Function<HardwareMap, Localizer> localizerFunction, Function<HardwareMap, Drivetrain> drivetrainFunction) {
         super("Foresight Tuner", "A procedure for tuning the Foresight Algorithm.");
         this.localizerFunction = localizerFunction;
@@ -30,6 +38,9 @@ public class ForesightTuner extends Procedure {
     }
 
     @Override
+    /**
+     * 
+     */
     public void run() throws InterruptedException {
         Inputs distanceInput = inputs("Distance", "The distance to drive in inches for the Max Achievable Forward and Strafe Identifiers");
         Inputs.Field<Double> distance = distanceInput.d("Distance").withDefault(48.0);
@@ -122,6 +133,9 @@ public class ForesightTuner extends Procedure {
     }
 }
 
+/**
+ * 
+ */
 class ForwardVelocity extends TuningOpMode<Double> {
     Function<HardwareMap, Localizer> localizerFunction;
     Function<HardwareMap, Drivetrain> drivetrainFunction;
@@ -129,6 +143,12 @@ class ForwardVelocity extends TuningOpMode<Double> {
     private final ArrayDeque<Double> velocities = new ArrayDeque<>();
     public static double RECORD_NUMBER = 10;
 
+    /**
+     * 
+     * @param localizerFunction 
+     * @param drivetrainFunction 
+     * @param distance 
+     */
     public ForwardVelocity(Function<HardwareMap, Localizer> localizerFunction, Function<HardwareMap, Drivetrain> drivetrainFunction, double distance) {
         super("Max Forward Velocity", "A tuner for finding the maximum achievable forward velocity. This will drive forward for " + distance + " inches and then likely drift past that position.", false);
         this.localizerFunction = localizerFunction;
@@ -137,6 +157,10 @@ class ForwardVelocity extends TuningOpMode<Double> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected Double runTuningOpMode() {
         Localizer localizer = localizerFunction.apply(hardwareMap);
         Drivetrain drivetrain = drivetrainFunction.apply(hardwareMap);
@@ -177,6 +201,9 @@ class ForwardVelocity extends TuningOpMode<Double> {
     }
 }
 
+/**
+ * 
+ */
 class StrafeVelocity extends TuningOpMode<Double> {
     Function<HardwareMap, Localizer> localizerFunction;
     Function<HardwareMap, Drivetrain> drivetrainFunction;
@@ -184,6 +211,12 @@ class StrafeVelocity extends TuningOpMode<Double> {
     private final ArrayDeque<Double> velocities = new ArrayDeque<>();
     public static double RECORD_NUMBER = 10;
 
+    /**
+     * 
+     * @param localizerFunction 
+     * @param drivetrainFunction 
+     * @param distance 
+     */
     public StrafeVelocity(Function<HardwareMap, Localizer> localizerFunction, Function<HardwareMap, Drivetrain> drivetrainFunction, double distance) {
         super("Max Strafe Velocity", "A tuner for finding the maximum achievable strafe velocity. This will drive left for " + distance + " inches and then likely drift past that position.", false);
         this.localizerFunction = localizerFunction;
@@ -192,6 +225,10 @@ class StrafeVelocity extends TuningOpMode<Double> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected Double runTuningOpMode() {
         Localizer localizer = localizerFunction.apply(hardwareMap);
         Drivetrain drivetrain = drivetrainFunction.apply(hardwareMap);
@@ -232,6 +269,9 @@ class StrafeVelocity extends TuningOpMode<Double> {
     }
 }
 
+/**
+ * 
+ */
 class ForwardDeceleration extends TuningOpMode<Double> {
     Function<HardwareMap, Localizer> localizerFunction;
     Function<HardwareMap, Drivetrain> drivetrainFunction;
@@ -243,6 +283,12 @@ class ForwardDeceleration extends TuningOpMode<Double> {
     private long previousTimeNano;
     private boolean stopping;
 
+    /**
+     * 
+     * @param localizerFunction 
+     * @param drivetrainFunction 
+     * @param velocity 
+     */
     public ForwardDeceleration(Function<HardwareMap, Localizer> localizerFunction, Function<HardwareMap, Drivetrain> drivetrainFunction, double velocity) {
         super("Forward Deceleration", "A tuner for finding the deceleration of the robot when moving forward. This will move forward until it reaches " + velocity + " inches per second.", false);
 
@@ -252,6 +298,10 @@ class ForwardDeceleration extends TuningOpMode<Double> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected Double runTuningOpMode() {
         Localizer localizer = localizerFunction.apply(hardwareMap);
         Drivetrain drivetrain = drivetrainFunction.apply(hardwareMap);
@@ -320,6 +370,9 @@ class ForwardDeceleration extends TuningOpMode<Double> {
     }
 }
 
+/**
+ * 
+ */
 class StrafeDeceleration extends TuningOpMode<Double> {
     Function<HardwareMap, Localizer> localizerFunction;
     Function<HardwareMap, Drivetrain> drivetrainFunction;
@@ -331,6 +384,12 @@ class StrafeDeceleration extends TuningOpMode<Double> {
     private long previousTimeNano;
     private boolean stopping;
 
+    /**
+     * 
+     * @param localizerFunction 
+     * @param drivetrainFunction 
+     * @param velocity 
+     */
     public StrafeDeceleration(Function<HardwareMap, Localizer> localizerFunction, Function<HardwareMap, Drivetrain> drivetrainFunction, double velocity) {
         super("Strafe Deceleration", "A tuner for finding the deceleration of the robot when moving laterally. This will drive left until it reaches " + velocity + " inches per second.", false);
 
@@ -340,6 +399,10 @@ class StrafeDeceleration extends TuningOpMode<Double> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected Double runTuningOpMode() {
         Localizer localizer = localizerFunction.apply(hardwareMap);
         Drivetrain drivetrain = drivetrainFunction.apply(hardwareMap);
@@ -408,6 +471,9 @@ class StrafeDeceleration extends TuningOpMode<Double> {
     }
 }
 
+/**
+ * 
+ */
 class HeadingBraking extends TuningOpMode<List<Double>> {
     Function<HardwareMap, Localizer> localizerFunction;
     Function<HardwareMap, Drivetrain> drivetrainFunction;
@@ -435,6 +501,11 @@ class HeadingBraking extends TuningOpMode<List<Double>> {
     private double previousHeading;
 //    private VoltageSensor voltageSensor;
 
+    /**
+     * 
+     * @param localizerFunction 
+     * @param drivetrainFunction 
+     */
     public HeadingBraking(Function<HardwareMap, Localizer> localizerFunction, Function<HardwareMap, Drivetrain> drivetrainFunction) {
         super("Heading Braking", "A tuner for finding the Heading Braking Coefficients. The robot will turn back at forth at various speed levels.", false);
 
@@ -443,6 +514,10 @@ class HeadingBraking extends TuningOpMode<List<Double>> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected List<Double> runTuningOpMode() {
         Localizer localizer = localizerFunction.apply(hardwareMap);
         Drivetrain drivetrain = drivetrainFunction.apply(hardwareMap);
@@ -522,6 +597,9 @@ class HeadingBraking extends TuningOpMode<List<Double>> {
         return coefficients;
     }
 
+    /**
+     * 
+     */
     private enum State {
         DRIVE,
         BRAKE,
@@ -550,6 +628,9 @@ class HeadingBraking extends TuningOpMode<List<Double>> {
     }
 }
 
+/**
+ * 
+ */
 class HeadingTuner extends TuningOpMode<Double> {
     Function<HardwareMap, Localizer> localizerFunction;
     Function<HardwareMap, Drivetrain> drivetrainFunction;
@@ -570,6 +651,11 @@ class HeadingTuner extends TuningOpMode<Double> {
     private boolean done = false;
     private double lastTime = 0.0;
 
+    /**
+     * 
+     * @param localizerFunction 
+     * @param drivetrainFunction 
+     */
     public HeadingTuner(Function<HardwareMap, Localizer> localizerFunction, Function<HardwareMap, Drivetrain> drivetrainFunction) {
         super("Heading Tuner", "A tuner for finding the Heading Tuning Coefficients using system identification. This will spin the robot in place for a couple seconds.", false);
         this.localizerFunction = localizerFunction;
@@ -577,6 +663,10 @@ class HeadingTuner extends TuningOpMode<Double> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected Double runTuningOpMode() {
         Localizer localizer = localizerFunction.apply(hardwareMap);
         Drivetrain drivetrain = drivetrainFunction.apply(hardwareMap);
@@ -660,6 +750,9 @@ class HeadingTuner extends TuningOpMode<Double> {
     }
 }
 
+/**
+ * 
+ */
 class ForwardBraking extends TuningOpMode<List<Double>> {
     Function<HardwareMap, Localizer> localizerFunction;
     Function<HardwareMap, Drivetrain> drivetrainFunction;
@@ -698,6 +791,10 @@ class ForwardBraking extends TuningOpMode<List<Double>> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected List<Double> runTuningOpMode() {
         Localizer localizer = localizerFunction.apply(hardwareMap);
         Drivetrain drivetrain = drivetrainFunction.apply(hardwareMap);
@@ -806,6 +903,9 @@ class ForwardBraking extends TuningOpMode<List<Double>> {
         }
     }
 
+    /**
+     * 
+     */
     private enum State {
         DRIVE,
         BRAKE,
@@ -825,6 +925,9 @@ class ForwardBraking extends TuningOpMode<List<Double>> {
     }
 }
 
+/**
+ * 
+ */
 class StrafeBraking extends TuningOpMode<List<Double>> {
     Function<HardwareMap, Localizer> localizerFunction;
     Function<HardwareMap, Drivetrain> drivetrainFunction;
@@ -863,6 +966,10 @@ class StrafeBraking extends TuningOpMode<List<Double>> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected List<Double> runTuningOpMode() {
         Localizer localizer = localizerFunction.apply(hardwareMap);
         Drivetrain drivetrain = drivetrainFunction.apply(hardwareMap);
@@ -971,6 +1078,9 @@ class StrafeBraking extends TuningOpMode<List<Double>> {
         }
     }
 
+    /**
+     * 
+     */
     private enum State {
         DRIVE,
         BRAKE,
@@ -990,6 +1100,9 @@ class StrafeBraking extends TuningOpMode<List<Double>> {
     }
 }
 
+/**
+ * 
+ */
 class ForwardTranslational extends TuningOpMode<List<Double>> {
     Function<HardwareMap, Localizer> localizerFunction;
     Function<HardwareMap, Drivetrain> drivetrainFunction;
@@ -1012,6 +1125,11 @@ class ForwardTranslational extends TuningOpMode<List<Double>> {
     private boolean done = false;
     private double lastTime = 0.0;
 
+    /**
+     * 
+     * @param localizerFunction 
+     * @param drivetrainFunction 
+     */
     public ForwardTranslational(Function<HardwareMap, Localizer> localizerFunction, Function<HardwareMap, Drivetrain> drivetrainFunction) {
         super("Forward Translational", "A tuner for finding the Forward Translational kP coefficients using system identification. This will move around 12-24 inches in front of the robot and then stop.", false);
         this.localizerFunction = localizerFunction;
@@ -1019,6 +1137,10 @@ class ForwardTranslational extends TuningOpMode<List<Double>> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected List<Double> runTuningOpMode() {
         Localizer localizer = localizerFunction.apply(hardwareMap);
         Drivetrain drivetrain = drivetrainFunction.apply(hardwareMap);
@@ -1107,6 +1229,9 @@ class ForwardTranslational extends TuningOpMode<List<Double>> {
     }
 }
 
+/**
+ * 
+ */
 class StrafeTranslational extends TuningOpMode<List<Double>> {
     Function<HardwareMap, Localizer> localizerFunction;
     Function<HardwareMap, Drivetrain> drivetrainFunction;
@@ -1127,6 +1252,11 @@ class StrafeTranslational extends TuningOpMode<List<Double>> {
     private boolean done = false;
     private double lastTime = 0.0;
 
+    /**
+     * 
+     * @param localizerFunction 
+     * @param drivetrainFunction 
+     */
     public StrafeTranslational(Function<HardwareMap, Localizer> localizerFunction, Function<HardwareMap, Drivetrain> drivetrainFunction) {
         super("Strafe Translational", "A tuner for finding the Strafe Translational kP coefficients using system identification. This will move around 12-24 inches to the left and right of the robot and then stop.", false);
         this.localizerFunction = localizerFunction;
@@ -1134,6 +1264,10 @@ class StrafeTranslational extends TuningOpMode<List<Double>> {
     }
 
     @Override
+    /**
+     * 
+     * @return 
+     */
     protected List<Double> runTuningOpMode() {
         Localizer localizer = localizerFunction.apply(hardwareMap);
         Drivetrain drivetrain = drivetrainFunction.apply(hardwareMap);
