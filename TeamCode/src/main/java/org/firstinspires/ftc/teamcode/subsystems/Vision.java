@@ -34,7 +34,7 @@ public class Vision implements Subsystem{
     private final Position cameraPosition  = new Position(DistanceUnit.INCH,-4,0,0,0);
     //camera is mounted to 4 incles left of the robot center, facing forward, no twist, no vertical offset.
     private final YawPitchRollAngles cameraAngles = new YawPitchRollAngles(AngleUnit.DEGREES,
-            0,-45,0,0);//tilted upward 45 degree
+            0,-41,0,0);//tilted upward 45 degree
     private Vision(){
 
     }
