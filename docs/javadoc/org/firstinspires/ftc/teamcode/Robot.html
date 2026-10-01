@@ -61,6 +61,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#dt" tabindex="0">dt</a></li>
 <li><a href="#odom" tabindex="0">odom</a></li>
 <li><a href="#vision" tabindex="0">vision</a></li>
+<li><a href="#shooter" tabindex="0">shooter</a></li>
 </ol>
 </li>
 </ol>
@@ -78,6 +79,9 @@ loadScripts(document, 'script');</script>
 <div class="horizontal-scroll">
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">Robot</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
+<div class="block">Main robot container class implementing the singleton pattern.
+Provides centralized access to all robot subsystems including the drivetrain,
+odometry, vision processing, and shooter.</div>
 </div>
 </section>
 <section class="summary">
@@ -93,16 +97,29 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>final <a href="subsystems/Drivetrain.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Drivetrain</a></code></div>
 <div class="col-second even-row-color"><code><a href="#dt" class="member-name-link">dt</a></code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">Drivetrain subsystem instance for robot motion and motor control.</div>
+</div>
 <div class="col-first odd-row-color"><code>static final <a href="Robot.html" title="class in org.firstinspires.ftc.teamcode">Robot</a></code></div>
 <div class="col-second odd-row-color"><code><a href="#INSTANCE" class="member-name-link">INSTANCE</a></code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">Singleton instance of the robot container.</div>
+</div>
 <div class="col-first even-row-color"><code>final <a href="subsystems/Odom.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Odom</a></code></div>
 <div class="col-second even-row-color"><code><a href="#odom" class="member-name-link">odom</a></code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>final <a href="subsystems/Vision.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Vision</a></code></div>
-<div class="col-second odd-row-color"><code><a href="#vision" class="member-name-link">vision</a></code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">Odometry subsystem instance for robot tracking and localization.</div>
+</div>
+<div class="col-first odd-row-color"><code>final <a href="subsystems/Shooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Shooter</a></code></div>
+<div class="col-second odd-row-color"><code><a href="#shooter" class="member-name-link">shooter</a></code></div>
+<div class="col-last odd-row-color">
+<div class="block">Shooter subsystem instance for flywheel launching mechanism.</div>
+</div>
+<div class="col-first even-row-color"><code>final <a href="subsystems/Vision.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Vision</a></code></div>
+<div class="col-second even-row-color"><code><a href="#vision" class="member-name-link">vision</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">Vision subsystem instance for AprilTag target tracking and cell detection.</div>
+</div>
 </div>
 </section>
 </li>
@@ -129,6 +146,7 @@ loadScripts(document, 'script');</script>
 <h3>INSTANCE</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="Robot.html" title="class in org.firstinspires.ftc.teamcode">Robot</a></span>&nbsp;<span class="element-name">INSTANCE</span></div>
+<div class="block">Singleton instance of the robot container.</div>
 </div>
 </section>
 </li>
@@ -137,6 +155,7 @@ loadScripts(document, 'script');</script>
 <h3>dt</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public final</span>&nbsp;<span class="return-type"><a href="subsystems/Drivetrain.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Drivetrain</a></span>&nbsp;<span class="element-name">dt</span></div>
+<div class="block">Drivetrain subsystem instance for robot motion and motor control.</div>
 </div>
 </section>
 </li>
@@ -145,6 +164,7 @@ loadScripts(document, 'script');</script>
 <h3>odom</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public final</span>&nbsp;<span class="return-type"><a href="subsystems/Odom.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Odom</a></span>&nbsp;<span class="element-name">odom</span></div>
+<div class="block">Odometry subsystem instance for robot tracking and localization.</div>
 </div>
 </section>
 </li>
@@ -153,6 +173,16 @@ loadScripts(document, 'script');</script>
 <h3>vision</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public final</span>&nbsp;<span class="return-type"><a href="subsystems/Vision.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Vision</a></span>&nbsp;<span class="element-name">vision</span></div>
+<div class="block">Vision subsystem instance for AprilTag target tracking and cell detection.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="shooter">
+<h3>shooter</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public final</span>&nbsp;<span class="return-type"><a href="subsystems/Shooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Shooter</a></span>&nbsp;<span class="element-name">shooter</span></div>
+<div class="block">Shooter subsystem instance for flywheel launching mechanism.</div>
 </div>
 </section>
 </li>

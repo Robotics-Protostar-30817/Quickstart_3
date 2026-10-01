@@ -61,9 +61,31 @@ tasks.register("generateJavadoc", Javadoc) {
                 android.bootClasspath,
                 javaCompile.classpath
         )
+
+        def srcDir = file("src/main/java")
+        def destDir = destinationDir
+
+        def modifiedFiles = fileTree(srcDir) {
+            include "**/*.java"
+        }.filter { File javaFile ->
+            def relPath = srcDir.toPath().relativize(javaFile.toPath()).toString()
+            def htmlPath = relPath.replaceAll(/\.java$/, '.html')
+            def htmlFile = new File(destDir, htmlPath)
+            return !htmlFile.exists() || javaFile.lastModified() > htmlFile.lastModified()
+        }
+
+        if (modifiedFiles.isEmpty()) {
+            println "No recently modified Java files found for Javadoc generation."
+        } else {
+            println "Generating Javadoc for modified files: " + modifiedFiles.files.collect { it.name }
+        }
+
+        source = modifiedFiles
     }
 }
 
-tasks.named("build"){
-    finalizedBy("generateJavadoc")
+afterEvaluate {
+    tasks.matching { it.name.startsWith("assemble") || it.name == "build" }.configureEach {
+        it.finalizedBy("generateJavadoc")
+    }
 }
