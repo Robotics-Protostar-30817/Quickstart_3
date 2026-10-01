@@ -6,26 +6,19 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import dev.nextftc.core.subsystems.Subsystem;
 
+
 /**
  * Controls the robot's flywheel shooter.
  *
- * <p>The shooter currently consists of two goBILDA 5000 Series
- * 12VDC motors that drive the flywheels. The two motors are controlled
- * together so that both flywheels operate at the same commanded power.</p>
+ * <p>The current shooter design uses one goBILDA 5000 Series motor
+ * to drive the flywheel. The hood angle is mechanically fixed for
+ * the initial design, and the feeder mechanism has not yet been
+ * selected.</p>
  *
- * <p>This initial version of the subsystem is intended for manual shooter
- * testing. It supports:</p>
- *
- * <ul>
- *     <li>Setting flywheel motor power.</li>
- *     <li>Stopping both flywheel motors.</li>
- *     <li>Reading the encoder velocity of each flywheel motor.</li>
- * </ul>
- *
- * <p>A feeder and an adjustable hood may be added later after the basic
- * flywheel shooter has been mechanically tested. Closed-loop velocity
- * control and automatic shooting will also be added in later development
- * stages.</p>
+ * <p>This subsystem initially provides direct power control for
+ * manual shooter testing. Closed-loop velocity control will be
+ * added after the mechanical shooter has been tested and its
+ * operating velocity has been characterized.</p>
  */
 public class Shooter implements Subsystem {
 
@@ -35,174 +28,127 @@ public class Shooter implements Subsystem {
     public static final Shooter INSTANCE = new Shooter();
 
     /**
-     * Left flywheel motor.
+     * Motor that drives the shooter flywheel.
      */
-    private DcMotorEx leftFlywheel;
+    private DcMotorEx flywheelMotor;
 
     /**
-     * Right flywheel motor.
-     */
-    private DcMotorEx rightFlywheel;
-
-    /**
-     * Current commanded motor power.
-     *
-     * <p>The value is in the range {@code [-1.0, 1.0]}.</p>
+     * Currently commanded flywheel motor power.
      */
     private double targetPower = 0.0;
 
+
     /**
      * Creates the singleton shooter subsystem.
-     *
-     * <p>The constructor is private so that all OpModes use
-     * {@link #INSTANCE} rather than creating multiple shooter objects.</p>
      */
     private Shooter() {
     }
 
+
     /**
-     * Initializes the two flywheel motors from the FTC hardware map.
+     * Initializes the flywheel motor.
      *
-     * <p>The motor direction settings shown here are initial values only.
-     * They must be verified after the physical flywheels are installed.
-     * The two flywheels should rotate so that they accelerate the POLLEN
-     * toward the shooter exit.</p>
+     * <p>The motor direction must be verified after the physical
+     * shooter is assembled.</p>
      *
-     * @param leftMotor  the left flywheel motor from the hardware map
-     * @param rightMotor the right flywheel motor from the hardware map
+     * @param motor flywheel motor from the FTC hardware map
      */
-    public void init(DcMotorEx leftMotor, DcMotorEx rightMotor) {
+    public void init(DcMotorEx motor) {
 
-        leftFlywheel = leftMotor;
-        rightFlywheel = rightMotor;
-
-        /*
-         * These directions must be verified on the actual robot.
-         * Mirrored flywheel motors commonly require opposite motor
-         * directions.
-         */
-        leftFlywheel.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightFlywheel.setDirection(DcMotorSimple.Direction.REVERSE);
+        flywheelMotor = motor;
 
         /*
-         * RUN_USING_ENCODER allows encoder velocity measurements while
-         * still permitting direct motor-power control during early testing.
+         * Verify this direction on the physical robot.
          */
-        leftFlywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFlywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        flywheelMotor.setDirection(
+                DcMotorSimple.Direction.FORWARD
+        );
 
         /*
-         * Allow the flywheels to coast when motor power is set to zero.
+         * Use the encoder so that flywheel velocity can be measured.
          */
-        leftFlywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        rightFlywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        flywheelMotor.setMode(
+                DcMotor.RunMode.RUN_USING_ENCODER
+        );
+
+        /*
+         * Allow the flywheel to coast after power is removed.
+         */
+        flywheelMotor.setZeroPowerBehavior(
+                DcMotor.ZeroPowerBehavior.FLOAT
+        );
 
         stop();
     }
 
+
     /**
-     * Sets the power applied to both flywheel motors.
+     * Sets flywheel motor power.
      *
-     * <p>This method is intended for the initial manual testing stage.
-     * Closed-loop velocity control will be added after the mechanical
-     * shooter has been characterized.</p>
+     * <p>This method is intended primarily for early manual testing.
+     * The requested value is limited to the valid FTC motor-power
+     * range.</p>
      *
-     * @param power motor power in the range {@code [-1.0, 1.0]}
+     * @param power requested motor power in the range {@code [-1.0, 1.0]}
      */
     public void setPower(double power) {
 
-        targetPower = Math.max(-1.0, Math.min(1.0, power));
+        targetPower =
+                Math.max(-1.0, Math.min(1.0, power));
 
-        leftFlywheel.setPower(targetPower);
-        rightFlywheel.setPower(targetPower);
+        flywheelMotor.setPower(targetPower);
     }
 
+
     /**
-     * Stops both flywheel motors.
+     * Stops the flywheel motor.
      *
-     * <p>Because the motors use {@link DcMotor.ZeroPowerBehavior#FLOAT},
-     * the flywheels may continue rotating for a short time after this
-     * method is called.</p>
+     * <p>The flywheel may continue rotating temporarily because
+     * zero-power behavior is configured as FLOAT.</p>
      */
     public void stop() {
 
         targetPower = 0.0;
 
-        if (leftFlywheel != null) {
-            leftFlywheel.setPower(0.0);
-        }
-
-        if (rightFlywheel != null) {
-            rightFlywheel.setPower(0.0);
+        if (flywheelMotor != null) {
+            flywheelMotor.setPower(0.0);
         }
     }
 
+
     /**
-     * Returns the currently commanded flywheel motor power.
+     * Returns the currently commanded motor power.
      *
-     * @return commanded motor power in the range {@code [-1.0, 1.0]}
+     * @return commanded flywheel power in the range {@code [-1.0, 1.0]}
      */
     public double getTargetPower() {
         return targetPower;
     }
 
-    /**
-     * Returns the measured velocity of the left flywheel motor.
-     *
-     * <p>The FTC SDK reports this value in encoder ticks per second.</p>
-     *
-     * @return left flywheel encoder velocity in ticks per second
-     */
-    public double getLeftVelocity() {
 
-        if (leftFlywheel == null) {
+    /**
+     * Returns the measured flywheel motor velocity.
+     *
+     * @return encoder velocity in ticks per second
+     */
+    public double getVelocity() {
+
+        if (flywheelMotor == null) {
             return 0.0;
         }
 
-        return leftFlywheel.getVelocity();
+        return flywheelMotor.getVelocity();
     }
 
-    /**
-     * Returns the measured velocity of the right flywheel motor.
-     *
-     * <p>The FTC SDK reports this value in encoder ticks per second.</p>
-     *
-     * @return right flywheel encoder velocity in ticks per second
-     */
-    public double getRightVelocity() {
-
-        if (rightFlywheel == null) {
-            return 0.0;
-        }
-
-        return rightFlywheel.getVelocity();
-    }
 
     /**
-     * Returns the absolute difference between the measured velocities
-     * of the two flywheel motors.
+     * Performs periodic shooter processing.
      *
-     * <p>This value is useful during manual testing for identifying
-     * significant differences between the two flywheel speeds.</p>
-     *
-     * @return absolute velocity difference in encoder ticks per second
-     */
-    public double getVelocityDifference() {
-        return Math.abs(
-                getLeftVelocity() - getRightVelocity()
-        );
-    }
-
-    /**
-     * Performs periodic shooter subsystem processing.
-     *
-     * <p>No periodic control is required during the initial power-control
-     * testing stage. This method is retained so that closed-loop velocity
-     * control and shooter monitoring can be added later without changing
-     * the subsystem architecture.</p>
+     * <p>No periodic closed-loop processing is required during the
+     * initial direct-power testing stage.</p>
      */
     @Override
     public void periodic() {
-        // No periodic control is required during initial manual testing.
+        // Closed-loop velocity control will be added later.
     }
 }

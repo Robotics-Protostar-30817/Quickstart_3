@@ -46,15 +46,8 @@ public class ShooterManualTest extends OpMode {
      * <p>Change this value if the Control Hub configuration uses a
      * different name.</p>
      */
-    private static final String LEFT_MOTOR_NAME = "leftFlywheel";
+    private static final String MOTOR_NAME = "flywheel";
 
-    /**
-     * FTC hardware-map name for the right flywheel motor.
-     *
-     * <p>Change this value if the Control Hub configuration uses a
-     * different name.</p>
-     */
-    private static final String RIGHT_MOTOR_NAME = "rightFlywheel";
 
     /**
      * Amount by which the selected flywheel power changes each time
@@ -93,19 +86,16 @@ public class ShooterManualTest extends OpMode {
      * Initializes the shooter subsystem.
      *
      * <p>This method obtains the two flywheel motors from the FTC
-     * hardware map and passes them to {@link Shooter#init(DcMotorEx, DcMotorEx)}.
+     * hardware map and passes them to {@link Shooter#init(DcMotorEx)}.
      * The shooter remains stopped after initialization.</p>
      */
     @Override
     public void init() {
 
-        DcMotorEx leftFlywheel =
-                hardwareMap.get(DcMotorEx.class, LEFT_MOTOR_NAME);
+        DcMotorEx flywheel =
+                hardwareMap.get(DcMotorEx.class, MOTOR_NAME);
 
-        DcMotorEx rightFlywheel =
-                hardwareMap.get(DcMotorEx.class, RIGHT_MOTOR_NAME);
-
-        Shooter.INSTANCE.init(leftFlywheel, rightFlywheel);
+        Shooter.INSTANCE.init(flywheel);
         Shooter.INSTANCE.stop();
 
         telemetry.addLine("Shooter Manual Test Initialized");
@@ -252,21 +242,9 @@ public class ShooterManualTest extends OpMode {
         );
 
         telemetry.addData(
-                "Left Velocity",
+                "Velocity",
                 "%.1f ticks/sec",
-                Shooter.INSTANCE.getLeftVelocity()
-        );
-
-        telemetry.addData(
-                "Right Velocity",
-                "%.1f ticks/sec",
-                Shooter.INSTANCE.getRightVelocity()
-        );
-
-        telemetry.addData(
-                "Velocity Difference",
-                "%.1f ticks/sec",
-                Shooter.INSTANCE.getVelocityDifference()
+                Shooter.INSTANCE.getVelocity()
         );
 
         telemetry.addLine("");
