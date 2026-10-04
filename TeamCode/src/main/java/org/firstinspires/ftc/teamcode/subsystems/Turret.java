@@ -72,6 +72,19 @@ public class Turret implements Subsystem {
      */
     private double targetAngleDegrees = 0.0;
 
+    /**
+     * <p>Positive y is to the robot's right. The current turret is mounted
+     * approximately  the same forward/backward position to the robot center.</p>
+     *
+     * <p>This value should be replaced with the measured offset to center offset.</p>
+     */
+    private static final double TURRET_TO_CENTER_Y_INCHES = 0.0;
+    /**
+     * <p>Positive x is to the robot's right.
+     * This assumes the turret rotation axis is located at the center.</p>
+     *
+     */
+    private static final double TURRET_TO_CENTER_X_INCHES = 0.0;
 
     /**
      * Creates the singleton turret subsystem.
@@ -224,6 +237,48 @@ public class Turret implements Subsystem {
         }
     }
 
+    /**
+     * Calculates the horizontal turret angle required to point toward the center
+     * of the cell.
+     *
+     * <p>The supplied cell X and Y coordinates describe the detected cell
+     * position relative to the camera. The coordinates use the convention: </p>
+     *
+     * <ul>
+     *     <li>+X = right</li>
+     *     <li>+Y = forward</li>
+     * </ul>
+     *
+     * <p>The camera is mounted Vision.CAMERA_TO_CENTER_X_INCHES to the X axis of the center of
+     * the robot, which is also the turret rotation center, and has Vision.CAMERA_TO_CENTER_Y_INCHES
+     * of the Y axis of the center of the robot. Therefore, the cell position relative
+     * to the turret (robot center) is calculated by translating the camera-relative
+     * position by the camera-to-center offsets.</p>
+     *
+     * <p>The returned angle uses the turret convention:</p>
+     *
+     * <ul>
+     *     <li>0 degrees = straight forward</li>
+     *     <li>positive angle = toward robot right</li>
+     *     <li>negative angle = toward robot left</li>
+     * </ul>
+     *
+     * <p>The Cell Z coordinate is not used directly for horizontal turret rotation.</p>
+     *
+     * @param cell detected Cell containing camera-relative position
+     * @return required horizontal turret angle in degrees.
+     */
+    public double calculateTurretAngle(Vision.Cell cell){
+        if (cell == null){
+            return 0.0;
+        }
+
+        double targetXFromCenter = cell.getX()+Vision.CAMERA_TO_CENTER_X_INCHES;
+        double targetYFromCenter = cell.getY()+Vision.CAMERA_TO_CENTER_Y_INCHES;
+
+        return Math.toDegrees(Math.atan2(targetXFromCenter,targetYFromCenter));
+
+    }
 
     /**
      * Performs periodic turret processing.

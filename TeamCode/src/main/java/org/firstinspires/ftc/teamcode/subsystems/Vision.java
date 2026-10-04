@@ -34,9 +34,24 @@ public class Vision implements Subsystem{
     private AprilTagProcessor aprilTag;
     private Telemetry telemetry;
 
+    /**
+     * <p>Positive x is to the robot's right. The current camera is mounted
+     * approximately 4 inches to the left of the robot center.
+     * This assumes the turret rotation axis is located at the center.</p>
+     *
+     * <p>This value should be replaced with the measured camera-lens to center_axis horizontal offset.</p>
+     */
+    public static final double CAMERA_TO_CENTER_X_INCHES = -4.0;
+    /**
+     * <p>Positive y is to the robot's right. The current camera is mounted
+     * approximately  the same forward/backward position to the robot center.
+     * This assumes the turret rotation axis is located at the center.</p>
+     */
+    public static final double CAMERA_TO_CENTER_Y_INCHES = 0.0;
     //final camera position on robot
     //+x= robot right, +y = robot forward, +z = robot up, should be updated later
-    private final Position cameraPosition  = new Position(DistanceUnit.INCH,-4,0,0,0);
+    private final Position cameraPosition  = new Position(DistanceUnit.INCH,CAMERA_TO_CENTER_X_INCHES,
+            CAMERA_TO_CENTER_Y_INCHES,0,0);
     //camera is mounted to 4 inches left of the robot center, facing forward, no twist, no vertical offset.
     private final YawPitchRollAngles cameraAngles = new YawPitchRollAngles(AngleUnit.DEGREES,
             0,-41,0,0);//tilted upward 49 degree
@@ -68,17 +83,27 @@ public class Vision implements Subsystem{
         private final Color color;
         private final Location location;
 
+        private double x;
+        private double y;
+        private double z;
+
         /**
          * Constructs a Cell with the specified properties and determines its color and location based on its name.
          * 
          * @param name the name identifier of the cell, used to derive color and location
+         * @param x
+         * @param y
+         * @param z
          * @param scorable true if the cell is in a scorable orientation, false otherwise
          * @param range the distance from the camera to the cell in inches
          * @param bearing the horizontal angle to the cell in degrees
          * @param elevation the vertical angle to the cell in degrees
          */
-        public Cell(String name, boolean scorable, double range, double bearing, double elevation){
+        public Cell(String name, double x, double y, double z, boolean scorable, double range, double bearing, double elevation){
             this.name = name;
+            this.x = x;
+            this.y = y;
+            this.z = z;
             this.scorable = scorable;
             this.range = range;
             this.bearing = bearing;
@@ -106,11 +131,20 @@ public class Vision implements Subsystem{
          * Gets the name identifier of the cell.
          * 
          * @return the cell name string
-         */
+        */
         public String getName() {
             return name;
         }
 
+        public double getX(){
+            return x;
+        }
+        public double getY(){
+            return y;
+        }
+        public double getZ(){
+            return z;
+        }
         /**
          * Indicates whether the cell is in a scorable orientation.
          * 
@@ -326,7 +360,9 @@ public class Vision implements Subsystem{
         }
 
         boolean scorable = Math.abs(cluster.ftcPose.roll)<90.0;
-        return new Cell(cluster.metadata.name, scorable, cluster.ftcPose.range,
+        return new Cell(cluster.metadata.name, cluster.ftcPose.x,
+                cluster.ftcPose.y,cluster.ftcPose.z,
+                scorable, cluster.ftcPose.range,
                 cluster.ftcPose.bearing, cluster.ftcPose.elevation);
     }
 

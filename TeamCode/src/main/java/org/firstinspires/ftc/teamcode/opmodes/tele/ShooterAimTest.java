@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.tele;
+package org.firstinspires.ftc.teamcode.opmodes.tele;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -96,6 +96,8 @@ public class ShooterAimTest extends OpMode {
             3400.0,
             3700.0
     };
+
+
 
     /**
      * Timer measuring how long the turret has been moving toward
@@ -239,9 +241,11 @@ public class ShooterAimTest extends OpMode {
                  * correct the sign after TurretManualTest.
                  */
 
-                Turret.INSTANCE.setTargetAngle(
-                        targetCell.getBearing()
-                );
+                //Turret.INSTANCE.setTargetAngle(
+                //        targetCell.getBearing()
+                //);
+                double turretAngle = Turret.INSTANCE.calculateTurretAngle(targetCell);
+                Turret.INSTANCE.setTargetAngle(turretAngle);
 
                 /*
                  * Start the settling timer after changing turret angle.
@@ -258,10 +262,9 @@ public class ShooterAimTest extends OpMode {
                  * range to the CELL.
                  */
 
+                double shootingDistance = calculateHorizontalDistance(targetCell);
                 double targetVelocity =
-                        getVelocityForRange(
-                                targetCell.getRange()
-                        );
+                        getVelocityForRange(shootingDistance);
 
                 Shooter.INSTANCE.setVelocity(
                         targetVelocity
@@ -350,6 +353,10 @@ public class ShooterAimTest extends OpMode {
                     visibleCell.getName()
             );
 
+            telemetry.addData("CELL X", "%.1f in",visibleCell.getX());
+            telemetry.addData("CELL Y", "%.1f in",visibleCell.getY());
+            telemetry.addData("CELL Z", "%.1f in",visibleCell.getZ());
+
             telemetry.addData(
                     "Scorable",
                     visibleCell.isScorable()
@@ -374,6 +381,9 @@ public class ShooterAimTest extends OpMode {
                     "%.1f deg",
                     visibleCell.getElevation()
             );
+
+            telemetry.addData("Calculated Turret Angle",
+                    "%.1f deg",Turret.INSTANCE.calculateTurretAngle(visibleCell));
         }
 
 
@@ -474,7 +484,6 @@ public class ShooterAimTest extends OpMode {
         telemetry.update();
     }
 
-
     /**
      * Determines whether the detected CELL is within the currently
      * calibrated shooter range.
@@ -490,6 +499,17 @@ public class ShooterAimTest extends OpMode {
                 && rangeInches <= MAX_SHOOTING_RANGE;
     }
 
+    /**
+     * Calculate horizontal distance from the turret rotation axis to the detected CELL center.
+     *
+     * @param cell detected CELL with camera-relative position in inches.
+     * @return horizontal distance from the turret-to-CELL in inches.
+     */
+    private double calculateHorizontalDistance(Vision.Cell targetCell){
+        double x = Vision.CAMERA_TO_CENTER_X_INCHES + targetCell.getX();
+        double y = Vision.CAMERA_TO_CENTER_Y_INCHES + targetCell.getY();
+        return Math.hypot(x,y);
+    }
 
     /**
      * Calculates the desired flywheel velocity for a measured CELL range.
