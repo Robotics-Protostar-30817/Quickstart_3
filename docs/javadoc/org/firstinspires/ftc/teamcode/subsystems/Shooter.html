@@ -64,6 +64,9 @@ loadScripts(document, 'script');</script>
 <ol class="toc-list">
 <li><a href="#init(com.qualcomm.robotcore.hardware.DcMotorEx)" tabindex="0">init(DcMotorEx)</a></li>
 <li><a href="#setPower(double)" tabindex="0">setPower(double)</a></li>
+<li><a href="#setVelocity(double)" tabindex="0">setVelocity(double)</a></li>
+<li><a href="#getTargetVelocity()" tabindex="0">getTargetVelocity()</a></li>
+<li><a href="#isAtSpeed()" tabindex="0">isAtSpeed()</a></li>
 <li><a href="#stop()" tabindex="0">stop()</a></li>
 <li><a href="#getTargetPower()" tabindex="0">getTargetPower()</a></li>
 <li><a href="#getVelocity()" tabindex="0">getVelocity()</a></li>
@@ -139,14 +142,24 @@ operating velocity has been characterized.</p></div>
 <div class="block">Returns the currently commanded motor power.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>double</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getVelocity()" class="member-name-link">getVelocity</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTargetVelocity()" class="member-name-link">getTargetVelocity</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Returns the currently requested flywheel velocity.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>double</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getVelocity()" class="member-name-link">getVelocity</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the measured flywheel motor velocity.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#init(com.qualcomm.robotcore.hardware.DcMotorEx)" class="member-name-link">init</a><wbr>(com.qualcomm.robotcore.hardware.DcMotorEx&nbsp;motor)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#init(com.qualcomm.robotcore.hardware.DcMotorEx)" class="member-name-link">init</a><wbr>(com.qualcomm.robotcore.hardware.DcMotorEx&nbsp;motor)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Initializes the flywheel motor.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isAtSpeed()" class="member-name-link">isAtSpeed</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Determines whether the flywheel has reached approximately the requested shooting velocity.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#periodic()" class="member-name-link">periodic</a>()</code></div>
@@ -159,8 +172,13 @@ operating velocity has been characterized.</p></div>
 <div class="block">Sets flywheel motor power.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#stop()" class="member-name-link">stop</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setVelocity(double)" class="member-name-link">setVelocity</a><wbr>(double&nbsp;velocityTicksPerSecond)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Commands that flywheel to run at a specified encoder velocity.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#stop()" class="member-name-link">stop</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Stops the flywheel motor.</div>
 </div>
 </div>
@@ -229,6 +247,49 @@ range.</p></div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>power</code> - requested motor power in the range <code>[-1.0, 1.0]</code></dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="setVelocity(double)">
+<h3>setVelocity</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setVelocity</span><wbr><span class="parameters">(double&nbsp;velocityTicksPerSecond)</span></div>
+<div class="block">Commands that flywheel to run at a specified encoder velocity.
+
+<p>This method uses the FTC motor controller's velocity control.
+The requested value is expressed in encoder ticks per second.</p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>velocityTicksPerSecond</code> - desired flywheel velocity in encoder ticks per second</dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="getTargetVelocity()">
+<h3>getTargetVelocity</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">getTargetVelocity</span>()</div>
+<div class="block">Returns the currently requested flywheel velocity.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>target flywheel velocity in encoder ticks per second</dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="isAtSpeed()">
+<h3>isAtSpeed</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isAtSpeed</span>()</div>
+<div class="block">Determines whether the flywheel has reached approximately the requested shooting velocity.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd><code>true</code> if measured velocity is within the configured
+tolerance of the target velocity</dd>
 </dl>
 </div>
 </section>

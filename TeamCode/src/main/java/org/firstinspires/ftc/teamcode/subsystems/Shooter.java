@@ -37,6 +37,16 @@ public class Shooter implements Subsystem {
      */
     private double targetPower = 0.0;
 
+    /**
+     * Desired flywheel encoder velocity in ticks per second
+     */
+    private double targetVelocity = 0.0;
+
+    /**
+     * Allowed velocity error for considering the flywheel ready to shoot,
+     * in encoder ticks per second
+     */
+    private double velocityTolerance=100.0;
 
     /**
      * Creates the singleton shooter subsystem.
@@ -99,7 +109,40 @@ public class Shooter implements Subsystem {
         flywheelMotor.setPower(targetPower);
     }
 
+    /**
+     * Commands that flywheel to run at a specified encoder velocity.
+     *
+     * <p>This method uses the FTC motor controller's velocity control.
+     * The requested value is expressed in encoder ticks per second.</p>
+     *
+     * @param velocityTicksPerSecond desired flywheel velocity in encoder ticks per second
+     */
+     public void setVelocity(double velocityTicksPerSecond){
+         targetVelocity = velocityTicksPerSecond;
+         flywheelMotor.setVelocity(targetVelocity);
+     }
 
+    /**
+     * Returns the currently requested flywheel velocity.
+     *
+     * @return target flywheel velocity in encoder ticks per second
+     */
+    public double getTargetVelocity(){
+        return targetVelocity;
+    }
+
+    /**
+     * Determines whether the flywheel has reached approximately the requested shooting velocity.
+     *
+     * @return {@code true} if measured velocity is within the configured
+     * tolerance of the target velocity
+     */
+    public boolean isAtSpeed(){
+        if(flywheelMotor == null || targetVelocity <=0.0){
+            return false;
+        }
+        return Math.abs(getVelocity()-targetVelocity)<=velocityTolerance;
+    }
     /**
      * Stops the flywheel motor.
      *
@@ -109,6 +152,7 @@ public class Shooter implements Subsystem {
     public void stop() {
 
         targetPower = 0.0;
+        targetVelocity = 0.0;
 
         if (flywheelMotor != null) {
             flywheelMotor.setPower(0.0);

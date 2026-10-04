@@ -2,335 +2,258 @@ package org.firstinspires.ftc.teamcode.opmodes.tele;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.teamcode.subsystems.Turret;
 
 
 /**
- * Manual TeleOp test for the turret rotation mechanism.
+ * Manual calibration and movement test for the Axon MINI Servo MK2
+ * shooter turret.
  *
- * <p>This OpMode is intended for the first mechanical test of the turret.
- * It directly controls the turret motor so that the direction of rotation,
- * encoder direction, mechanical range, and approximate encoder counts per
- * degree can be measured before automatic position control is enabled.</p>
+ * <p>This OpMode is intended to characterize the turret mechanism before
+ * AprilTag automatic aiming is enabled. It allows the operator to adjust
+ * the commanded turret angle and observe the resulting servo position.</p>
  *
- * <p><b>Gamepad controls:</b></p>
- *
+ * <p><b>Controls:</b></p>
  * <ul>
- *     <li><b>D-pad Left:</b> Rotate the turret in one direction.</li>
- *     <li><b>D-pad Right:</b> Rotate the turret in the opposite direction.</li>
- *     <li><b>Release D-pad:</b> Stop the turret.</li>
- *     <li><b>D-pad Up:</b> Increase manual turret power.</li>
- *     <li><b>D-pad Down:</b> Decrease manual turret power.</li>
- *     <li><b>A:</b> Reset the turret encoder to zero at the current position.</li>
- *     <li><b>B:</b> Emergency/manual stop of turret movement.</li>
+ *     <li>D-pad Left: decrease commanded turret angle.</li>
+ *     <li>D-pad Right: increase commanded turret angle.</li>
+ *     <li>D-pad Up: increase angle step size.</li>
+ *     <li>D-pad Down: decrease angle step size.</li>
+ *     <li>A: command turret to 0 degrees / center.</li>
  * </ul>
  *
- * <p>The Driver Station telemetry displays the selected motor power,
- * encoder position, encoder velocity, and the current zero reference.</p>
+ * <p>The physical turret angle should be measured independently during
+ * calibration. The reported angle is the commanded angle, not measured
+ * physical feedback from the servo.</p>
  *
- * <p><b>Important:</b> This test does not enforce software rotation limits.
- * The operator must stop the turret before it reaches a mechanical stop
- * or begins twisting wires. Use low power during the first tests.</p>
+ * <p>Start with small movements and verify the physical direction before
+ * approaching either mechanical limit.</p>
  */
 @TeleOp(name = "Turret Manual Test", group = "Test")
 public class TurretManualTest extends OpMode {
 
     /**
-     * FTC hardware-map name of the turret motor.
-     *
-     * <p>Change this constant if a different name is used in the
-     * Control Hub configuration.</p>
+     * FTC Robot Configuration name for the Axon turret servo.
      */
-    private static final String TURRET_MOTOR_NAME = "turret";
+    private static final String TURRET_SERVO_NAME = "turret";
 
     /**
-     * Amount by which manual turret power changes for each D-pad
-     * Up or Down button press.
+     * Initial commanded turret angle in degrees.
      */
-    private static final double POWER_STEP = 0.05;
+    private double targetAngleDegrees = 0.0;
 
     /**
-     * Initial turret motor power used for manual rotation.
-     *
-     * <p>The initial value is intentionally low so that the first
-     * mechanical test can be performed slowly.</p>
+     * Number of degrees added or removed for each D-pad Left/Right press.
      */
-    private double selectedPower = 0.15;
+    private double angleStepDegrees = 5.0;
 
     /**
-     * Turret rotation motor.
+     * Previous D-pad states used for button edge detection.
      */
-    private DcMotorEx turretMotor;
-
-    /**
-     * Previous D-pad Up state used for button edge detection.
-     */
-    private boolean previousDpadUp = false;
-
-    /**
-     * Previous D-pad Down state used for button edge detection.
-     */
-    private boolean previousDpadDown = false;
-
-    /**
-     * Previous A-button state used to prevent repeated encoder resets
-     * while the button is held.
-     */
+    private boolean previousLeft = false;
+    private boolean previousRight = false;
+    private boolean previousUp = false;
+    private boolean previousDown = false;
     private boolean previousA = false;
 
-    /**
-     * Indicates whether the B button has requested a manual stop.
-     *
-     * <p>Moving the D-pad Left or Right clears this flag and allows
-     * turret movement again.</p>
-     */
-    private boolean stoppedByB = false;
-
 
     /**
-     * Initializes the turret motor for manual testing.
+     * Initializes the Axon MINI Servo MK2 turret.
      *
-     * <p>The turret should preferably be placed in a known forward
-     * position before INIT is pressed. The encoder is reset so that
-     * this physical position becomes encoder position zero.</p>
+     * <p>The turret is commanded to its configured center position,
+     * corresponding to a target angle of 0 degrees.</p>
      */
     @Override
     public void init() {
 
-        turretMotor = hardwareMap.get(
-                DcMotorEx.class,
-                TURRET_MOTOR_NAME
-        );
+        Servo turretServo =
+                hardwareMap.get(
+                        Servo.class,
+                        TURRET_SERVO_NAME
+                );
+
+        Turret.INSTANCE.init(turretServo);
 
         /*
-         * This direction is only an initial setting.
+         * Initial calibration values.
          *
-         * During the first test, verify which physical direction
-         * corresponds to positive encoder counts.
+         * Change these after measuring the physical turret.
          */
-        turretMotor.setDirection(
-                DcMotorSimple.Direction.FORWARD
-        );
+        Turret.INSTANCE.setCenterPosition(0.50);
+        Turret.INSTANCE.setDegreesPerServoRange(180.0);
+        Turret.INSTANCE.setAngleLimits(-90.0, 90.0);
 
-        /*
-         * Reset the encoder so the starting turret position is zero.
-         */
-        turretMotor.setMode(
-                DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        );
+        targetAngleDegrees = 0.0;
 
-        /*
-         * RUN_USING_ENCODER permits direct motor-power control while
-         * allowing encoder position and velocity to be measured.
-         */
-        turretMotor.setMode(
-                DcMotor.RunMode.RUN_USING_ENCODER
-        );
+        Turret.INSTANCE.center();
 
-        /*
-         * BRAKE helps the turret remain near its position when power
-         * is removed.
-         */
-        turretMotor.setZeroPowerBehavior(
-                DcMotor.ZeroPowerBehavior.BRAKE
-        );
-
-        turretMotor.setPower(0.0);
-
-        telemetry.addLine("=== TURRET MANUAL TEST ===");
+        telemetry.addLine("=== AXON TURRET MANUAL TEST ===");
         telemetry.addLine("");
-        telemetry.addLine("D-pad LEFT  = Rotate Left");
-        telemetry.addLine("D-pad RIGHT = Rotate Right");
-        telemetry.addLine("D-pad UP    = Increase Power");
-        telemetry.addLine("D-pad DOWN  = Decrease Power");
-        telemetry.addLine("A = Reset Encoder to Zero");
-        telemetry.addLine("B = STOP");
+        telemetry.addLine("LEFT / RIGHT = Change turret angle");
+        telemetry.addLine("UP / DOWN = Change angle step");
+        telemetry.addLine("A = Center turret at 0 degrees");
         telemetry.addLine("");
-        telemetry.addLine("Start with LOW POWER.");
+        telemetry.addLine("Start with SMALL movements.");
+        telemetry.addLine("Measure actual physical angle.");
         telemetry.update();
     }
 
 
     /**
-     * Runs the manual turret control and telemetry.
-     *
-     * <p>The turret is moved directly using motor power rather than
-     * target angles. This allows the mechanical direction, encoder
-     * direction, usable rotation range, and gearing to be characterized
-     * before the {@code Turret} subsystem's position controller is used.</p>
+     * Handles manual turret commands and displays calibration telemetry.
      */
     @Override
     public void loop() {
 
         /*
          * =============================================================
-         * POWER ADJUSTMENT
+         * CHANGE ANGLE STEP
          * =============================================================
          */
 
-        if (gamepad1.dpad_up && !previousDpadUp) {
+        if (gamepad1.dpad_up && !previousUp) {
 
-            selectedPower += POWER_STEP;
+            angleStepDegrees += 1.0;
 
-            if (selectedPower > 0.50) {
-                selectedPower = 0.50;
+            if (angleStepDegrees > 15.0) {
+                angleStepDegrees = 15.0;
             }
         }
 
-        if (gamepad1.dpad_down && !previousDpadDown) {
+        if (gamepad1.dpad_down && !previousDown) {
 
-            selectedPower -= POWER_STEP;
+            angleStepDegrees -= 1.0;
 
-            if (selectedPower < 0.05) {
-                selectedPower = 0.05;
+            if (angleStepDegrees < 1.0) {
+                angleStepDegrees = 1.0;
             }
         }
 
 
         /*
          * =============================================================
-         * A = RESET ENCODER ZERO
+         * ROTATE LEFT
          * =============================================================
-         *
-         * Place the turret at the desired forward/reference position
-         * and press A.
-         *
-         * That physical position becomes encoder position 0.
+         */
+
+        if (gamepad1.dpad_left && !previousLeft) {
+
+            targetAngleDegrees -= angleStepDegrees;
+
+            Turret.INSTANCE.setTargetAngle(
+                    targetAngleDegrees
+            );
+
+            /*
+             * Read the actual clamped target back from the subsystem.
+             */
+            targetAngleDegrees =
+                    Turret.INSTANCE.getTargetAngle();
+        }
+
+
+        /*
+         * =============================================================
+         * ROTATE RIGHT
+         * =============================================================
+         */
+
+        if (gamepad1.dpad_right && !previousRight) {
+
+            targetAngleDegrees += angleStepDegrees;
+
+            Turret.INSTANCE.setTargetAngle(
+                    targetAngleDegrees
+            );
+
+            targetAngleDegrees =
+                    Turret.INSTANCE.getTargetAngle();
+        }
+
+
+        /*
+         * =============================================================
+         * A = CENTER TURRET
+         * =============================================================
          */
 
         if (gamepad1.a && !previousA) {
 
-            turretMotor.setPower(0.0);
+            targetAngleDegrees = 0.0;
 
-            turretMotor.setMode(
-                    DcMotor.RunMode.STOP_AND_RESET_ENCODER
-            );
-
-            turretMotor.setMode(
-                    DcMotor.RunMode.RUN_USING_ENCODER
-            );
+            Turret.INSTANCE.center();
         }
 
 
         /*
-         * =============================================================
-         * B = STOP
-         * =============================================================
+         * Save button states for edge detection.
          */
-
-        if (gamepad1.b) {
-            stoppedByB = true;
-        }
-
-
-        /*
-         * =============================================================
-         * MANUAL TURRET ROTATION
-         * =============================================================
-         *
-         * D-pad LEFT  = rotate turret left.
-         * D-pad RIGHT = rotate turret right.
-         *
-         * Releasing both buttons stops the turret.
-         *
-         * If the physical directions are reversed, change the motor
-         * direction or reverse the power signs after testing.
-         */
-
-        if (gamepad1.dpad_left) {
-
-            stoppedByB = false;
-
-            turretMotor.setPower(-selectedPower);
-
-        } else if (gamepad1.dpad_right) {
-
-            stoppedByB = false;
-
-            turretMotor.setPower(selectedPower);
-
-        } else {
-
-            turretMotor.setPower(0.0);
-        }
-
-
-        /*
-         * B always overrides normal turret movement.
-         */
-        if (stoppedByB) {
-            turretMotor.setPower(0.0);
-        }
-
-
-        /*
-         * Save button states for edge detection during the next loop.
-         */
-        previousDpadUp = gamepad1.dpad_up;
-        previousDpadDown = gamepad1.dpad_down;
+        previousLeft = gamepad1.dpad_left;
+        previousRight = gamepad1.dpad_right;
+        previousUp = gamepad1.dpad_up;
+        previousDown = gamepad1.dpad_down;
         previousA = gamepad1.a;
 
 
         /*
+         * No periodic control is currently required by Turret because
+         * the servo performs its own internal position control.
+         */
+        Turret.INSTANCE.periodic();
+
+
+        /*
          * =============================================================
-         * DRIVER STATION TELEMETRY
+         * TELEMETRY
          * =============================================================
-         *
-         * Display the information needed to characterize the turret
-         * mechanism before automatic position control is implemented.
          */
 
-        telemetry.addLine("=== TURRET MANUAL TEST ===");
+        telemetry.addLine("=== AXON TURRET MANUAL TEST ===");
 
         telemetry.addData(
-                "Selected Power",
-                "%.2f",
-                selectedPower
+                "Commanded Angle",
+                "%.1f deg",
+                Turret.INSTANCE.getTargetAngle()
         );
 
         telemetry.addData(
-                "Motor Power",
-                "%.2f",
-                turretMotor.getPower()
+                "Servo Position",
+                "%.4f",
+                Turret.INSTANCE.getServoPosition()
         );
 
         telemetry.addData(
-                "Encoder Position",
-                "%d ticks",
-                turretMotor.getCurrentPosition()
-        );
-
-        telemetry.addData(
-                "Encoder Velocity",
-                "%.1f ticks/sec",
-                turretMotor.getVelocity()
-        );
-
-        telemetry.addData(
-                "Stopped by B",
-                stoppedByB ? "YES" : "NO"
+                "Angle Step",
+                "%.1f deg",
+                angleStepDegrees
         );
 
         telemetry.addLine("");
-        telemetry.addLine("LEFT/RIGHT: Rotate Turret");
-        telemetry.addLine("UP/DOWN: Adjust Power");
-        telemetry.addLine("A: Reset Encoder Zero");
-        telemetry.addLine("B: STOP");
+        telemetry.addLine("LEFT  = decrease angle");
+        telemetry.addLine("RIGHT = increase angle");
+        telemetry.addLine("UP/DOWN = change angle step");
+        telemetry.addLine("A = center");
+
+        telemetry.addLine("");
+        telemetry.addLine(
+                "Servo position is commanded position;"
+        );
+        telemetry.addLine(
+                "measure physical turret angle separately."
+        );
 
         telemetry.update();
     }
 
 
     /**
-     * Stops the turret motor when the OpMode ends.
+     * Returns the turret to its center position when the test ends.
      */
     @Override
     public void stop() {
 
-        if (turretMotor != null) {
-            turretMotor.setPower(0.0);
-        }
+        Turret.INSTANCE.center();
     }
 }

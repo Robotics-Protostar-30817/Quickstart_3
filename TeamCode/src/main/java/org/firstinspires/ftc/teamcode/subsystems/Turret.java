@@ -1,71 +1,76 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import dev.nextftc.core.subsystems.Subsystem;
 
 
 /**
- * Controls the horizontal rotation of the shooter turret.
+ * Controls the horizontal rotation of the shooter turret using an
+ * Axon MINI Servo MK2.
  *
- * <p>The turret uses one encoder-equipped motor. Its purpose is to
- * rotate the shooter horizontally so that the shooter points toward
- * the selected CELL opening.</p>
+ * <p>The turret rotates the shooter horizontally so that the shooter
+ * can point toward the center of a detected CELL.</p>
  *
- * <p>The turret angle is measured relative to its initialized
- * forward position. Positive and negative angle directions must be
- * verified on the physical robot.</p>
+ * <p>The servo is controlled using FTC normalized servo positions in
+ * the range {@code [0.0, 1.0]}. A calibrated center servo position
+ * corresponds to a turret angle of 0 degrees. Positive and negative
+ * turret angles represent rotation to opposite sides of the robot.</p>
  *
- * <p>This initial implementation uses proportional position control.
- * More advanced control can be added after the turret mechanics,
- * gear ratio, encoder conversion, and allowable rotation range are
- * measured.</p>
+ * <p>The conversion between turret angle and servo position depends
+ * on the mechanical linkage and usable servo rotation range and must
+ * therefore be calibrated on the physical robot.</p>
  */
 public class Turret implements Subsystem {
 
     /**
-     * Singleton instance of the turret subsystem.
+     * Singleton turret subsystem instance.
      */
     public static final Turret INSTANCE = new Turret();
 
     /**
-     * Motor that rotates the turret.
+     * Servo that rotates the turret.
      */
-    private DcMotorEx turretMotor;
+    private Servo turretServo;
 
     /**
-     * Desired turret angle in degrees.
+     * Servo position corresponding to the turret pointing straight
+     * forward.
+     *
+     * <p>This is an initial value and should be calibrated on the
+     * physical turret.</p>
+     */
+    private double centerPosition = 0.50;
+
+    /**
+     * Turret angle represented by the full usable servo-position range.
+     *
+     * <p>This placeholder assumes that changing the servo position by
+     * 1.0 corresponds to 180 degrees of turret rotation. Replace this
+     * value after measuring the actual mechanism.</p>
+     */
+    private double degreesPerServoRange = 180.0;
+
+    /**
+     * Minimum allowed turret angle in degrees.
+     *
+     * <p>The value should be adjusted after determining the safe
+     * mechanical range of the turret.</p>
+     */
+    private double minAngleDegrees = -90.0;
+
+    /**
+     * Maximum allowed turret angle in degrees.
+     *
+     * <p>The value should be adjusted after determining the safe
+     * mechanical range of the turret.</p>
+     */
+    private double maxAngleDegrees = 90.0;
+
+    /**
+     * Last requested turret angle in degrees.
      */
     private double targetAngleDegrees = 0.0;
-
-    /**
-     * Encoder counts corresponding to one degree of turret rotation.
-     *
-     * <p>This value depends on the motor encoder and mechanical
-     * reduction between the motor and turret. It must be measured
-     * or calculated after the turret hardware is finalized.</p>
-     */
-    private double ticksPerDegree = 1.0;
-
-    /**
-     * Proportional gain used by the initial turret controller.
-     *
-     * <p>This is a starting value only and must be tuned on the
-     * physical robot.</p>
-     */
-    private double kP = 0.01;
-
-    /**
-     * Maximum absolute motor power permitted during turret movement.
-     */
-    private double maxPower = 0.40;
-
-    /**
-     * Allowed angular error for considering the turret aligned.
-     */
-    private double angleToleranceDegrees = 1.0;
 
 
     /**
@@ -76,60 +81,66 @@ public class Turret implements Subsystem {
 
 
     /**
-     * Initializes the turret motor.
+     * Initializes the Axon MINI Servo MK2 used to rotate the turret.
      *
-     * <p>The turret should be placed in its known forward position
-     * before this method is called because the encoder is reset to
-     * zero during initialization.</p>
+     * <p>After initialization, the turret is commanded to the calibrated
+     * center position, corresponding to a turret angle of 0 degrees.</p>
      *
-     * @param motor turret rotation motor from the FTC hardware map
-     * @param ticksPerDegree encoder counts per degree of actual turret rotation
+     * @param servo turret servo obtained from the FTC hardware map
      */
-    public void init(
-            DcMotorEx motor,
-            double ticksPerDegree) {
+    public void init(Servo servo) {
 
-        turretMotor = motor;
-        this.ticksPerDegree = ticksPerDegree;
-
-        /*
-         * Verify direction on the physical robot.
-         */
-        turretMotor.setDirection(
-                DcMotorSimple.Direction.FORWARD
-        );
-
-        turretMotor.setMode(
-                DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        );
-
-        turretMotor.setMode(
-                DcMotor.RunMode.RUN_USING_ENCODER
-        );
-
-        turretMotor.setZeroPowerBehavior(
-                DcMotor.ZeroPowerBehavior.BRAKE
-        );
+        turretServo = servo;
 
         targetAngleDegrees = 0.0;
+
+        turretServo.setPosition(centerPosition);
     }
 
 
     /**
-     * Sets the desired turret angle relative to the turret's
-     * initialized forward position.
+     * Sets the desired turret angle relative to the robot's forward
+     * direction.
      *
-     * @param angleDegrees desired turret angle in degrees
+     * <p>The requested angle is limited to the configured safe mechanical
+     * range and converted to an FTC servo position.</p>
+     *
+     * @param angleDegrees requested turret angle in degrees
      */
     public void setTargetAngle(double angleDegrees) {
-        targetAngleDegrees = angleDegrees;
+
+        if (turretServo == null) {
+            return;
+        }
+
+        targetAngleDegrees = clamp(
+                angleDegrees,
+                minAngleDegrees,
+                maxAngleDegrees
+        );
+
+        double servoPosition =
+                centerPosition
+                        + targetAngleDegrees
+                        / degreesPerServoRange;
+
+        servoPosition = clamp(
+                servoPosition,
+                0.0,
+                1.0
+        );
+
+        turretServo.setPosition(servoPosition);
     }
 
 
     /**
-     * Returns the desired turret angle.
+     * Returns the most recently requested turret angle.
      *
-     * @return target turret angle in degrees
+     * <p>This is the commanded angle rather than an independently
+     * measured physical turret angle.</p>
+     *
+     * @return requested turret angle in degrees
      */
     public double getTargetAngle() {
         return targetAngleDegrees;
@@ -137,83 +148,111 @@ public class Turret implements Subsystem {
 
 
     /**
-     * Returns the turret's current measured angle.
+     * Returns the currently commanded FTC servo position.
      *
-     * @return measured turret angle in degrees
+     * @return normalized servo position in the range {@code [0.0, 1.0]}
      */
-    public double getCurrentAngle() {
+    public double getServoPosition() {
 
-        if (turretMotor == null) {
-            return 0.0;
+        if (turretServo == null) {
+            return centerPosition;
         }
 
-        return turretMotor.getCurrentPosition()
-                / ticksPerDegree;
+        return turretServo.getPosition();
     }
 
 
     /**
-     * Returns the difference between target and measured turret angle.
+     * Commands the turret to point straight forward.
      *
-     * @return turret angular error in degrees
+     * <p>The forward direction corresponds to a turret angle of
+     * 0 degrees.</p>
      */
-    public double getAngleError() {
-        return targetAngleDegrees - getCurrentAngle();
+    public void center() {
+        setTargetAngle(0.0);
     }
 
 
     /**
-     * Determines whether the turret is sufficiently close to its
-     * requested angle.
+     * Sets the calibrated servo position corresponding to a turret
+     * angle of 0 degrees.
      *
-     * @return {@code true} when the absolute turret error is within
-     *         the configured angular tolerance
+     * @param position normalized FTC servo position in the range
+     *                 {@code [0.0, 1.0]}
      */
-    public boolean isAtTarget() {
-        return Math.abs(getAngleError())
-                <= angleToleranceDegrees;
+    public void setCenterPosition(double position) {
+
+        centerPosition = clamp(
+                position,
+                0.0,
+                1.0
+        );
     }
 
 
     /**
-     * Immediately stops turret motor output.
+     * Sets the measured turret angular range represented by a servo
+     * position change of 1.0.
+     *
+     * <p>For example, if the physical mechanism rotates 180 degrees
+     * while the servo command changes by 1.0, this value should be
+     * 180 degrees.</p>
+     *
+     * @param degrees angular range in degrees per full servo-position range
      */
-    public void stop() {
+    public void setDegreesPerServoRange(double degrees) {
 
-        if (turretMotor != null) {
-            turretMotor.setPower(0.0);
+        if (degrees > 0.0) {
+            degreesPerServoRange = degrees;
         }
     }
 
 
     /**
-     * Updates the turret position controller.
+     * Sets the safe mechanical angular limits of the turret.
      *
-     * <p>The controller calculates motor power from the angular
-     * difference between the requested and measured turret position.
-     * Output is limited to {@link #maxPower}.</p>
+     * @param minimumDegrees minimum permitted turret angle in degrees
+     * @param maximumDegrees maximum permitted turret angle in degrees
+     */
+    public void setAngleLimits(
+            double minimumDegrees,
+            double maximumDegrees) {
+
+        if (minimumDegrees < maximumDegrees) {
+            minAngleDegrees = minimumDegrees;
+            maxAngleDegrees = maximumDegrees;
+        }
+    }
+
+
+    /**
+     * Performs periodic turret processing.
+     *
+     * <p>No periodic controller is required because the servo's internal
+     * controller moves toward the commanded servo position.</p>
      */
     @Override
     public void periodic() {
+        // Position control is performed internally by the servo.
+    }
 
-        if (turretMotor == null) {
-            return;
-        }
 
-        double error = getAngleError();
+    /**
+     * Limits a value to the specified inclusive range.
+     *
+     * @param value value to limit
+     * @param minimum minimum permitted value
+     * @param maximum maximum permitted value
+     * @return limited value
+     */
+    private double clamp(
+            double value,
+            double minimum,
+            double maximum) {
 
-        if (Math.abs(error) <= angleToleranceDegrees) {
-            turretMotor.setPower(0.0);
-            return;
-        }
-
-        double power = kP * error;
-
-        power = Math.max(
-                -maxPower,
-                Math.min(maxPower, power)
+        return Math.max(
+                minimum,
+                Math.min(maximum, value)
         );
-
-        turretMotor.setPower(power);
     }
 }
