@@ -43,18 +43,32 @@ public class Vision implements Subsystem{
      */
     public static final double CAMERA_TO_CENTER_X_INCHES = -4.0;
     /**
-     * <p>Positive y is to the robot's right. The current camera is mounted
+     * <p>Positive y is to the robot's front forward. The current camera is mounted
      * approximately  the same forward/backward position to the robot center.
      * This assumes the turret rotation axis is located at the center.</p>
      */
     public static final double CAMERA_TO_CENTER_Y_INCHES = 0.0;
-    //final camera position on robot
-    //+x= robot right, +y = robot forward, +z = robot up, should be updated later
+
+    /**
+     * <p>Positive z is to the robot's up. The current camera is mounted
+     * approximately  the same leveled position to the robot center.
+     * This assumes the turret rotation axis is located at the center.</p>
+     */
+    public static final double CAMERA_TO_CENTER_Z_INCHES = 0.0;
+
+    /**
+     * final camera position on robot.
+     */
     private final Position cameraPosition  = new Position(DistanceUnit.INCH,CAMERA_TO_CENTER_X_INCHES,
             CAMERA_TO_CENTER_Y_INCHES,0,0);
     //camera is mounted to 4 inches left of the robot center, facing forward, no twist, no vertical offset.
+
+    /**
+     * Camera tilt angle
+     */
+    public static final double CAMERA_UPWARD_TILT_ANGLE = 49.0;
     private final YawPitchRollAngles cameraAngles = new YawPitchRollAngles(AngleUnit.DEGREES,
-            0,-41,0,0);//tilted upward 49 degree
+            0,-90+CAMERA_UPWARD_TILT_ANGLE,0,0);//tilted upward 49 degree
 
     /*static class Cell for the best cell identified by AprilTagClusterDetection
      * Represents a detected cell identified via an AprilTag cluster detection.
@@ -83,27 +97,26 @@ public class Vision implements Subsystem{
         private final Color color;
         private final Location location;
 
-        private double x;
-        private double y;
-        private double z;
+        private final double x;
+        private final double y;
+        private final double z;
 
         /**
          * Constructs a Cell with the specified properties and determines its color and location based on its name.
          * 
          * @param name the name identifier of the cell, used to derive color and location
-         * @param x
-         * @param y
-         * @param z
+         * @param cameraX raw ftcPose.x
+         * @param cameraY raw ftcPose.y
+         * @param cameraZ raw ftcPose.z
          * @param scorable true if the cell is in a scorable orientation, false otherwise
          * @param range the distance from the camera to the cell in inches
          * @param bearing the horizontal angle to the cell in degrees
          * @param elevation the vertical angle to the cell in degrees
          */
-        public Cell(String name, double x, double y, double z, boolean scorable, double range, double bearing, double elevation){
+        public Cell(String name,
+                    double cameraX, double cameraY, double cameraZ,
+                    boolean scorable, double range, double bearing, double elevation){
             this.name = name;
-            this.x = x;
-            this.y = y;
-            this.z = z;
             this.scorable = scorable;
             this.range = range;
             this.bearing = bearing;
@@ -125,6 +138,24 @@ public class Vision implements Subsystem{
             }else {
                 location = Location.UNKNOWN;
             }
+
+            /**
+             * Rotate the raw camera coordinates into robot-aligned coordinates.
+             */
+            double pitch = Math.toRadians(CAMERA_UPWARD_TILT_ANGLE);
+            double robotX = cameraX;
+            double robotY = cameraY * Math.cos(pitch) - cameraZ * Math.sin(pitch);
+            double robotZ = cameraY * Math.sin(pitch) + cameraZ * Math.cos(pitch);
+
+            /* <p>The camera is mounted Vision.CAMERA_TO_CENTER_X_INCHES to the X axis of the center of
+             * the robot, which is also the turret rotation center, and has Vision.CAMERA_TO_CENTER_Y_INCHES
+                    * of the Y axis of the center of the robot. Therefore, the cell position relative
+                    * to the turret (robot center) is calculated by translating the camera-relative
+                    * position by the camera-to-center offsets.</p>
+            */
+            this.x = robotX + CAMERA_TO_CENTER_X_INCHES;
+            this.y = robotY + CAMERA_TO_CENTER_Y_INCHES;
+            this.z = robotZ + CAMERA_TO_CENTER_Z_INCHES;
         }
 
         /**

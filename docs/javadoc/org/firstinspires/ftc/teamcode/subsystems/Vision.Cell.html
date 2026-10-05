@@ -134,9 +134,9 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.String,double,double,double,boolean,double,double,double)" class="member-name-link">Cell</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- double&nbsp;x,
- double&nbsp;y,
- double&nbsp;z,
+ double&nbsp;cameraX,
+ double&nbsp;cameraY,
+ double&nbsp;cameraZ,
  boolean&nbsp;scorable,
  double&nbsp;range,
  double&nbsp;bearing,
@@ -244,9 +244,9 @@ loadScripts(document, 'script');</script>
 <h3>Cell</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">Cell</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- double&nbsp;x,
- double&nbsp;y,
- double&nbsp;z,
+ double&nbsp;cameraX,
+ double&nbsp;cameraY,
+ double&nbsp;cameraZ,
  boolean&nbsp;scorable,
  double&nbsp;range,
  double&nbsp;bearing,
@@ -255,9 +255,9 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>name</code> - the name identifier of the cell, used to derive color and location</dd>
-<dd><code>x</code> - </dd>
-<dd><code>y</code> - </dd>
-<dd><code>z</code> - </dd>
+<dd><code>cameraX</code> - raw ftcPose.x</dd>
+<dd><code>cameraY</code> - raw ftcPose.y</dd>
+<dd><code>cameraZ</code> - raw ftcPose.z</dd>
 <dd><code>scorable</code> - true if the cell is in a scorable orientation, false otherwise</dd>
 <dd><code>range</code> - the distance from the camera to the cell in inches</dd>
 <dd><code>bearing</code> - the horizontal angle to the cell in degrees</dd>

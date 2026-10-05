@@ -242,18 +242,13 @@ public class Turret implements Subsystem {
      * of the cell.
      *
      * <p>The supplied cell X and Y coordinates describe the detected cell
-     * position relative to the camera. The coordinates use the convention: </p>
+     * position relative to the robot center. The coordinates use the convention: </p>
      *
      * <ul>
      *     <li>+X = right</li>
      *     <li>+Y = forward</li>
+     *     <li>+Z = up</li>
      * </ul>
-     *
-     * <p>The camera is mounted Vision.CAMERA_TO_CENTER_X_INCHES to the X axis of the center of
-     * the robot, which is also the turret rotation center, and has Vision.CAMERA_TO_CENTER_Y_INCHES
-     * of the Y axis of the center of the robot. Therefore, the cell position relative
-     * to the turret (robot center) is calculated by translating the camera-relative
-     * position by the camera-to-center offsets.</p>
      *
      * <p>The returned angle uses the turret convention:</p>
      *
@@ -273,11 +268,7 @@ public class Turret implements Subsystem {
             return 0.0;
         }
 
-        double targetXFromCenter = cell.getX()+Vision.CAMERA_TO_CENTER_X_INCHES;
-        double targetYFromCenter = cell.getY()+Vision.CAMERA_TO_CENTER_Y_INCHES;
-
-        return Math.toDegrees(Math.atan2(targetXFromCenter,targetYFromCenter));
-
+        return Math.toDegrees(Math.atan2(cell.getX(),cell.getY()));
     }
 
     /**

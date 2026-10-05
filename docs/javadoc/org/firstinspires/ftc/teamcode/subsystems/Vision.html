@@ -61,6 +61,8 @@ loadScripts(document, 'script');</script>
 <li><a href="#INSTANCE" tabindex="0">INSTANCE</a></li>
 <li><a href="#CAMERA_TO_CENTER_X_INCHES" tabindex="0">CAMERA_TO_CENTER_X_INCHES</a></li>
 <li><a href="#CAMERA_TO_CENTER_Y_INCHES" tabindex="0">CAMERA_TO_CENTER_Y_INCHES</a></li>
+<li><a href="#CAMERA_TO_CENTER_Z_INCHES" tabindex="0">CAMERA_TO_CENTER_Z_INCHES</a></li>
+<li><a href="#CAMERA_UPWARD_TILT_ANGLE" tabindex="0">CAMERA_UPWARD_TILT_ANGLE</a></li>
 </ol>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
@@ -133,7 +135,17 @@ Manages camera stream initialization, target tracking, telemetry output, and cel
 <div class="col-first odd-row-color"><code>static final double</code></div>
 <div class="col-second odd-row-color"><code><a href="#CAMERA_TO_CENTER_Y_INCHES" class="member-name-link">CAMERA_TO_CENTER_Y_INCHES</a></code></div>
 <div class="col-last odd-row-color">
-<div class="block">Positive y is to the robot's right.</div>
+<div class="block">Positive y is to the robot's front forward.</div>
+</div>
+<div class="col-first even-row-color"><code>static final double</code></div>
+<div class="col-second even-row-color"><code><a href="#CAMERA_TO_CENTER_Z_INCHES" class="member-name-link">CAMERA_TO_CENTER_Z_INCHES</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">Positive z is to the robot's up.</div>
+</div>
+<div class="col-first odd-row-color"><code>static final double</code></div>
+<div class="col-second odd-row-color"><code><a href="#CAMERA_UPWARD_TILT_ANGLE" class="member-name-link">CAMERA_UPWARD_TILT_ANGLE</a></code></div>
+<div class="col-last odd-row-color">
+<div class="block">Camera tilt angle</div>
 </div>
 <div class="col-first even-row-color"><code>static final <a href="Vision.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Vision</a></code></div>
 <div class="col-second even-row-color"><code><a href="#INSTANCE" class="member-name-link">INSTANCE</a></code></div>
@@ -249,7 +261,7 @@ This assumes the turret rotation axis is located at the center.</p>
 <h3>CAMERA_TO_CENTER_Y_INCHES</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">CAMERA_TO_CENTER_Y_INCHES</span></div>
-<div class="block"><p>Positive y is to the robot's right. The current camera is mounted
+<div class="block"><p>Positive y is to the robot's front forward. The current camera is mounted
 approximately  the same forward/backward position to the robot center.
 This assumes the turret rotation axis is located at the center.</p></div>
 <dl class="notes">
@@ -257,6 +269,42 @@ This assumes the turret rotation axis is located at the center.</p></div>
 <dd>
 <ul class="tag-list">
 <li><a href="../../../../../constant-values.html#org.firstinspires.ftc.teamcode.subsystems.Vision.CAMERA_TO_CENTER_Y_INCHES">Constant Field Values</a></li>
+</ul>
+</dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="CAMERA_TO_CENTER_Z_INCHES">
+<h3>CAMERA_TO_CENTER_Z_INCHES</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">CAMERA_TO_CENTER_Z_INCHES</span></div>
+<div class="block"><p>Positive z is to the robot's up. The current camera is mounted
+approximately  the same leveled position to the robot center.
+This assumes the turret rotation axis is located at the center.</p></div>
+<dl class="notes">
+<dt>See Also:</dt>
+<dd>
+<ul class="tag-list">
+<li><a href="../../../../../constant-values.html#org.firstinspires.ftc.teamcode.subsystems.Vision.CAMERA_TO_CENTER_Z_INCHES">Constant Field Values</a></li>
+</ul>
+</dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="CAMERA_UPWARD_TILT_ANGLE">
+<h3>CAMERA_UPWARD_TILT_ANGLE</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">CAMERA_UPWARD_TILT_ANGLE</span></div>
+<div class="block">Camera tilt angle</div>
+<dl class="notes">
+<dt>See Also:</dt>
+<dd>
+<ul class="tag-list">
+<li><a href="../../../../../constant-values.html#org.firstinspires.ftc.teamcode.subsystems.Vision.CAMERA_UPWARD_TILT_ANGLE">Constant Field Values</a></li>
 </ul>
 </dd>
 </dl>
