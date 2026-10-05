@@ -41,20 +41,20 @@ public class Vision implements Subsystem{
      *
      * <p>This value should be replaced with the measured camera-lens to center_axis horizontal offset.</p>
      */
-    public static final double CAMERA_TO_CENTER_X_INCHES = -4.0;
+    public static final double CAMERA_TO_CENTER_X_INCHES = -3.5;
     /**
      * <p>Positive y is to the robot's front forward. The current camera is mounted
      * approximately  the same forward/backward position to the robot center.
      * This assumes the turret rotation axis is located at the center.</p>
      */
-    public static final double CAMERA_TO_CENTER_Y_INCHES = 0.0;
+    public static final double CAMERA_TO_CENTER_Y_INCHES = -4.0;
 
     /**
      * <p>Positive z is to the robot's up. The current camera is mounted
      * approximately  the same leveled position to the robot center.
      * This assumes the turret rotation axis is located at the center.</p>
      */
-    public static final double CAMERA_TO_CENTER_Z_INCHES = 0.0;
+    public static final double CAMERA_TO_CENTER_Z_INCHES = 12.0;
 
     /**
      * final camera position on robot.
@@ -66,9 +66,10 @@ public class Vision implements Subsystem{
     /**
      * Camera tilt angle
      */
-    public static final double CAMERA_UPWARD_TILT_ANGLE = 49.0;
+    private static final double CAMERA_UPWARD_TILT_ANGLE = 27.0;
+    private static final double CAMERA_YAW_DEGREES =4.6;
     private final YawPitchRollAngles cameraAngles = new YawPitchRollAngles(AngleUnit.DEGREES,
-            0,-90+CAMERA_UPWARD_TILT_ANGLE,0,0);//tilted upward 49 degree
+            CAMERA_YAW_DEGREES,-90+CAMERA_UPWARD_TILT_ANGLE,0,0);//tilted upward 49 degree
 
     /*static class Cell for the best cell identified by AprilTagClusterDetection
      * Represents a detected cell identified via an AprilTag cluster detection.
@@ -103,7 +104,7 @@ public class Vision implements Subsystem{
 
         /**
          * Constructs a Cell with the specified properties and determines its color and location based on its name.
-         * 
+         *
          * @param name the name identifier of the cell, used to derive color and location
          * @param cameraX raw ftcPose.x
          * @param cameraY raw ftcPose.y
@@ -143,9 +144,15 @@ public class Vision implements Subsystem{
              * Rotate the raw camera coordinates into robot-aligned coordinates.
              */
             double pitch = Math.toRadians(CAMERA_UPWARD_TILT_ANGLE);
-            double robotX = cameraX;
-            double robotY = cameraY * Math.cos(pitch) - cameraZ * Math.sin(pitch);
-            double robotZ = cameraY * Math.sin(pitch) + cameraZ * Math.cos(pitch);
+            double yaw = Math.toRadians(CAMERA_YAW_DEGREES);
+
+            double pitchX = cameraX;
+            double pitchY = cameraY * Math.cos(pitch) - cameraZ * Math.sin(pitch);
+            double pitchZ = cameraY * Math.sin(pitch) + cameraZ * Math.cos(pitch);
+
+            double robotX = pitchX * Math.cos(yaw) - pitchY * Math.sin(yaw);
+            double robotY = pitchX * Math.sin(yaw) + pitchY * Math.cos(yaw);
+            double robotZ = pitchZ;
 
             /* <p>The camera is mounted Vision.CAMERA_TO_CENTER_X_INCHES to the X axis of the center of
              * the robot, which is also the turret rotation center, and has Vision.CAMERA_TO_CENTER_Y_INCHES
@@ -160,7 +167,7 @@ public class Vision implements Subsystem{
 
         /**
          * Gets the name identifier of the cell.
-         * 
+         *
          * @return the cell name string
         */
         public String getName() {
@@ -178,7 +185,7 @@ public class Vision implements Subsystem{
         }
         /**
          * Indicates whether the cell is in a scorable orientation.
-         * 
+         *
          * @return true if scorable, false otherwise
          */
         public boolean isScorable() {
@@ -187,7 +194,7 @@ public class Vision implements Subsystem{
 
         /**
          * Gets the range (distance) to the cell.
-         * 
+         *
          * @return the distance to the cell in inches
          */
         public double getRange() {
@@ -196,7 +203,7 @@ public class Vision implements Subsystem{
 
         /**
          * Gets the color classification of the cell.
-         * 
+         *
          * @return the {@link Color} of the cell
          */
         public Color getColor() {
@@ -205,7 +212,7 @@ public class Vision implements Subsystem{
 
         /**
          * Gets the horizontal bearing angle to the cell.
-         * 
+         *
          * @return the bearing angle in degrees
          */
         public double getBearing() {
@@ -214,7 +221,7 @@ public class Vision implements Subsystem{
 
         /**
          * Gets the vertical elevation angle to the cell.
-         * 
+         *
          * @return the elevation angle in degrees
          */
         public double getElevation() {
@@ -223,7 +230,7 @@ public class Vision implements Subsystem{
 
         /**
          * Gets the field location classification of the cell.
-         * 
+         *
          * @return the {@link Location} of the cell
          */
         public Location getLocation() {
@@ -232,7 +239,7 @@ public class Vision implements Subsystem{
 
          /**
           * Checks if the cell is in the audience location.
-          * 
+          *
           * @return true if the location is {@link Location#AUDIENCE}, false otherwise
           */
          public boolean isAudience(){
@@ -241,7 +248,7 @@ public class Vision implements Subsystem{
 
          /**
           * Checks if the cell is in the scoring location.
-          * 
+          *
           * @return true if the location is {@link Location#SCORING}, false otherwise
           */
          public boolean isScoring(){
@@ -250,7 +257,7 @@ public class Vision implements Subsystem{
 
          /**
           * Checks if the cell color is red.
-          * 
+          *
           * @return true if the color is {@link Color#RED}, false otherwise
           */
          public boolean isRed(){
@@ -259,7 +266,7 @@ public class Vision implements Subsystem{
 
          /**
           * Checks if the cell color is blue.
-          * 
+          *
           * @return true if the color is {@link Color#BLUE}, false otherwise
           */
          public boolean isBlue(){
@@ -272,7 +279,7 @@ public class Vision implements Subsystem{
     /**
      * Initializes the AprilTag processor and VisionPortal camera stream.
      * Configures output units in inches and degrees with preset camera offset poses.
-     * 
+     *
      * @param hardwareMap the robot hardware map used to access "Webcam1"
      * @param telemetry the telemetry instance for logging vision data
      */

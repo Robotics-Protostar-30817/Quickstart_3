@@ -502,7 +502,7 @@ public class ShooterAimTest extends OpMode {
     /**
      * Calculate horizontal distance from the turret rotation axis to the detected CELL center.
      *
-     * @param cell detected CELL with camera-relative position in inches.
+     * @param targetCell detected CELL with camera-relative position in inches.
      * @return horizontal distance from the turret-to-CELL in inches.
      */
     private double calculateHorizontalDistance(Vision.Cell targetCell){

@@ -29,7 +29,7 @@ public class VisionTest extends OpMode {
      */
     public void loop(){
         //vision.periodic() displays the actual cluster pose returned by the SDK.
-        //Robot.INSTANCE.vision.periodic();
+        Robot.INSTANCE.vision.periodic();
         Vision.Cell cell = Robot.INSTANCE.vision.getBestCell();
         if (cell!=null){
             telemetry.addLine("== CELL ==");
