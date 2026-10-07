@@ -60,20 +60,21 @@ public class Vision implements Subsystem{
      * final camera position on robot.
      */
     private final Position cameraPosition  = new Position(DistanceUnit.INCH,CAMERA_TO_CENTER_X_INCHES,
-            CAMERA_TO_CENTER_Y_INCHES,0,0);
+            CAMERA_TO_CENTER_Y_INCHES,CAMERA_TO_CENTER_Z_INCHES,0);
     //camera is mounted to 4 inches left of the robot center, facing forward, no twist, no vertical offset.
 
     /**
      * Camera tilt angle
      */
     private static final double CAMERA_UPWARD_TILT_ANGLE = 27.0;
-    private static final double CAMERA_YAW_DEGREES =4.6;
+    private static final double CAMERA_YAW_DEGREES =-4.6;
     private final YawPitchRollAngles cameraAngles = new YawPitchRollAngles(AngleUnit.DEGREES,
             CAMERA_YAW_DEGREES,-90+CAMERA_UPWARD_TILT_ANGLE,0,0);//tilted upward 49 degree
 
-    /*static class Cell for the best cell identified by AprilTagClusterDetection
+    /*static class Cell for the best scorable cell identified by AprilTagClusterDetection
      * Represents a detected cell identified via an AprilTag cluster detection.
-     * Stores the cell's name, scorable status, relative position metrics, color, and location.
+     * Stores the cell's name, scorable status, relative position metrics to the robot's center,
+     * color, and location.
      */
     public static class Cell{
         /**
@@ -98,8 +99,17 @@ public class Vision implements Subsystem{
         private final Color color;
         private final Location location;
 
+        /**
+         * X-axis to the center of robot
+         */
         private final double x;
+        /*
+        Y-axis to the center of robot
+         */
         private final double y;
+        /*
+        Z-axis to the center of robot
+         */
         private final double z;
 
         /**
@@ -364,22 +374,37 @@ public class Vision implements Subsystem{
     }
 
     /*
-    Returns the most completely detected AprilTagCluster,
+    Returns the most completely detected scorable AprilTagCluster of the requested color
     Returns null if no cluster is currently detected.
+    @param color desired CELL color
+    @return the most complete visible scorable CELL of the requested color,
+     *or {@code null} if none is available
      */
-    private AprilTagClusterDetection getBestCellCluster(){
-        if (aprilTag == null)
+    private AprilTagClusterDetection getBestCellCluster(Cell.Color color){
+        if (aprilTag == null || color==null)
             return null;
         List<AprilTagDetection> detections = aprilTag.getDetections();
         if (detections.isEmpty())
             return null;
         AprilTagClusterDetection best = null;
+        double bestPercent = -1.0;
+
         for (AprilTagDetection detection: detections) {
             if (!(detection instanceof AprilTagClusterDetection)) {
                 continue;
             }
             AprilTagClusterDetection cluster = (AprilTagClusterDetection) detection;
-            if (best == null || cluster.percentClusterFound > best.percentClusterFound) {
+            String name = cluster.metadata.name.toUpperCase();
+            boolean correctColor =
+                    (color == Cell.Color.RED && name.contains("RED")) ||
+                            (color == Cell.Color.BLUE && name.contains("BLUE"));
+            if (!correctColor)
+                continue;
+            if (!isCellScorable(cluster))
+                continue;
+
+            if (cluster.percentClusterFound > bestPercent) {
+                bestPercent = cluster.percentClusterFound;
                 best = cluster;
             }
         }
@@ -391,16 +416,16 @@ public class Vision implements Subsystem{
      * 
      * @return the best detected {@link Cell} containing range (inches), bearing (degrees), elevation (degrees), or null if none detected
      */
-    public Cell getBestCell(){
-        AprilTagClusterDetection cluster = getBestCellCluster();
+    public Cell getBestCell(Cell.Color color){
+        AprilTagClusterDetection cluster = getBestCellCluster(color);
         if (cluster == null || cluster.ftcPose == null || cluster.metadata == null){
             return null;
         }
 
-        boolean scorable = Math.abs(cluster.ftcPose.roll)<90.0;
+        //boolean scorable = Math.abs(cluster.ftcPose.roll)<90.0;
         return new Cell(cluster.metadata.name, cluster.ftcPose.x,
                 cluster.ftcPose.y,cluster.ftcPose.z,
-                scorable, cluster.ftcPose.range,
+                true, cluster.ftcPose.range,
                 cluster.ftcPose.bearing, cluster.ftcPose.elevation);
     }
 

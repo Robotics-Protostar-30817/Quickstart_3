@@ -12,6 +12,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagClusterDetection;
  * 
  */
 public class VisionTest extends OpMode {
+    private final static Vision.Cell.Color focus= Vision.Cell.Color.RED;
     @Override
     /**
      * 
@@ -30,19 +31,14 @@ public class VisionTest extends OpMode {
     public void loop(){
         //vision.periodic() displays the actual cluster pose returned by the SDK.
         Robot.INSTANCE.vision.periodic();
-        Vision.Cell cell = Robot.INSTANCE.vision.getBestCell();
+        Vision.Cell cell = Robot.INSTANCE.vision.getBestCell(focus);
         if (cell!=null){
             telemetry.addLine("== CELL ==");
-            telemetry.addData("Name", cell.getName());
             telemetry.addData("Color",cell.getColor());
             telemetry.addData("Location", cell.getLocation());
             telemetry.addData("Scorable",cell.isScorable()?"YES":"NO");
-            telemetry.addData("Range","%.1f in",cell.getRange());
-            telemetry.addData("Bearing","%.1f deg",cell.getBearing());
-            telemetry.addData("Elevation","%.1f deg",cell.getElevation());
-            telemetry.addData("Is Red", cell.isRed());
-            telemetry.addData("Is Scoring", cell.isScoring());
-
+            telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)",
+                    cell.getX(), cell.getY(), cell.getZ()));
         }else{
             telemetry.addLine("No Cell detected");
         }

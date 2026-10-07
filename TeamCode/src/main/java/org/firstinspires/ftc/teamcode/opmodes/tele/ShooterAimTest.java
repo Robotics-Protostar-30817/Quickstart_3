@@ -34,6 +34,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Vision;
 @TeleOp(name = "Shooter Aim Test", group = "Test")
 public class ShooterAimTest extends OpMode {
 
+    private static final Vision.Cell.Color focus = Vision.Cell.Color.RED;
     /**
      * FTC Robot Configuration name of the flywheel motor.
      */
@@ -204,7 +205,7 @@ public class ShooterAimTest extends OpMode {
     public void loop() {
 
         Vision.Cell visibleCell =
-                Vision.INSTANCE.getBestCell();
+                Vision.INSTANCE.getBestCell(focus);
 
 
         /*
