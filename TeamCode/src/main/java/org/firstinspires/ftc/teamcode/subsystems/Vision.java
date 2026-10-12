@@ -47,7 +47,7 @@ public class Vision implements Subsystem{
      * approximately  the same forward/backward position to the robot center.
      * This assumes the turret rotation axis is located at the center.</p>
      */
-    public static final double CAMERA_TO_CENTER_Y_INCHES = -4.0;
+    public static final double CAMERA_TO_CENTER_Y_INCHES = -4.25;
 
     /**
      * <p>Positive z is to the robot's up. The current camera is mounted
