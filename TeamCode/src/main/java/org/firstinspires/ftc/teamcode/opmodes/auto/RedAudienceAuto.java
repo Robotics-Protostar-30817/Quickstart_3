@@ -71,8 +71,11 @@ public class RedAudienceAuto extends OpMode {
      * intake or shooting mechanism.
      */
     private static final boolean NAVIGATION_ONLY = true;
+
+    //only when audience cell is ready again and all pollens are shot
     private static final boolean ENABLE_FLOWER_CYCLE= false;
 
+    //total duration period
     private static final double AUTO_DURATION_SECONDS = 30.0;
 
     /**
@@ -86,17 +89,18 @@ public class RedAudienceAuto extends OpMode {
      * This is not a substitute for a full-capacity sensor.
      */
     private static final double TEST_COLLECTION = 2.0;
-
+    private static final double MAX_COLLECTION_TIME = 3.0;
+    private static final double FLOWER_CYCLE=13.0; //FLOWER+PARKING
     /**
      * Temporary shooting duration for navigation-only testing.
      */
     private static final double TEST_SHOOT = 2.0;
 
+    //for testing, wait for audience cell to be ready 2-3 seconds
     private static final double AUDIENCE_WAIT = 2.0;
+    private static final double MAX_AUDIENCE_WAIT = 3.0;
 
-    private static final double FLOWER_CYCLE=13.0; //FLOWER+PARKING
-    private static final double MAX_CELL_WAIT = 3.0;
-    private static final double MAX_COLLECTION_TIME = 3.0;
+
     private Follower follower;
 
     private AutoState currentState;
