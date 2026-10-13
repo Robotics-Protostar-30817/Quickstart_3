@@ -46,6 +46,7 @@ public class RedAudienceAuto extends OpMode {
      * States used exclusively by this autonomous routine.
      */
     private enum AutoState {
+        READY,//the robot is ready
         INITIAL_APPROACH_Path,//from start pose to shoot pose
         INITIAL_SHOOT, //shooting
         DRIVE_TO_GARDEN_Path, //from shoot pose to garden pose
@@ -63,6 +64,7 @@ public class RedAudienceAuto extends OpMode {
         SHOOT_FLOWER_POLLEN,//shooting four pollens
 
         DRIVE_TO_PARK_Path,//from shoot pose to park pose
+        EMERGENCY_PARK_Path,//from current pose to park pose
         FINISHED  //finish the whole process
     }
 
@@ -120,16 +122,7 @@ public class RedAudienceAuto extends OpMode {
         if(!NAVIGATION_ONLY){
             throw new IllegalStateException("Connect shooter, vision, and intake adapters before live auto");
         }
-        /*
-         * TODO: Initialize follower using your existing, tested
-         * Pedro Pathing initialization code.
-         *
-         * Example structure:
-         *
-         * follower = Constants.createFollower(hardwareMap);
-         *
-         * Use your project's actual Constants class and method.
-         */
+
         follower = Constants.create(hardwareMap);
         paths = new RedAudiencePaths();
 
@@ -137,7 +130,7 @@ public class RedAudienceAuto extends OpMode {
             follower.setPose(paths.startPose);
         }
 
-        currentState = AutoState.INITIAL_APPROACH;
+        currentState = AutoState.READY;
         started = false;
         stateJustEntered = true;
         parkingPathStarted = false;
@@ -146,8 +139,6 @@ public class RedAudienceAuto extends OpMode {
         telemetry.addData("Navigation only", NAVIGATION_ONLY);
         telemetry.addLine("Configure follower and field poses before running.");
         telemetry.update();
-        //autoTimer = new ElapsedTime();
-        //stateTimer = new ElapsedTime();
     }
 
     @Override
@@ -155,7 +146,7 @@ public class RedAudienceAuto extends OpMode {
         autoTimer.reset();
         stateTimer.reset();
         started = true;
-        changeState(AutoState.INITIAL_APPROACH);
+        changeState(AutoState.INITIAL_APPROACH_Path);
     }
 
     @Override
@@ -172,24 +163,24 @@ public class RedAudienceAuto extends OpMode {
          */
 
         if (mustParkNow()
-                && currentState != AutoState.DRIVE_TO_PARK
+                && currentState != AutoState.DRIVE_TO_PARK_Path
                 && currentState != AutoState.FINISHED) {
 
-            changeState(AutoState.DRIVE_TO_PARK);
+            changeState(AutoState.EMERGENCY_PARK_Path);
         }
 
 
         switch (currentState) {
-            case INITIAL_APPROACH:
+            case INITIAL_APPROACH_Path:
                 if(pathFinished()) changeState(AutoState.INITIAL_SHOOT);
                 break;
             case INITIAL_SHOOT:
                 if (shootingFinished()) {
-                    changeState(AutoState.DRIVE_TO_GARDEN);
+                    changeState(AutoState.DRIVE_TO_GARDEN_Path);
                 }
                 break;
 
-            case DRIVE_TO_GARDEN:
+            case DRIVE_TO_GARDEN_Path:
                 if (pathFinished()) {
                     changeState(AutoState.COLLECT_GARDEN);
                 }
@@ -197,36 +188,35 @@ public class RedAudienceAuto extends OpMode {
             case COLLECT_GARDEN:
                 if (collectionFinished()) {
                     //stopCollectionGarden();
-                    changeState(AutoState.GARDEN_TO_AUDIENCE);
+                    changeState(AutoState.GARDEN_TO_AUDIENCE_Path);
                 }
                 break;
 
-            case GARDEN_TO_AUDIENCE:
+            case GARDEN_TO_AUDIENCE_Path:
                 if (pathFinished()) {
-                    changeState(AutoState.WAIT_FOR_AUDIENCE);
+                    changeState(AutoState.WAIT_FOR_AUDIENCE_SCORABLE);
                 }
                 break;
 
-            case WAIT_FOR_AUDIENCE:
-
+            case WAIT_FOR_AUDIENCE_SCORABLE:
                 if (isAudienceCellScorable()) {
                     changeState(AutoState.SHOOT_GARDEN_POLLEN);
                 }else if (stateTimer.seconds() >= AUDIENCE_WAIT) {
-                    changeState(AutoState.DRIVE_TO_PARK);
+                    changeState(AutoState.EMERGENCY_PARK_Path);
                 }
                 break;
 
             case SHOOT_GARDEN_POLLEN:
                 if (shootingFinished()) {
                     if (canAttemptFlowerCycle()) {
-                        changeState(AutoState.DRIVE_TO_FLOWER);
+                        changeState(AutoState.DRIVE_TO_FLOWER_Path);
                     }else{
-                        changeState(AutoState.DRIVE_TO_PARK);
+                        changeState(AutoState.EMERGENCY_PARK_Path);
                     }
                 }
                 break;
 
-            case DRIVE_TO_FLOWER:
+            case DRIVE_TO_FLOWER_Path:
                 if (pathFinished()) {
                     changeState(AutoState.COLLECT_FLOWER);
                 }
@@ -235,30 +225,34 @@ public class RedAudienceAuto extends OpMode {
             case COLLECT_FLOWER:
                 if (collectionFinished()) {
                     //stopFlowerCollection();
-                    changeState(AutoState.FLOWER_TO_AUDIENCE);
+                    changeState(AutoState.FLOWER_TO_AUDIENCE_Path);
                 }
                 break;
 
-            case FLOWER_TO_AUDIENCE:
+            case FLOWER_TO_AUDIENCE_Path:
                 if (pathFinished()&& isAudienceCellScorable()) {
                     changeState(AutoState.SHOOT_FLOWER_POLLEN);
-                }else if(stateTimer.seconds()>=MAX_CELL_WAIT){
-                    changeState(AutoState.DRIVE_TO_PARK);
+                } else if(mustParkNow()){
+                    changeState(AutoState.EMERGENCY_PARK_Path);
                 }
                 break;
 
             case SHOOT_FLOWER_POLLEN:
                 if (shootingFinished()) {
-                    changeState(AutoState.DRIVE_TO_PARK);
+                    changeState(AutoState.DRIVE_TO_PARK_Path);
                 }
                 break;
 
-            case DRIVE_TO_PARK:
+            case DRIVE_TO_PARK_Path:
                 if (parkingPathStarted && pathFinished()) {
                     changeState(AutoState.FINISHED);
                 }
                 break;
-
+            case EMERGENCY_PARK_Path:
+                if (parkingPathStarted && pathFinished()) {
+                    changeState(AutoState.FINISHED);
+                }
+                break;
             case FINISHED:
                 break;
         }
@@ -281,8 +275,11 @@ public class RedAudienceAuto extends OpMode {
      */
     private void changeState(AutoState nextState) {
 
-        if(currentState == AutoState.DRIVE_TO_PARK && nextState!=AutoState.FINISHED){
+        if(currentState == AutoState.DRIVE_TO_PARK_Path && nextState!=AutoState.FINISHED){
             return;//do not interrupt parking to earn points
+        }
+        if (currentState == AutoState.EMERGENCY_PARK_Path && nextState!=AutoState.FINISHED){
+            return;//do not interrupt emergency parking
         }
         stopCollection();
         stopShooting();
@@ -291,15 +288,15 @@ public class RedAudienceAuto extends OpMode {
         stateTimer.reset();
 
         switch(nextState){
-            case INITIAL_APPROACH:
-                follower.follow(paths.initialShoot);
+            case INITIAL_APPROACH_Path:
+                follower.follow(paths.initialApproach);
                 break;
             case INITIAL_SHOOT:
             case SHOOT_FLOWER_POLLEN:
             case SHOOT_GARDEN_POLLEN:
                 beginShooting();
                 break;
-            case DRIVE_TO_GARDEN:
+            case DRIVE_TO_GARDEN_Path:
                 follower.follow(paths.driveToGarden);
                 break;
             case COLLECT_FLOWER:
@@ -308,25 +305,30 @@ public class RedAudienceAuto extends OpMode {
             case COLLECT_GARDEN:
                 beginCollectionGarden();
                 break;
-            case GARDEN_TO_AUDIENCE:
+            case GARDEN_TO_AUDIENCE_Path:
                 follower.follow(paths.gardenToAudience);
                 break;
-            case DRIVE_TO_FLOWER:
+            case DRIVE_TO_FLOWER_Path:
                 follower.follow(paths.driveToFlower);
                 break;
-            case FLOWER_TO_AUDIENCE:
+            case FLOWER_TO_AUDIENCE_Path:
                 follower.follow(paths.flowerToAudience);
                 break;
-            case DRIVE_TO_PARK:
+            case EMERGENCY_PARK_Path:
                 follower.stop();
                 Path parkingPath = paths.emergencyPark(follower.pose());
                 parkingPathStarted = true;
                 follower.follow(parkingPath);
                 break;
-            case WAIT_FOR_AUDIENCE:
-            case WAIT_FOR_AUDIENCE_AGAIN:
+            case DRIVE_TO_PARK_Path:
+                parkingPathStarted = true;
+                follower.follow(paths.driveToPark);
+                break;
+            case WAIT_FOR_AUDIENCE_SCORABLE:
+            //case WAIT_FOR_AUDIENCE_AGAIN:
             case FINISHED:
-                 break;
+                finished = true;
+                break;
 
         }
     }
@@ -510,7 +512,7 @@ public class RedAudienceAuto extends OpMode {
     private boolean isAudienceCellScorable() {
 
         if (NAVIGATION_ONLY) {
-            return stateTimer.seconds()>= MAX_CELL_WAIT;
+            return stateTimer.seconds()>= AUDIENCE_WAIT;
         }
 
         /*
