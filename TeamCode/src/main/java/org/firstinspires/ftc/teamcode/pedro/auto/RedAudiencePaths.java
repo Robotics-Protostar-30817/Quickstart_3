@@ -37,7 +37,7 @@ public final class RedAudiencePaths {
     /** Strategy-sheet parking target. */
     public final Pose parkPose = p.of(12.0, 97.0, 135.0);
 
-    public final Path initialShoot;
+    public final Path initialApproach;
     public final Path driveToGarden;
     public final Path gardenToAudience;
     public final Path driveToFlower;
@@ -46,7 +46,7 @@ public final class RedAudiencePaths {
 
     /** Builds the six routes once, before autonomous begins. */
     public RedAudiencePaths() {
-        initialShoot = straight(startPose, shootPose);
+        initialApproach = straight(startPose, shootPose);
         driveToGarden = straight(shootPose, gardenPose);
         gardenToAudience = straight(gardenPose, shootPose);
         driveToFlower = straight(shootPose, flowerPose);

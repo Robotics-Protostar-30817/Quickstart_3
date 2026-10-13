@@ -46,24 +46,24 @@ public class RedAudienceAuto extends OpMode {
      * States used exclusively by this autonomous routine.
      */
     private enum AutoState {
-        INITIAL_APPROACH,
-        INITIAL_SHOOT,
-        DRIVE_TO_GARDEN,
-        COLLECT_GARDEN,
+        INITIAL_APPROACH_Path,//from start pose to shoot pose
+        INITIAL_SHOOT, //shooting
+        DRIVE_TO_GARDEN_Path, //from shoot pose to garden pose
+        COLLECT_GARDEN,  //collecting from garden
 
-        GARDEN_TO_AUDIENCE,
-        WAIT_FOR_AUDIENCE,
-        SHOOT_GARDEN_POLLEN,
+        GARDEN_TO_AUDIENCE_Path,//from garden pose to shoot pose
+        WAIT_FOR_AUDIENCE_SCORABLE,//waiting for audience to be ready
+        SHOOT_GARDEN_POLLEN,//shooting four pollens collected from garden
 
-        DRIVE_TO_FLOWER,
-        COLLECT_FLOWER,
+        DRIVE_TO_FLOWER_Path,//from shoot pose to flower pose
+        COLLECT_FLOWER, //collecting from flower
 
-        FLOWER_TO_AUDIENCE,
-        WAIT_FOR_AUDIENCE_AGAIN,
-        SHOOT_FLOWER_POLLEN,
+        FLOWER_TO_AUDIENCE_Path,//from flower pose to shoot pose
+        CONFIRM_AUDIENCE_SCORABLE,//should be a check
+        SHOOT_FLOWER_POLLEN,//shooting four pollens
 
-        DRIVE_TO_PARK,
-        FINISHED
+        DRIVE_TO_PARK_Path,//from shoot pose to park pose
+        FINISHED  //finish the whole process
     }
 
     /**
