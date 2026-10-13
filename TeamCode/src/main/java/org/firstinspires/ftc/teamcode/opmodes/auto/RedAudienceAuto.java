@@ -1,16 +1,10 @@
 
 package org.firstinspires.ftc.teamcode.opmodes.auto;
 
-import static com.pedropathing.ivy.commands.Commands.instant;
-import static com.pedropathing.ivy.groups.Groups.sequential;
-import static com.pedropathing.ivy.pedro.PedroCommands.*;
 
 import com.pedropathing.follower.Follower;
-import com.pedropathing.ivy.Scheduler;
-import com.pedropathing.ivy.Command;
 import com.pedropathing.math.Pose;
 
-import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -18,8 +12,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.pedro.auto.RedAudiencePaths;
-
-import kotlin.sequences.USequencesKt;
 
 /**
  * Autonomous routine for one Red alliance robot operating in the
@@ -75,11 +67,11 @@ public class RedAudienceAuto extends OpMode {
     private static final boolean NAVIGATION_ONLY = true;
 
     //only when audience cell is ready again and all pollens are shot
-    private static final boolean ENABLE_FLOWER_CYCLE= false;
+    private static boolean ENABLE_FLOWER_CYCLE= false;
 
     //total duration period
     private static final double AUTO_DURATION_SECONDS = 30.0;
-
+    private static final double SAFETY_MARGIN_SECONDS=1.0;
     /**
      * Reserve time for the final parking movement.
      * Replace this estimate with a measured value.
@@ -92,11 +84,14 @@ public class RedAudienceAuto extends OpMode {
      */
     private static final double TEST_COLLECTION = 2.0;
     private static final double MAX_COLLECTION_TIME = 3.0;
-    private static final double FLOWER_CYCLE=13.0; //FLOWER+PARKING
+    private static final double DRIVE_TO_FLOWER_TIME = 2.0;
     /**
      * Temporary shooting duration for navigation-only testing.
      */
-    private static final double TEST_SHOOT = 2.0;
+    private static final double TEST_SHOOT = 1.0;
+
+    private static final double FLOWER_CYCLE=2*DRIVE_TO_FLOWER_TIME +
+            TEST_COLLECTION + TEST_SHOOT; //FULL CYCLE
 
     //for testing, wait for audience cell to be ready 2-3 seconds
     private static final double AUDIENCE_WAIT = 2.0;
@@ -114,8 +109,6 @@ public class RedAudienceAuto extends OpMode {
 
     private final ElapsedTime autoTimer = new ElapsedTime();
     private final ElapsedTime stateTimer = new ElapsedTime();
-
-    private boolean stateJustEntered;
 
     @Override
     public void init() {
@@ -162,9 +155,14 @@ public class RedAudienceAuto extends OpMode {
          * including your existing Vision and Shooter implementations.
          */
 
+        boolean parking = currentState == AutoState.DRIVE_TO_PARK_Path
+                || currentState == AutoState.EMERGENCY_PARK_Path
+                || currentState == AutoState.FINISHED;
+        boolean protectedFlowerShooting = currentState == AutoState.SHOOT_FLOWER_POLLEN;
+
         if (mustParkNow()
-                && currentState != AutoState.DRIVE_TO_PARK_Path
-                && currentState != AutoState.FINISHED) {
+                && !parking
+                && !protectedFlowerShooting) {
 
             changeState(AutoState.EMERGENCY_PARK_Path);
         }
@@ -199,15 +197,17 @@ public class RedAudienceAuto extends OpMode {
                 break;
 
             case WAIT_FOR_AUDIENCE_SCORABLE:
-                if (isAudienceCellScorable()) {
-                    changeState(AutoState.SHOOT_GARDEN_POLLEN);
-                }else if (stateTimer.seconds() >= AUDIENCE_WAIT) {
+                if (!hasTimeFor(TEST_SHOOT,PARK_RESERVE_SECONDS)){
                     changeState(AutoState.EMERGENCY_PARK_Path);
+                }
+                else if (isAudienceCellScorable()) {
+                    changeState(AutoState.SHOOT_GARDEN_POLLEN);
                 }
                 break;
 
             case SHOOT_GARDEN_POLLEN:
                 if (shootingFinished()) {
+                    ENABLE_FLOWER_CYCLE = true;
                     if (canAttemptFlowerCycle()) {
                         changeState(AutoState.DRIVE_TO_FLOWER_Path);
                     }else{
@@ -230,9 +230,18 @@ public class RedAudienceAuto extends OpMode {
                 break;
 
             case FLOWER_TO_AUDIENCE_Path:
-                if (pathFinished()&& isAudienceCellScorable()) {
-                    changeState(AutoState.SHOOT_FLOWER_POLLEN);
-                } else if(mustParkNow()){
+                if (pathFinished()){
+                    changeState(AutoState.CONFIRM_AUDIENCE_SCORABLE);
+                }
+                break;
+            case CONFIRM_AUDIENCE_SCORABLE:
+                if (isAudienceCellScorable()) {
+                    if (hasTimeFor(TEST_SHOOT,PARK_RESERVE_SECONDS)) {
+                        changeState(AutoState.SHOOT_FLOWER_POLLEN);
+                    }else{
+                        changeState(AutoState.EMERGENCY_PARK_Path);
+                    }
+                } else if(stateTimer.seconds()>=MAX_AUDIENCE_WAIT){
                     changeState(AutoState.EMERGENCY_PARK_Path);
                 }
                 break;
@@ -321,29 +330,20 @@ public class RedAudienceAuto extends OpMode {
                 follower.follow(parkingPath);
                 break;
             case DRIVE_TO_PARK_Path:
+
                 parkingPathStarted = true;
                 follower.follow(paths.driveToPark);
                 break;
             case WAIT_FOR_AUDIENCE_SCORABLE:
+                break;
             //case WAIT_FOR_AUDIENCE_AGAIN:
+            case CONFIRM_AUDIENCE_SCORABLE:
+                break;
             case FINISHED:
                 finished = true;
                 break;
 
         }
-    }
-
-    /**
-     * Returns true once when entering a state.
-     *
-     * @return true on the first execution of the state
-     */
-    private boolean onStateEntry() {
-        if (stateJustEntered) {
-            stateJustEntered = false;
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -356,31 +356,6 @@ public class RedAudienceAuto extends OpMode {
                 >= AUTO_DURATION_SECONDS - PARK_RESERVE_SECONDS;
     }
 
-    /**
-     * Determines whether there is sufficient time to attempt
-     * the optional Flower collection and shooting cycle.
-     *
-     * @return true if the optional cycle may be attempted
-     */
-
-
-    /**
-     * Starts a path to the supplied field pose.
-     *
-     * @param destination target Pedro pose
-     */
-    private void driveTo(Pose destination) {
-
-        /*
-         * TODO: Construct and follow a Pedro path from the
-         * current pose to destination.
-         *
-         * Reuse the working path construction pattern from
-         * your existing Pedro sample OpMode.
-         *
-         * Do not reset the follower's starting pose here.
-         */
-    }
 
     /**
      * Checks whether the active Pedro path has completed.
@@ -398,8 +373,8 @@ public class RedAudienceAuto extends OpMode {
      * @return true if the optional cycle may be attempted
      */
     private boolean canAttemptFlowerCycle(){
-        return ENABLE_FLOWER_CYCLE && AUTO_DURATION_SECONDS - autoTimer.seconds()>=FLOWER_CYCLE;
-
+        boolean restTask = hasTimeFor(FLOWER_CYCLE,PARK_RESERVE_SECONDS);
+        return ENABLE_FLOWER_CYCLE && restTask;
     }
     /**
      * Starts the shooting operation.
@@ -520,6 +495,15 @@ public class RedAudienceAuto extends OpMode {
          * scorable CELL detection method.
          */
         return false;
+    }
+
+    /**
+     * Checks whether the next task can be completed while
+     * preserving enough time for parking.
+     */
+    private boolean hasTimeFor(double taskSeconds, double parkSeconds){
+        double remaining = AUTO_DURATION_SECONDS - autoTimer.seconds();
+        return remaining >= taskSeconds + parkSeconds+SAFETY_MARGIN_SECONDS;
     }
 
     @Override
