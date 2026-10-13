@@ -125,7 +125,6 @@ public class RedAudienceAuto extends OpMode {
 
         currentState = AutoState.READY;
         started = false;
-        stateJustEntered = true;
         parkingPathStarted = false;
 
         telemetry.addLine("Red Audience Auto initialized");
