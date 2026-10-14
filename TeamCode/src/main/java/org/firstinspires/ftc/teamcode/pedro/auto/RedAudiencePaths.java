@@ -37,6 +37,7 @@ public final class RedAudiencePaths {
     /** Strategy-sheet parking target. */
     public final Pose parkPose = p.of(12.0, 97.0, 135.0);
 
+    public final Pose controlLegPose = p.of(20,30,0);
     public final Path initialApproach;
     public final Path driveToGarden;
     public final Path gardenToAudience;
@@ -66,6 +67,9 @@ public final class RedAudiencePaths {
         return Paths.line(from, to).linear(from, to);
     }
 
+    private static Path curve(Pose from, Pose control, Pose to){
+        return Paths.curve(from,control,to).tangent();
+    }
     /**
      * Creates an emergency parking route from the robot's CURRENT pose.
      * This avoids assuming the robot is already at the shooting waypoint.
@@ -73,8 +77,14 @@ public final class RedAudiencePaths {
      * @param currentPose current pose reported by Pedro localization
      * @return direct path to the parking pose
      */
-    public Path emergencyPark(Pose currentPose) {
-        return straight(currentPose, parkPose);
+    //public Path emergencyPark(Pose currentPose) {
+    //    return straight(currentPose, parkPose);
+    //}
+    public Path emergencyPark(Pose currentPose){
+        if (currentPose.x()<30 && currentPose.y()>30){
+            return straight(currentPose,parkPose);
+        }
+        return curve(currentPose,controlLegPose,parkPose);
     }
 }
 

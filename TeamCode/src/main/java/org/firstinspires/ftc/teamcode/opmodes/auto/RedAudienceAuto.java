@@ -9,6 +9,7 @@ import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.pedro.auto.RedAudiencePaths;
@@ -67,7 +68,7 @@ public class RedAudienceAuto extends OpMode {
     private static final boolean NAVIGATION_ONLY = true;
 
     //only when audience cell is ready again and all pollens are shot
-    private static boolean ENABLE_FLOWER_CYCLE= false;
+    private static boolean ENABLE_FLOWER_CYCLE= false;//test only the first part shoot and garden.
 
     //total duration period
     private static final double AUTO_DURATION_SECONDS = 30.0;
@@ -107,6 +108,10 @@ public class RedAudienceAuto extends OpMode {
     private boolean finished;
     private boolean started;
 
+    private AutoState previousState;
+    private String lastTransition ="Not Started";
+    private String transitionReason="";
+
     private final ElapsedTime autoTimer = new ElapsedTime();
     private final ElapsedTime stateTimer = new ElapsedTime();
 
@@ -130,6 +135,8 @@ public class RedAudienceAuto extends OpMode {
         telemetry.addLine("Red Audience Auto initialized");
         telemetry.addData("Navigation only", NAVIGATION_ONLY);
         telemetry.addLine("Configure follower and field poses before running.");
+        telemetry.addData("Start X,Y","%.1f %.1f",follower.pose().x(),follower.pose().y());
+        telemetry.addData("Start heading","%.1f",Math.toDegrees(follower.pose().heading()));
         telemetry.update();
     }
 
@@ -206,7 +213,7 @@ public class RedAudienceAuto extends OpMode {
 
             case SHOOT_GARDEN_POLLEN:
                 if (shootingFinished()) {
-                    ENABLE_FLOWER_CYCLE = true;
+
                     if (canAttemptFlowerCycle()) {
                         changeState(AutoState.DRIVE_TO_FLOWER_Path);
                     }else{
@@ -266,6 +273,9 @@ public class RedAudienceAuto extends OpMode {
         }
 
         telemetry.addData("State", currentState);
+        telemetry.addData("Last transition", lastTransition);
+        telemetry.addData("Transition reason", transitionReason);
+        telemetry.addData("state time", "%.1f", stateTimer.seconds());
         telemetry.addData("Auto time", "%.1f", autoTimer.seconds());
         telemetry.addData("Remaining", "%.1f",
                 Math.max(0, AUTO_DURATION_SECONDS - autoTimer.seconds()));
@@ -292,6 +302,11 @@ public class RedAudienceAuto extends OpMode {
         stopCollection();
         stopShooting();
 
+        previousState = currentState;
+        lastTransition = previousState +"->"+nextState;
+
+        RobotLog.ii("RedAudienceAuto","Time: %.2f Tansition: %s",
+                autoTimer.seconds(),lastTransition);
         currentState = nextState;
         stateTimer.reset();
 
