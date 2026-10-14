@@ -13,6 +13,8 @@ import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.pedro.auto.RedAudiencePaths;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Autonomous routine for one Red alliance robot operating in the
@@ -34,6 +36,8 @@ import org.firstinspires.ftc.teamcode.pedro.auto.RedAudiencePaths;
  */
 @Autonomous(name = "Red Audience Auto - State Machine", group = "Autonomous")
 public class RedAudienceAuto extends OpMode {
+
+    private static final Logger log = LoggerFactory.getLogger(RedAudienceAuto.class);
 
     /**
      * States used exclusively by this autonomous routine.
@@ -68,7 +72,7 @@ public class RedAudienceAuto extends OpMode {
     private static final boolean NAVIGATION_ONLY = true;
 
     //only when audience cell is ready again and all pollens are shot
-    private static boolean ENABLE_FLOWER_CYCLE= false;//test only the first part shoot and garden.
+    private static boolean ENABLE_FLOWER_CYCLE= true;//test only the first part shoot and garden.
 
     //total duration period
     private static final double AUTO_DURATION_SECONDS = 30.0;
@@ -114,6 +118,18 @@ public class RedAudienceAuto extends OpMode {
 
     private final ElapsedTime autoTimer = new ElapsedTime();
     private final ElapsedTime stateTimer = new ElapsedTime();
+    private final ElapsedTime logTimer = new ElapsedTime();
+    private static final double Log_interval_seconds=0.1;
+    /**
+     * Records the current Pedro follower pose and autonomous status.
+     */
+    private void logRobotStatus(String event){
+        Pose p = follower.pose();
+        RobotLog.ii("RedAudienceAuto",
+                "t=%.2f event=%s state=%s x=%.2f y=%.2f heading=%.1f busy=%b",
+                autoTimer.seconds(),event,currentState,
+                p.x(),p.y(),Math.toDegrees(p.heading()),follower.isBusy());
+    }
 
     @Override
     public void init() {
@@ -144,6 +160,7 @@ public class RedAudienceAuto extends OpMode {
     public void start() {
         autoTimer.reset();
         stateTimer.reset();
+        logTimer.reset();
         started = true;
         changeState(AutoState.INITIAL_APPROACH_Path);
     }
@@ -155,7 +172,10 @@ public class RedAudienceAuto extends OpMode {
            return;
        }
        follower.update();
-
+       if(logTimer.seconds()>=Log_interval_seconds){
+           logRobotStatus("Periodic");
+           logTimer.reset();
+       }
         /*
          * TODO: Update any subsystem that requires periodic updates,
          * including your existing Vision and Shooter implementations.
@@ -307,6 +327,8 @@ public class RedAudienceAuto extends OpMode {
 
         RobotLog.ii("RedAudienceAuto","Time: %.2f Tansition: %s",
                 autoTimer.seconds(),lastTransition);
+        logRobotStatus("Exit_to_"+nextState);
+
         currentState = nextState;
         stateTimer.reset();
 

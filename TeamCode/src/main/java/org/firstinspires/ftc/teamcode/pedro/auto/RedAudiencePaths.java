@@ -29,13 +29,13 @@ public final class RedAudiencePaths {
     public final Pose shootPose = p.of(60.0, 30.0, 90.0);
 
     /** Garden pickup pose near the lower-left corner. */
-    public final Pose gardenPose = p.of(12.0, 14.0, 270.0);
+    public final Pose gardenPose = p.of(17.0, 14.0, 269.8);
 
     /** Flower pickup pose along the left side of the field. */
-    public final Pose flowerPose = p.of(13.5, 48.0, 180.0) ;
+    public final Pose flowerPose = p.of(17, 48.0, 180.0) ;
 
     /** Strategy-sheet parking target. */
-    public final Pose parkPose = p.of(12.0, 97.0, 135.0);
+    public final Pose parkPose = p.of(17.0, 97.0, 135.0);
 
     public final Pose controlLegPose = p.of(20,30,0);
     public final Path initialApproach;
@@ -48,8 +48,10 @@ public final class RedAudiencePaths {
     /** Builds the six routes once, before autonomous begins. */
     public RedAudiencePaths() {
         initialApproach = straight(startPose, shootPose);
-        driveToGarden = straight(shootPose, gardenPose);
-        gardenToAudience = straight(gardenPose, shootPose);
+        //driveToGarden = straight(shootPose, gardenPose);
+        driveToGarden = fixHeadingStraight(shootPose,gardenPose);
+        //gardenToAudience = straight(gardenPose, shootPose);
+        gardenToAudience = fixHeadingStraight(gardenPose,shootPose);
         driveToFlower = straight(shootPose, flowerPose);
         flowerToAudience = straight(flowerPose, shootPose);
         driveToPark = straight(shootPose, parkPose);
@@ -65,6 +67,10 @@ public final class RedAudiencePaths {
      */
     private static Path straight(Pose from, Pose to) {
         return Paths.line(from, to).linear(from, to);
+    }
+
+    private static Path fixHeadingStraight(Pose from, Pose to){
+        return Paths.line(from,to).constant(to.heading());
     }
 
     private static Path curve(Pose from, Pose control, Pose to){
