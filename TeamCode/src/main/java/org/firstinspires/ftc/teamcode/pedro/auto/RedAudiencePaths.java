@@ -52,9 +52,12 @@ public final class RedAudiencePaths {
         driveToGarden = fixHeadingStraight(shootPose,gardenPose);
         //gardenToAudience = straight(gardenPose, shootPose);
         gardenToAudience = fixHeadingStraight(gardenPose,shootPose);
-        driveToFlower = straight(shootPose, flowerPose);
-        flowerToAudience = straight(flowerPose, shootPose);
-        driveToPark = straight(shootPose, parkPose);
+        //driveToFlower = straight(shootPose, flowerPose);
+        driveToFlower = fixHeadingStraight(shootPose,flowerPose);
+        ///flowerToAudience = straight(flowerPose, shootPose);
+        flowerToAudience = fixHeadingStraight(flowerPose,shootPose);
+        //driveToPark = straight(shootPose, parkPose);
+        driveToPark = curve(shootPose,controlLegPose,parkPose);
     }
 
 

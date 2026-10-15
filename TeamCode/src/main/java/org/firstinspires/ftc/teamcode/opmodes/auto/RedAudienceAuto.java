@@ -16,6 +16,8 @@ import org.firstinspires.ftc.teamcode.pedro.auto.RedAudiencePaths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.firstinspires.ftc.teamcode.pedro.auto.PathCompletionRecovery;
+
 /**
  * Autonomous routine for one Red alliance robot operating in the
  * Red Audience quarter of the BIOBUZZ field.
