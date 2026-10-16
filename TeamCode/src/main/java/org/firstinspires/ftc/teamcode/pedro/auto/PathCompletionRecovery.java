@@ -57,7 +57,7 @@ public final class PathCompletionRecovery {
     private final double noProgressTimeoutSeconds;
     private final double maxAttemptSeconds;
     private final double minProgressInches;
-    private double attemtStartedAt =-1.0;
+    private double attemptStartedAt =-1.0;
     private double lastProgressAt = -1.0;
     private double bestDistance = Double.MAX_VALUE;
 
@@ -116,7 +116,7 @@ public final class PathCompletionRecovery {
      */
     private void resetProgressTracking(Pose currentPose){
         double now = clock.seconds();
-        attemtStartedAt = now;
+        attemptStartedAt = now;
         lastProgressAt = now;
         bestDistance = Math.hypot(currentPose.x()-target.x(),
                 currentPose.y()-target.y());
@@ -197,7 +197,7 @@ public final class PathCompletionRecovery {
             return fail("No safe recovery path found");
         }
 
-        RobotLog.ww(TAG,"RECOVER %s attempt=%d reason=%s from=(%.1f, %.1f, %.1f",
+        RobotLog.ww(TAG,"RECOVER %s attempt=%d reason=%s from=(%.1f, %.1f, %.1f)",
                 taskName,retries+1,reason,currentPose.x(),currentPose.y(),
                 Math.toDegrees(currentPose.heading()));
         follower.stop();
@@ -208,6 +208,21 @@ public final class PathCompletionRecovery {
         return Result.RECOVERING;
     }
 
+
+    /**
+     * Check how close Robot is to the target position
+     */
+    boolean closeEnough (Pose current, Pose target,
+                         double positionTolerance,double headingTolerance){
+        double distance = Math.hypot(current.x()-target.x(),
+                current.y()-target.y());
+        double headingError = Math.abs(angleDifference(current.heading(),target.heading()));
+        if ((distance <=positionTolerance) &&
+                (!verifyHeading || headingError <= headingTolerance))
+            return true;
+        else
+            return false;
+    }
 
     /**
      * Checks arrival and retries an incomplete path.
@@ -236,6 +251,11 @@ public final class PathCompletionRecovery {
 
         if (follower.isBusy()) {
             idleSince = -1.0;
+           // if (closeEnough(current,target)){
+           //     lastProgressAt = clock.seconds();
+           //     return Result.RUNNING;
+           // }
+
             String timeoutReason = checkPathTimeout(current);
             if (timeoutReason != null) {
                 return recover(current,
@@ -244,27 +264,13 @@ public final class PathCompletionRecovery {
             return Result.RUNNING;
         }
 
-        double distance = Math.hypot(
-                current.x() - target.x(),
-                current.y() - target.y());
-
-        double headingError = Math.abs(angleDifference(
-                current.heading(),
-                target.heading()));
-
-        if (distance <= positionTolerance
-                && (!verifyHeading
-                || headingError <= headingTolerance)) {
+        if (closeEnough(current, target,positionTolerance,headingTolerance)){
 
             active = false;
-
             RobotLog.ii(TAG,
-                    "ARRIVED %s retries=%d distance=%.2f "
-                            + "headingError=%.1f",
+                    "ARRIVED %s retries=%d",
                     taskName,
-                    retries,
-                    distance,
-                    Math.toDegrees(headingError));
+                    retries);
 
             return Result.ARRIVED;
         }
@@ -318,7 +324,7 @@ public final class PathCompletionRecovery {
     private Result fail(String reason) {
         active = false;
         failureReason = reason;
-
+        follower.stop();
         RobotLog.ee(TAG,
                 "FAILED %s retries=%d reason=%s",
                 taskName, retries, reason);
@@ -356,7 +362,7 @@ public final class PathCompletionRecovery {
             lastProgressAt = now;
         }
 
-        if (now - attemtStartedAt >= maxAttemptSeconds) {
+        if (now - attemptStartedAt >= maxAttemptSeconds) {
             return String.format(Locale.US,"Path duration exceeds %.1f seconds",
                     maxAttemptSeconds);
         }

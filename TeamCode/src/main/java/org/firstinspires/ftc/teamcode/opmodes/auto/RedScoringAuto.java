@@ -50,7 +50,7 @@ public final class RedScoringAuto extends OpMode {
     private static final double HEADING_TOLERANCE_DEGREES = 15.0;
     private static final double IDLE_GRACE_SECONDS=0.25;
     private static final int MAX_RETRIES=3;
-    private static final double NO_PROGRESS_TIMEOUT_SECONDS=1.0;
+    private static final double NO_PROGRESS_TIMEOUT_SECONDS=5.0;
     private static final double MAX_ATTEMPTS_SECONDS=5.0;
     private static final double MIN_PROGRESS_INCHES=1;
 
@@ -63,7 +63,6 @@ public final class RedScoringAuto extends OpMode {
     private final ElapsedTime logTimer = new ElapsedTime();
     private Follower follower;
     private AutoState currentState;
-    private AutoState previousState;
     private RedScoringPaths paths;
     private String lastTransition = "Not Started";
     private String transitionReason="";
@@ -71,10 +70,8 @@ public final class RedScoringAuto extends OpMode {
     private boolean parkingPathStarted;
     //private AutoState currentState = AutoState.READY;
     private Pose previousPose;
-    private Pose activeTarget;
     private boolean started;
     private boolean finished;
-    private double pathNotBusySince = -1.0;
     private String faultReason = "";
 
     private PathCompletionRecovery navigation;
@@ -103,8 +100,6 @@ public final class RedScoringAuto extends OpMode {
         currentState = AutoState.READY;
         started = false;
         parkingPathStarted = false;
-        activeTarget = null;
-        pathNotBusySince = -1.0;
         faultReason = "";
         telemetry.addLine("Red Scoring: NAVIGATION ONLY");
         telemetry.addLine("VERIFY estimated poses and obstacle clearance first!");
@@ -128,6 +123,14 @@ public final class RedScoringAuto extends OpMode {
     @Override
     public void loop() {
         if (!started || currentState == AutoState.FAULT) {
+            showTelemetry();
+            return;
+        }
+
+        if (autoTimer.seconds()>=AUTO_SECONDS){
+            navigation.cancel();
+            follower.stop();
+            currentState = AutoState.FINISHED;
             showTelemetry();
             return;
         }
@@ -209,8 +212,6 @@ public final class RedScoringAuto extends OpMode {
         logPose("EXIT_TO_" + nextState);
         currentState = nextState;
         stateTimer.reset();
-        pathNotBusySince = -1.0;
-        activeTarget = null;
         RobotLog.ii("RedScoringAuto", "t=%.2f STATE=%s", autoTimer.seconds(), currentState);
         switch (nextState) {
             case INITIAL_APPROACH_Path:
@@ -339,9 +340,10 @@ public final class RedScoringAuto extends OpMode {
     private void fault(String reason) {
         faultReason = reason;
         RobotLog.ee("RedScoringAuto", "t=%.2f FAULT: %s", autoTimer.seconds(), reason);
-        follower.stop();
+        if (navigation!=null) navigation.cancel();
+        if (follower!=null) follower.stop();
         currentState = AutoState.FAULT;
-        activeTarget = null;
+
     }
 
     /**
@@ -378,6 +380,7 @@ public final class RedScoringAuto extends OpMode {
     @Override
     public void stop() {
         started = false;
+        if (navigation!=null) navigation.cancel();
         if (follower != null) follower.stop();
     }
 }
