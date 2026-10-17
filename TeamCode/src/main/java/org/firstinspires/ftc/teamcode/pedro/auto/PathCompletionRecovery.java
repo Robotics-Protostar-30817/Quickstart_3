@@ -217,11 +217,8 @@ public final class PathCompletionRecovery {
         double distance = Math.hypot(current.x()-target.x(),
                 current.y()-target.y());
         double headingError = Math.abs(angleDifference(current.heading(),target.heading()));
-        if ((distance <=positionTolerance) &&
-                (!verifyHeading || headingError <= headingTolerance))
-            return true;
-        else
-            return false;
+        return ((distance <=positionTolerance) &&
+                (!verifyHeading || headingError <= headingTolerance));
     }
 
     /**

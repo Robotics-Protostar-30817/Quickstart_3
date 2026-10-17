@@ -1,0 +1,151 @@
+--------- beginning of main
+10-15 21:17:11.393  1625  1815 V Robocol : received command: CMD_SET_MATCH_NUMBER(12436) 0
+10-15 21:17:11.395  1625  1815 V Robocol : received command: CMD_INIT_OP_MODE(12437) Red Scoring Auto - State Machine
+10-15 21:17:11.416  1625  2093 V RobotCore: thread: ...terminating 'OpModeThread'
+10-15 21:17:11.420  1625  1840 I RobotCore: Attempting to switch to OpMode Red Scoring Auto - State Machine
+10-15 21:17:11.427  1625  1840 I RobotCore: ******************** START - OPMODE Red Scoring Auto - State Machine ********************
+10-15 21:17:11.497  1625  1840 D HardwareMap: Clearing which device instances have been retrieved
+10-15 21:17:11.500  1625  2101 V RobotCore: thread: 'OpModeThread' starting...
+10-15 21:17:11.503  1625  2101 I I2C     : Automatically initializing I2C device GoBildaPinpointDriver (USB (embedded); module 173; bus 1; addr7=0x31)
+10-15 21:17:11.517  1625  1819 V Robocol : sending CMD_NOTIFY_INIT_OP_MODE(32564), attempt: 0
+10-15 21:17:12.794  1625  1815 V Robocol : received command: CMD_RUN_OP_MODE(12466) Red Scoring Auto - State Machine
+10-15 21:17:12.805  1625  2101 I RedScoringAuto: t=0.00 event=EXIT_TO_INITIAL_APPROACH_Path currentState=READY x=60.00 y=132.00 heading=270.0 busy=false
+10-15 21:17:12.805  1625  2101 I RedScoringAuto: t=0.00 STATE=INITIAL_APPROACH_Path
+10-15 21:17:12.807  1625  2101 I PathCompletionRecovery: BEGIN Initial Approach Path target=(60.0, 120.0, 270.0)
+10-15 21:17:12.836  1625  1819 V Robocol : sending CMD_NOTIFY_RUN_OP_MODE(32819), attempt: 0
+10-15 21:17:12.905  1625  2101 I RedScoringAuto: t=0.10 event=PERIODIC state=INITIAL_APPROACH_Path x=60.00 y=131.67 heading=270.0 busy=true
+10-15 21:17:13.011  1625  2101 I RedScoringAuto: t=0.21 event=PERIODIC state=INITIAL_APPROACH_Path x=60.19 y=128.87 heading=271.5 busy=true
+10-15 21:17:13.113  1625  2101 I RedScoringAuto: t=0.31 event=PERIODIC state=INITIAL_APPROACH_Path x=60.33 y=124.43 heading=270.7 busy=true
+10-15 21:17:13.225  1625  2101 I RedScoringAuto: t=0.42 event=PERIODIC state=INITIAL_APPROACH_Path x=60.39 y=120.99 heading=267.7 busy=true
+10-15 21:17:13.335  1625  2101 I RedScoringAuto: t=0.53 event=PERIODIC state=INITIAL_APPROACH_Path x=60.23 y=119.62 heading=269.5 busy=true
+10-15 21:17:13.405  1625  2101 I PathCompletionRecovery: ARRIVED Initial Approach Path retries=0
+10-15 21:17:13.406  1625  2101 I RedScoringAuto: t=0.60 event=EXIT_TO_WAIT_FOR_SCORING_SCORABLE currentState=INITIAL_APPROACH_Path x=60.29 y=119.51 heading=270.7 busy=false
+10-15 21:17:13.406  1625  2101 I RedScoringAuto: t=0.60 STATE=WAIT_FOR_SCORING_SCORABLE
+10-15 21:17:13.444  1625  2101 I RedScoringAuto: t=0.64 event=PERIODIC state=WAIT_FOR_SCORING_SCORABLE x=60.22 y=119.58 heading=270.7 busy=false
+10-15 21:17:13.550  1625  2101 I RedScoringAuto: t=0.75 event=PERIODIC state=WAIT_FOR_SCORING_SCORABLE x=60.15 y=119.78 heading=271.7 busy=false
+10-15 21:17:13.655  1625  2101 I RedScoringAuto: t=0.85 event=PERIODIC state=WAIT_FOR_SCORING_SCORABLE x=60.23 y=119.97 heading=270.1 busy=false
+10-15 21:17:13.762  1625  2101 I RedScoringAuto: t=0.96 event=PERIODIC state=WAIT_FOR_SCORING_SCORABLE x=60.29 y=120.08 heading=268.0 busy=false
+10-15 21:17:13.872  1625  2101 I RedScoringAuto: t=1.07 event=PERIODIC state=WAIT_FOR_SCORING_SCORABLE x=60.20 y=120.12 heading=269.2 busy=false
+10-15 21:17:13.983  1625  2101 I RedScoringAuto: t=1.18 event=PERIODIC state=WAIT_FOR_SCORING_SCORABLE x=60.14 y=120.13 heading=271.7 busy=false
+10-15 21:17:14.089  1625  2101 I RedScoringAuto: t=1.29 event=PERIODIC state=WAIT_FOR_SCORING_SCORABLE x=60.17 y=120.15 heading=270.3 busy=false
+10-15 21:17:14.203  1625  2101 I RedScoringAuto: t=1.40 event=PERIODIC state=WAIT_FOR_SCORING_SCORABLE x=60.23 y=120.06 heading=268.1 busy=false
+10-15 21:17:14.317  1625  2101 I RedScoringAuto: t=1.51 event=PERIODIC state=WAIT_FOR_SCORING_SCORABLE x=60.14 y=120.06 heading=268.3 busy=false
+10-15 21:17:14.430  1625  2101 I RedScoringAuto: t=1.63 event=PERIODIC state=WAIT_FOR_SCORING_SCORABLE x=60.01 y=120.07 heading=273.0 busy=false
+10-15 21:17:14.543  1625  2101 I RedScoringAuto: t=1.74 event=PERIODIC state=WAIT_FOR_SCORING_SCORABLE x=60.05 y=120.19 heading=271.6 busy=false
+10-15 21:17:14.653  1625  2101 I RedScoringAuto: t=1.85 event=PERIODIC state=WAIT_FOR_SCORING_SCORABLE x=60.14 y=120.18 heading=268.1 busy=false
+10-15 21:17:14.757  1625  2101 I RedScoringAuto: t=1.95 event=PERIODIC state=WAIT_FOR_SCORING_SCORABLE x=60.10 y=120.15 heading=268.7 busy=false
+10-15 21:17:14.870  1625  2101 I RedScoringAuto: t=2.07 event=PERIODIC state=WAIT_FOR_SCORING_SCORABLE x=60.01 y=120.10 heading=271.8 busy=false
+10-15 21:17:14.974  1625  2101 I RedScoringAuto: t=2.17 event=PERIODIC state=WAIT_FOR_SCORING_SCORABLE x=60.07 y=120.09 heading=271.0 busy=false
+10-15 21:17:15.078  1625  2101 I RedScoringAuto: t=2.27 event=PERIODIC state=WAIT_FOR_SCORING_SCORABLE x=60.14 y=120.11 heading=268.1 busy=false
+10-15 21:17:15.191  1625  2101 I RedScoringAuto: t=2.39 event=PERIODIC state=WAIT_FOR_SCORING_SCORABLE x=60.07 y=120.13 heading=268.1 busy=false
+10-15 21:17:15.306  1625  2101 I RedScoringAuto: t=2.50 event=PERIODIC state=WAIT_FOR_SCORING_SCORABLE x=60.01 y=120.17 heading=271.6 busy=false
+10-15 21:17:15.409  1625  2101 I RedScoringAuto: t=2.60 event=PERIODIC state=WAIT_FOR_SCORING_SCORABLE x=60.04 y=120.20 heading=271.5 busy=false
+10-15 21:17:15.410  1625  2101 I RedScoringAuto: t=2.61 event=EXIT_TO_SHOOT_FIRST currentState=WAIT_FOR_SCORING_SCORABLE x=60.04 y=120.20 heading=271.5 busy=false
+10-15 21:17:15.410  1625  2101 I RedScoringAuto: t=2.61 STATE=SHOOT_FIRST
+10-15 21:17:15.519  1625  2101 I RedScoringAuto: t=2.72 event=PERIODIC state=SHOOT_FIRST x=60.10 y=120.17 heading=268.1 busy=false
+10-15 21:17:15.621  1625  2101 I RedScoringAuto: t=2.82 event=PERIODIC state=SHOOT_FIRST x=60.03 y=120.16 heading=268.9 busy=false
+10-15 21:17:15.725  1625  2101 I RedScoringAuto: t=2.92 event=PERIODIC state=SHOOT_FIRST x=59.92 y=120.09 heading=272.1 busy=false
+10-15 21:17:15.840  1625  2101 I RedScoringAuto: t=3.04 event=PERIODIC state=SHOOT_FIRST x=59.98 y=120.06 heading=270.9 busy=false
+10-15 21:17:15.944  1625  2101 I RedScoringAuto: t=3.14 event=PERIODIC state=SHOOT_FIRST x=60.05 y=120.09 heading=266.4 busy=false
+10-15 21:17:16.061  1625  2101 I RedScoringAuto: t=3.26 event=PERIODIC state=SHOOT_FIRST x=60.08 y=120.20 heading=271.6 busy=false
+10-15 21:17:16.166  1625  2101 I RedScoringAuto: t=3.36 event=PERIODIC state=SHOOT_FIRST x=60.06 y=120.17 heading=272.1 busy=false
+10-15 21:17:16.278  1625  2101 I RedScoringAuto: t=3.47 event=PERIODIC state=SHOOT_FIRST x=60.10 y=120.12 heading=269.3 busy=false
+10-15 21:17:16.393  1625  2101 I RedScoringAuto: t=3.59 event=PERIODIC state=SHOOT_FIRST x=60.09 y=120.07 heading=268.0 busy=false
+10-15 21:17:16.418  1625  2101 I RedScoringAuto: t=3.61 event=EXIT_TO_DRIVE_TO_FLOWER_Path currentState=SHOOT_FIRST x=60.10 y=120.07 heading=269.1 busy=false
+10-15 21:17:16.419  1625  2101 I RedScoringAuto: t=3.62 STATE=DRIVE_TO_FLOWER_Path
+10-15 21:17:16.420  1625  2101 I PathCompletionRecovery: BEGIN Drive to Flower target=(48.0, 128.0, 90.0)
+10-15 21:17:16.498  1625  2101 I RedScoringAuto: t=3.69 event=PERIODIC state=DRIVE_TO_FLOWER_Path x=60.09 y=120.07 heading=276.6 busy=true
+10-15 21:17:16.606  1625  2101 I RedScoringAuto: t=3.80 event=PERIODIC state=DRIVE_TO_FLOWER_Path x=60.04 y=120.09 heading=308.3 busy=true
+10-15 21:17:16.712  1625  2101 I RedScoringAuto: t=3.91 event=PERIODIC state=DRIVE_TO_FLOWER_Path x=60.12 y=120.19 heading=352.8 busy=true
+10-15 21:17:16.822  1625  2101 I RedScoringAuto: t=4.02 event=PERIODIC state=DRIVE_TO_FLOWER_Path x=60.02 y=120.30 heading=39.2 busy=true
+10-15 21:17:16.928  1625  2101 I RedScoringAuto: t=4.12 event=PERIODIC state=DRIVE_TO_FLOWER_Path x=59.52 y=120.24 heading=73.2 busy=true
+10-15 21:17:17.035  1625  2101 I RedScoringAuto: t=4.23 event=PERIODIC state=DRIVE_TO_FLOWER_Path x=58.19 y=120.53 heading=85.8 busy=true
+10-15 21:17:17.137  1625  2101 I RedScoringAuto: t=4.33 event=PERIODIC state=DRIVE_TO_FLOWER_Path x=56.42 y=121.42 heading=86.8 busy=true
+10-15 21:17:17.238  1625  2101 I RedScoringAuto: t=4.43 event=PERIODIC state=DRIVE_TO_FLOWER_Path x=54.48 y=123.11 heading=89.5 busy=true
+10-15 21:17:17.348  1625  2101 I RedScoringAuto: t=4.54 event=PERIODIC state=DRIVE_TO_FLOWER_Path x=51.43 y=125.46 heading=89.4 busy=true
+10-15 21:17:17.453  1625  2101 I RedScoringAuto: t=4.65 event=PERIODIC state=DRIVE_TO_FLOWER_Path x=48.86 y=127.53 heading=90.9 busy=true
+10-15 21:17:17.558  1625  2101 I RedScoringAuto: t=4.75 event=PERIODIC state=DRIVE_TO_FLOWER_Path x=48.08 y=127.69 heading=89.3 busy=true
+10-15 21:17:17.668  1625  2101 I RedScoringAuto: t=4.86 event=PERIODIC state=DRIVE_TO_FLOWER_Path x=47.55 y=127.76 heading=90.4 busy=false
+10-15 21:17:17.668  1625  2101 I PathCompletionRecovery: ARRIVED Drive to Flower retries=0
+10-15 21:17:17.669  1625  2101 I RedScoringAuto: t=4.87 event=EXIT_TO_COLLECT_FLOWER currentState=DRIVE_TO_FLOWER_Path x=47.55 y=127.76 heading=90.4 busy=false
+10-15 21:17:17.669  1625  2101 I RedScoringAuto: t=4.87 STATE=COLLECT_FLOWER
+10-15 21:17:17.776  1625  2101 I RedScoringAuto: t=4.97 event=PERIODIC state=COLLECT_FLOWER x=47.74 y=127.78 heading=90.6 busy=false
+10-15 21:17:17.882  1625  2101 I RedScoringAuto: t=5.08 event=PERIODIC state=COLLECT_FLOWER x=47.75 y=127.79 heading=90.0 busy=false
+10-15 21:17:17.989  1625  2101 I RedScoringAuto: t=5.18 event=PERIODIC state=COLLECT_FLOWER x=47.79 y=127.77 heading=89.3 busy=false
+10-15 21:17:18.095  1625  2101 I RedScoringAuto: t=5.29 event=PERIODIC state=COLLECT_FLOWER x=47.81 y=127.74 heading=89.4 busy=false
+10-15 21:17:18.205  1625  2101 I RedScoringAuto: t=5.40 event=PERIODIC state=COLLECT_FLOWER x=47.86 y=127.74 heading=89.8 busy=false
+10-15 21:17:18.311  1625  2101 I RedScoringAuto: t=5.51 event=PERIODIC state=COLLECT_FLOWER x=47.91 y=127.73 heading=91.4 busy=false
+10-15 21:17:18.428  1625  2101 I RedScoringAuto: t=5.62 event=PERIODIC state=COLLECT_FLOWER x=47.78 y=127.63 heading=92.4 busy=false
+10-15 21:17:18.539  1625  2101 I RedScoringAuto: t=5.74 event=PERIODIC state=COLLECT_FLOWER x=47.68 y=127.35 heading=91.8 busy=false
+10-15 21:17:18.645  1625  2101 I RedScoringAuto: t=5.84 event=PERIODIC state=COLLECT_FLOWER x=47.55 y=127.16 heading=90.1 busy=false
+10-15 21:17:18.749  1625  2101 I RedScoringAuto: t=5.95 event=PERIODIC state=COLLECT_FLOWER x=47.50 y=127.03 heading=89.7 busy=false
+10-15 21:17:18.862  1625  2101 I RedScoringAuto: t=6.06 event=PERIODIC state=COLLECT_FLOWER x=47.43 y=126.99 heading=89.8 busy=false
+10-15 21:17:18.963  1625  2101 I RedScoringAuto: t=6.16 event=PERIODIC state=COLLECT_FLOWER x=47.49 y=127.10 heading=90.9 busy=false
+10-15 21:17:19.070  1625  2101 I RedScoringAuto: t=6.27 event=PERIODIC state=COLLECT_FLOWER x=47.70 y=127.32 heading=92.0 busy=false
+10-15 21:17:19.175  1625  2101 I RedScoringAuto: t=6.37 event=PERIODIC state=COLLECT_FLOWER x=47.75 y=127.51 heading=89.0 busy=false
+10-15 21:17:19.287  1625  2101 I RedScoringAuto: t=6.48 event=PERIODIC state=COLLECT_FLOWER x=47.83 y=127.62 heading=88.4 busy=false
+10-15 21:17:19.396  1625  2101 I RedScoringAuto: t=6.59 event=PERIODIC state=COLLECT_FLOWER x=47.91 y=127.65 heading=90.5 busy=false
+10-15 21:17:19.506  1625  2101 I RedScoringAuto: t=6.70 event=PERIODIC state=COLLECT_FLOWER x=47.98 y=127.68 heading=92.7 busy=false
+10-15 21:17:19.619  1625  2101 I RedScoringAuto: t=6.82 event=PERIODIC state=COLLECT_FLOWER x=47.96 y=127.63 heading=89.9 busy=false
+10-15 21:17:19.682  1625  2101 I RedScoringAuto: t=6.88 event=EXIT_TO_FLOWER_TO_SCORING_Path currentState=COLLECT_FLOWER x=48.10 y=127.67 heading=92.2 busy=false
+10-15 21:17:19.683  1625  2101 I RedScoringAuto: t=6.88 STATE=FLOWER_TO_SCORING_Path
+10-15 21:17:19.685  1625  2101 I PathCompletionRecovery: BEGIN Flower to Scoring target=(60.0, 120.0, 270.0)
+10-15 21:17:19.729  1625  2101 I RedScoringAuto: t=6.93 event=PERIODIC state=FLOWER_TO_SCORING_Path x=48.01 y=127.64 heading=86.9 busy=true
+10-15 21:17:19.842  1625  2101 I RedScoringAuto: t=7.04 event=PERIODIC state=FLOWER_TO_SCORING_Path x=47.72 y=126.32 heading=65.9 busy=true
+10-15 21:17:19.947  1625  2101 I RedScoringAuto: t=7.14 event=PERIODIC state=FLOWER_TO_SCORING_Path x=46.52 y=124.29 heading=33.8 busy=true
+10-15 21:17:20.056  1625  2101 I RedScoringAuto: t=7.25 event=PERIODIC state=FLOWER_TO_SCORING_Path x=45.51 y=122.87 heading=348.6 busy=true
+10-15 21:17:20.163  1625  2101 I RedScoringAuto: t=7.36 event=PERIODIC state=FLOWER_TO_SCORING_Path x=44.64 y=122.14 heading=303.4 busy=true
+10-15 21:17:20.269  1625  2101 I RedScoringAuto: t=7.47 event=PERIODIC state=FLOWER_TO_SCORING_Path x=44.03 y=121.85 heading=282.5 busy=true
+10-15 21:17:20.387  1625  2101 I RedScoringAuto: t=7.58 event=PERIODIC state=FLOWER_TO_SCORING_Path x=44.34 y=122.03 heading=270.7 busy=true
+10-15 21:17:20.497  1625  2101 I RedScoringAuto: t=7.69 event=PERIODIC state=FLOWER_TO_SCORING_Path x=44.97 y=123.18 heading=269.3 busy=true
+10-15 21:17:20.606  1625  2101 I RedScoringAuto: t=7.80 event=PERIODIC state=FLOWER_TO_SCORING_Path x=46.23 y=124.76 heading=272.0 busy=true
+10-15 21:17:20.718  1625  2101 I RedScoringAuto: t=7.91 event=PERIODIC state=FLOWER_TO_SCORING_Path x=49.12 y=125.63 heading=267.9 busy=true
+10-15 21:17:20.829  1625  2101 I RedScoringAuto: t=8.03 event=PERIODIC state=FLOWER_TO_SCORING_Path x=52.53 y=125.18 heading=270.2 busy=true
+10-15 21:17:20.941  1625  2101 I RedScoringAuto: t=8.14 event=PERIODIC state=FLOWER_TO_SCORING_Path x=55.90 y=123.11 heading=269.5 busy=true
+10-15 21:17:21.051  1625  2101 I RedScoringAuto: t=8.25 event=PERIODIC state=FLOWER_TO_SCORING_Path x=58.91 y=120.63 heading=269.6 busy=true
+10-15 21:17:21.157  1625  2101 I RedScoringAuto: t=8.35 event=PERIODIC state=FLOWER_TO_SCORING_Path x=60.04 y=119.66 heading=270.7 busy=true
+10-15 21:17:21.222  1625  2101 I PathCompletionRecovery: ARRIVED Flower to Scoring retries=0
+10-15 21:17:21.223  1625  2101 I RedScoringAuto: t=8.42 event=EXIT_TO_SHOOT_SECOND currentState=FLOWER_TO_SCORING_Path x=60.08 y=119.65 heading=270.3 busy=false
+10-15 21:17:21.223  1625  2101 I RedScoringAuto: t=8.42 STATE=SHOOT_SECOND
+10-15 21:17:21.262  1625  2101 I RedScoringAuto: t=8.46 event=PERIODIC state=SHOOT_SECOND x=60.04 y=119.73 heading=270.4 busy=false
+10-15 21:17:21.366  1625  2101 I RedScoringAuto: t=8.56 event=PERIODIC state=SHOOT_SECOND x=60.05 y=119.85 heading=270.0 busy=false
+10-15 21:17:21.472  1625  2101 I RedScoringAuto: t=8.67 event=PERIODIC state=SHOOT_SECOND x=60.04 y=119.81 heading=270.1 busy=false
+10-15 21:17:21.576  1625  2101 I RedScoringAuto: t=8.77 event=PERIODIC state=SHOOT_SECOND x=60.04 y=119.83 heading=270.1 busy=false
+10-15 21:17:21.678  1625  2101 I RedScoringAuto: t=8.87 event=PERIODIC state=SHOOT_SECOND x=60.04 y=119.83 heading=270.1 busy=false
+10-15 21:17:21.783  1625  2101 I RedScoringAuto: t=8.98 event=PERIODIC state=SHOOT_SECOND x=60.04 y=119.83 heading=270.1 busy=false
+10-15 21:17:21.887  1625  2101 I RedScoringAuto: t=9.08 event=PERIODIC state=SHOOT_SECOND x=60.04 y=119.83 heading=270.1 busy=false
+10-15 21:17:21.992  1625  2101 I RedScoringAuto: t=9.19 event=PERIODIC state=SHOOT_SECOND x=60.04 y=119.83 heading=270.1 busy=false
+10-15 21:17:22.096  1625  2101 I RedScoringAuto: t=9.29 event=PERIODIC state=SHOOT_SECOND x=60.04 y=119.83 heading=270.1 busy=false
+10-15 21:17:22.207  1625  2101 I RedScoringAuto: t=9.40 event=PERIODIC state=SHOOT_SECOND x=60.04 y=119.83 heading=270.1 busy=false
+10-15 21:17:22.229  1625  2101 I RedScoringAuto: t=9.43 event=EXIT_TO_DRIVE_TO_PARK_Path currentState=SHOOT_SECOND x=60.04 y=119.83 heading=270.1 busy=false
+10-15 21:17:22.229  1625  2101 I RedScoringAuto: t=9.43 STATE=DRIVE_TO_PARK_Path
+10-15 21:17:22.230  1625  2101 I PathCompletionRecovery: BEGIN Drive to Park target=(17.0, 120.0, 180.0)
+10-15 21:17:22.310  1625  2101 I RedScoringAuto: t=9.51 event=PERIODIC state=DRIVE_TO_PARK_Path x=59.98 y=119.88 heading=266.0 busy=true
+10-15 21:17:22.417  1625  2101 I RedScoringAuto: t=9.61 event=PERIODIC state=DRIVE_TO_PARK_Path x=60.00 y=120.23 heading=235.0 busy=true
+10-15 21:17:22.523  1625  2101 I RedScoringAuto: t=9.72 event=PERIODIC state=DRIVE_TO_PARK_Path x=60.01 y=120.79 heading=198.6 busy=true
+10-15 21:17:22.635  1625  2101 I RedScoringAuto: t=9.83 event=PERIODIC state=DRIVE_TO_PARK_Path x=59.50 y=121.80 heading=184.8 busy=true
+10-15 21:17:22.737  1625  2101 I RedScoringAuto: t=9.93 event=PERIODIC state=DRIVE_TO_PARK_Path x=57.73 y=121.98 heading=182.8 busy=true
+10-15 21:17:22.840  1625  2101 I RedScoringAuto: t=10.04 event=PERIODIC state=DRIVE_TO_PARK_Path x=54.66 y=121.33 heading=179.8 busy=true
+10-15 21:17:22.949  1625  2101 I RedScoringAuto: t=10.15 event=PERIODIC state=DRIVE_TO_PARK_Path x=49.54 y=120.76 heading=180.6 busy=true
+10-15 21:17:23.054  1625  2101 I RedScoringAuto: t=10.25 event=PERIODIC state=DRIVE_TO_PARK_Path x=43.02 y=120.44 heading=180.5 busy=true
+10-15 21:17:23.156  1625  2101 I RedScoringAuto: t=10.35 event=PERIODIC state=DRIVE_TO_PARK_Path x=35.69 y=120.06 heading=180.3 busy=true
+10-15 21:17:23.269  1625  2101 I RedScoringAuto: t=10.47 event=PERIODIC state=DRIVE_TO_PARK_Path x=27.87 y=119.94 heading=179.6 busy=true
+10-15 21:17:23.379  1625  2101 I RedScoringAuto: t=10.58 event=PERIODIC state=DRIVE_TO_PARK_Path x=22.36 y=119.54 heading=178.8 busy=true
+10-15 21:17:23.490  1625  2101 I RedScoringAuto: t=10.69 event=PERIODIC state=DRIVE_TO_PARK_Path x=19.20 y=119.73 heading=179.4 busy=true
+10-15 21:17:23.600  1625  2101 I RedScoringAuto: t=10.80 event=PERIODIC state=DRIVE_TO_PARK_Path x=17.70 y=119.84 heading=182.3 busy=true
+10-15 21:17:23.697  1625  2101 I PathCompletionRecovery: ARRIVED Drive to Park retries=0
+10-15 21:17:23.698  1625  2101 I RedScoringAuto: t=10.89 event=EXIT_TO_FINISHED currentState=DRIVE_TO_PARK_Path x=17.32 y=119.73 heading=180.5 busy=false
+10-15 21:17:23.698  1625  2101 I RedScoringAuto: t=10.89 STATE=FINISHED
+10-15 21:17:26.314  1625  1815 V Robocol : received command: CMD_INIT_OP_MODE(12652) $Stop$Robot$
+10-15 21:17:26.337  1625  2101 V RobotCore: thread: ...terminating 'OpModeThread'
+10-15 21:17:26.339  1625  1840 I RobotCore: Attempting to switch to OpMode $Stop$Robot$
+10-15 21:17:26.343  1625  1840 I RobotCore: ******************** STOP - OPMODE /storage/emulated/0/FIRST/matchlogs/Match-0-Red_Scoring_Auto_-_State_Machine.txt ********************
+10-15 21:17:26.354  1625  1840 I RobotCore: Pruning old match logs: deleting Match-0-Pedro_Simple_Drive_Test_.txt
+10-15 21:17:26.358  1625  1840 D HardwareMap: Clearing which device instances have been retrieved
+10-15 21:17:26.358  1625  2103 I RobotCore: saving match logcat to /storage/emulated/0/FIRST/matchlogs/Match-0-Red_Scoring_Auto_-_State_Machine.txt
+10-15 21:17:26.359  1625  2103 I RobotCore: logging command line: exec logcat -d -T '10-15 21:17:11.000' -f '/storage/emulated/0/FIRST/matchlogs/Match-0-Red_Scoring_Auto_-_State_Machine.txt' -n4 -v threadtime UsbRequestJNI:S UsbRequest:S art:W ThreadPool:W System:W ExtendedExtractor:W OMXClient:W MediaPlayer:W dalvikvm:W  *:V
+10-15 21:17:26.362  1625  2105 V RobotCore: thread: 'OpModeThread' starting...
+10-15 21:17:26.374  2104  2104 I sh      : type=1400 audit(0.0:211): avc: denied { read } for name="/" dev="rootfs" ino=1 scontext=u:r:untrusted_app:s0:c512,c768 tcontext=u:object_r:rootfs:s0 tclass=dir permissive=1
+10-15 21:17:26.374  2104  2104 I sh      : type=1400 audit(0.0:212): avc: denied { open } for path="/" dev="rootfs" ino=1 scontext=u:r:untrusted_app:s0:c512,c768 tcontext=u:object_r:rootfs:s0 tclass=dir permissive=1
+10-15 21:17:26.396  1625  1819 V Robocol : sending CMD_NOTIFY_INIT_OP_MODE(35466), attempt: 0
+10-15 21:17:26.397  1625  1819 V Robocol : sending CMD_NOTIFY_RUN_OP_MODE(35468), attempt: 0
