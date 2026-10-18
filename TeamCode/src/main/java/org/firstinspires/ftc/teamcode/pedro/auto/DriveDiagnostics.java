@@ -82,5 +82,15 @@ public final class DriveDiagnostics {
         PathUtility.info(logTag,PathUtility.poseDelta(autoSeconds,
                 state,before,after));
     }
+
+    /**
+     * Stop all motors
+     */
+    public void stopAllMotors(){
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        backLeft.setPower(0);
+        backRight.setPower(0);
+    }
 }
 

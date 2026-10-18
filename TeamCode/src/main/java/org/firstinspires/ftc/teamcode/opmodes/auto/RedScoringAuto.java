@@ -167,9 +167,9 @@ public final class RedScoringAuto extends OpMode {
         paths = new RedScoringPaths();
         follower = Constants.create(hardwareMap);
         if (testDrive){
-            driveDiagnostics = new DriveDiagnostics(hardwareMap, LOG_TAG,
+            driveDiagnostics = new DriveDiagnostics(hardwareMap,
                     "leftFront","rightFront",
-                    "leftBack","rightBack");
+                    "leftBack","rightBack",LOG_TAG);
         }
 
         follower.setPose(paths.startPose);
@@ -340,7 +340,20 @@ public final class RedScoringAuto extends OpMode {
                         paths.emergencyPark(current), paths.parkPose);
                 break;
             case FINISHED:
+                if(testDrive){
+                    driveDiagnostics.log(autoTimer.seconds(),
+                            currentState.name(),
+                            "In Finished, before calling stop",follower);
+                }
                 stopForStationaryState("Finished");
+                follower.update();//added to stop motor
+                if (testDrive){
+                    driveDiagnostics.log(autoTimer.seconds(),
+                            currentState.name(),
+                            "In Finished, after calling stop",follower);
+                    driveDiagnostics.stopAllMotors();
+                }
+
                 break;
             default:
                 break;

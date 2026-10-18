@@ -33,7 +33,7 @@ public final class RedScoringPaths {
         initialApproach = straight(startPose, scoringPose);
         driveToFlower = fixHeadingStraight(scoringPose, collectionPose);
         flowerToScoring = fixHeadingStraight(collectionPose, scoringPose);
-        scoringToPark = straight(scoringPose, parkPose);
+        scoringToPark = fixHeadingStraight(scoringPose, parkPose);
     }
 
     /**
