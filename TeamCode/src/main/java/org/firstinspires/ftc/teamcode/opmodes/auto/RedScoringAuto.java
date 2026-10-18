@@ -55,11 +55,16 @@ public final class RedScoringAuto extends OpMode {
     private static final boolean testDrive = true;
     private DriveDiagnostics driveDiagnostics;
 
+    private static final String LOG_TAG ="RedScoringAuto";
     private static final double AUTO_SECONDS = 30.0;
     private static final double PARK_RESERVE_SECONDS = 3.0;
     private static final double TEST_SHOOT = 1.0;
     private static final double TEST_COLLECTION = 2.0;
-    private static final double SIMULATED_SCORABLE_WAIT_SECONDS = 2.0;
+    private static final double SIMULATED_SCORABLE_WAIT_SECONDS = 5.0;
+    private static final double FLOWER_TO_SCORING_WAIT_SECONDS = 3.0;
+    private static final double DRIVE_TO_PARK_WAIT_SECONDS = 3.0;
+    private static final double DRIVE_TO_FLOWER_WAIT_SECONDS = 3.0;
+
     private static final double LOG_INTERVAL_SECONDS = 0.10;
 
     //for task completion, recovery and idle checking
@@ -81,24 +86,12 @@ public final class RedScoringAuto extends OpMode {
     private Follower follower;
     private RSAutoState currentState;
     private RedScoringPaths paths;
-    private String lastTransition = "Not Started";
-    private String transitionReason="";
-    private boolean emergyParkStarted;
     private boolean parkingPathStarted;
     //private AutoState currentState = AutoState.READY;
     private Pose previousPose;
     private boolean started;
     private boolean finished;
     private String faultReason = "";
-
-    private PathCompletionRecovery navigation;
-    private void logRobotStatus(String event){
-        Pose p = follower.pose();
-        RobotLog.ii("RedScoringAuto",
-                "t=%.2f event=%s state=%s pose=%s, busy=%b",
-                autoTimer.seconds(),event,currentState,
-                PathUtility.formatPose(p),follower.isBusy());
-    }
 
     /**
      * detect the stationary states
@@ -114,34 +107,34 @@ public final class RedScoringAuto extends OpMode {
                 return false;
         }
     }
-/*
-    private String formatPose(Pose pose){
-        if (pose== null)
-            return "null";
-        return String.format(Locale.US,
-                "(%.2f, %.2f, %.2f deg",
-                pose.x(),pose.y(),Math.toDegrees(pose.heading()));
+
+    /*
+    *check whether the robt starts Pathing state
+     */
+    private boolean isParkingState(){
+         return currentState == RSAutoState.DRIVE_TO_PARK_Path ||
+                currentState == RSAutoState.EMERGENCY_PARK_Path;
     }
-*/
+
     /**
      * to stop the follower if the state is stationary.
      * To detect whether the robot shaking
      */
-    private void stopNavigationForStationaryState(){
+    private void stopForStationaryState(String event){
         Pose previous = follower.pose();
         if (testDrive){
             driveDiagnostics.log(autoTimer.seconds(),
                     currentState.name(),
-                    "Before Stop",follower);
+                    event+"Before Stop",follower);
         }
-        navigation.cancel();
+
         follower.stop();
         Pose after = follower.pose();
 
         if (testDrive){
             driveDiagnostics.log(autoTimer.seconds(),
                     currentState.name(),
-                    "After Stop",follower);
+                    event+"After Stop",follower);
         }
 
         if (testDrive){
@@ -149,11 +142,20 @@ public final class RedScoringAuto extends OpMode {
                     currentState.name(),previous,after);
         }
 
-        RobotLog.ii("RedScoringAuto",
-                "t=%.2f STOP_NAV state=%s pose=%s",
-                autoTimer.seconds(),
-                currentState,
-                PathUtility.formatPose(follower.pose()));
+        PathUtility.logPose(LOG_TAG,event,follower,autoTimer,currentState);
+    }
+
+    /**
+     * Begin a path
+     */
+    private void beginPath(String name, Path path,Pose target){
+        PathUtility.info(LOG_TAG,PathUtility.pathStart(autoTimer.seconds(),name,target));
+        follower.follow(path);
+        if (testDrive){
+            driveDiagnostics.log(autoTimer.seconds(),
+                    currentState.name(),
+                    name+"Path started",follower);
+        }
     }
 
     /** Initializes Pedro localization and the navigation-only test. */
@@ -165,21 +167,16 @@ public final class RedScoringAuto extends OpMode {
         paths = new RedScoringPaths();
         follower = Constants.create(hardwareMap);
         if (testDrive){
-            driveDiagnostics = new DriveDiagnostics(hardwareMap,
+            driveDiagnostics = new DriveDiagnostics(hardwareMap, LOG_TAG,
                     "leftFront","rightFront",
                     "leftBack","rightBack");
         }
 
         follower.setPose(paths.startPose);
-        navigation = new PathCompletionRecovery(follower, ()->autoTimer.seconds(),
-                POSITION_TOLERANCE_INCHES,HEADING_TOLERANCE_DEGREES,IDLE_GRACE_SECONDS,
-                MAX_RETRIES,NO_PROGRESS_TIMEOUT_SECONDS, MAX_ATTEMPTS_SECONDS,
-                MIN_PROGRESS_INCHES);
         previousPose = follower.pose();
         currentState = RSAutoState.READY;
         started = false;
         parkingPathStarted = false;
-        faultReason = "";
         telemetry.addLine("Red Scoring: NAVIGATION ONLY");
         telemetry.addLine("VERIFY estimated poses and obstacle clearance first!");
         //telemetry.addData("Start", "%.1f, %.1f, %.1f deg",
@@ -197,9 +194,8 @@ public final class RedScoringAuto extends OpMode {
         stateTimer.reset();
         logTimer.reset();
         started = true;
-        changeState(RSAutoState.INITIAL_APPROACH_Path);
-        RobotLog.ii("RedScoringAuto", "Diagnostic_Test= %s, t=%.2f START",
-                TEST_A?"Test A":"Test B", autoTimer.seconds());
+        changeState(RSAutoState.INITIAL_APPROACH_Path,"Start Auto");
+        PathUtility.info(LOG_TAG,"Diagnostic_Test= %s"+(TEST_A?"A":"B"));
     }
 
     /** Runs Pedro, checks localization, advances states, and reports telemetry. */
@@ -211,18 +207,14 @@ public final class RedScoringAuto extends OpMode {
         }
 
         if (autoTimer.seconds()>=AUTO_SECONDS){
-            navigation.cancel();
-            follower.stop();
-            currentState = RSAutoState.FINISHED;
+            changeState(RSAutoState.FINISHED,"30 seconds due");
             showTelemetry();
             return;
         }
 
         //only update while the robot is doing pathing
         //follower.update();
-        boolean skipFollowerUpdate = !TEST_A
-                && isStationaryState();
-        if (!skipFollowerUpdate){
+        if (TEST_A || !isStationaryState()){
             follower.update();
         }
 
@@ -239,54 +231,54 @@ public final class RedScoringAuto extends OpMode {
                         currentState.name(),
                         event+"Periodic",follower);
             }
-
-            logRobotStatus("PERIODIC");
             logTimer.reset();
         }
 
-        boolean parking = currentState == RSAutoState.DRIVE_TO_PARK_Path
-                || currentState == RSAutoState.EMERGENCY_PARK_Path
-                || currentState == RSAutoState.FINISHED;
-
-        if (!parking && autoTimer.seconds() >= AUTO_SECONDS - PARK_RESERVE_SECONDS) {
-            changeState(RSAutoState.EMERGENCY_PARK_Path);
+        if (!isParkingState() && autoTimer.seconds() >= AUTO_SECONDS - PARK_RESERVE_SECONDS) {
+            PathUtility.warning(LOG_TAG,PathUtility.deadline(autoTimer.seconds(),
+                    AUTO_SECONDS - autoTimer.seconds(),PARK_RESERVE_SECONDS));
+            changeState(RSAutoState.EMERGENCY_PARK_Path,"Parking Time Reserved");
+            showTelemetry();
+            return;
         }
 
+        double elapsed = stateTimer.seconds();
+        boolean pathComplete = elapsed>=0.05 && !follower.isBusy();
         switch (currentState) {
             case INITIAL_APPROACH_Path:
-                if (arrived()) changeState(RSAutoState.WAIT_FOR_SCORING_SCORABLE);
+                if (pathComplete) changeState(RSAutoState.WAIT_FOR_SCORING_SCORABLE,"Arrived at Scoring Position");
                 break;
             case WAIT_FOR_SCORING_SCORABLE:
                 // Navigation-only: simulated CELL status; not real vision.
                 if (stateTimer.seconds() >= SIMULATED_SCORABLE_WAIT_SECONDS) {
-                    changeState(RSAutoState.SHOOT_FIRST);
+                    changeState(RSAutoState.SHOOT_FIRST,"The cell is ready");
                 }
                 break;
             case SHOOT_FIRST:
                 if (stateTimer.seconds() >= TEST_SHOOT) {
-                    changeState(RSAutoState.DRIVE_TO_FLOWER_Path);
+                    changeState(RSAutoState.DRIVE_TO_FLOWER_Path,"The shoot is complete");
                 }
                 break;
             case DRIVE_TO_FLOWER_Path:
-                if (arrived()) changeState(RSAutoState.COLLECT_FLOWER);
+                if (pathComplete) changeState(RSAutoState.COLLECT_FLOWER,"Arrived at Flower");
                 break;
             case COLLECT_FLOWER:
                 if (stateTimer.seconds() >= TEST_COLLECTION) {
-                    changeState(RSAutoState.FLOWER_TO_SCORING_Path);
+                    changeState(RSAutoState.FLOWER_TO_SCORING_Path,"The flower is collected");
                 }
                 break;
             case FLOWER_TO_SCORING_Path:
-                if (arrived()) changeState(RSAutoState.SHOOT_SECOND);
+                if (pathComplete) changeState(RSAutoState.SHOOT_SECOND, "Arrived at Scoring ");
                 break;
             case SHOOT_SECOND:
                 if (stateTimer.seconds() >= TEST_SHOOT) {
-                    changeState(RSAutoState.DRIVE_TO_PARK_Path);
+                    changeState(RSAutoState.DRIVE_TO_PARK_Path,"The second shoot is complete");
                 }
                 break;
             case DRIVE_TO_PARK_Path:
             case EMERGENCY_PARK_Path:
-                if (parkingPathStarted && arrived())
-                    changeState(RSAutoState.FINISHED);
+                if (parkingPathStarted && pathComplete)
+                    changeState(RSAutoState.FINISHED,"arrived");
                 break;
             default:
                 break;
@@ -298,91 +290,70 @@ public final class RedScoringAuto extends OpMode {
      * Changes currentState, starting the corresponding navigation path when required.
      * @param nextState next currentState
      */
-    private void changeState(RSAutoState nextState) {
+    private void changeState(RSAutoState nextState, String reason) {
         if (currentState == RSAutoState.FAULT
                 || currentState == RSAutoState.FINISHED)
             return;
-        if ((currentState == RSAutoState.DRIVE_TO_PARK_Path
-                || currentState == RSAutoState.EMERGENCY_PARK_Path)
-                && nextState != RSAutoState.FINISHED)
-            return;
+        if (isParkingState() && nextState != RSAutoState.FINISHED) return;
 
-        PathUtility.logPose("EXIT_TO_" + nextState,
-                follower, autoTimer, currentState);
+        PathUtility.info(LOG_TAG, PathUtility.stateChange(
+                autoTimer.seconds(),currentState,nextState,reason));
+
         currentState = nextState;
         stateTimer.reset();
 
         if (isStationaryState()){
-            stopNavigationForStationaryState();
+            stopForStationaryState("Stationary State Entry");
         }
-
-        RobotLog.ii("RedScoringAuto",
-                "t=%.2f STATE=%s", autoTimer.seconds(), currentState);
 
         switch (nextState) {
             case INITIAL_APPROACH_Path:
-                follow("Initial Approach Path",
+                beginPath("Initial Approach Path",
                         paths.initialApproach,
                         paths.scoringPose);
                 break;
             case DRIVE_TO_FLOWER_Path:
-                follow("Drive to Flower",
+                beginPath("Drive to Flower",
                         paths.driveToFlower,
                         paths.collectionPose);
                 break;
             case FLOWER_TO_SCORING_Path:
-                follow("Flower to Scoring",
+                beginPath("Flower to Scoring",
                         paths.flowerToScoring,
                         paths.scoringPose);
                 break;
             case DRIVE_TO_PARK_Path:
                 parkingPathStarted = true;
-                follow("Drive to Park",
+                beginPath("Drive to Park",
                         paths.scoringToPark,
                         paths.parkPose);
                 break;
             case EMERGENCY_PARK_Path:
-                navigation.cancel();
-                follower.stop();
+                stopForStationaryState("Emergency Parking");
                 parkingPathStarted = true;
                 Pose current = follower.pose();
-
-                follow("Emergency Park",
+                if (current == null) {
+                    fault("No pose for emergency parking");
+                    return;
+                }
+                beginPath("Emergency Park",
                         paths.emergencyPark(current), paths.parkPose);
                 break;
             case FINISHED:
-                navigation.cancel();
-                follower.stop();
+                stopForStationaryState("Finished");
                 break;
             default:
                 break;
         }
     }
 
-    /**
-     * Begins a Pedro path and remembers its target for independent verification.
-     * @param path path to follow
-     * @param target expected final pose
-     */
-    //private void follow(Path path, Pose target) {
-    //    activeTarget = target;
-    //    follower.follow(path);
-    //}
-    //use the upldated follow function in PathCompletionRecovery class
-    private void follow(String name,Path path, Pose target){
-        boolean checkHeading =
-                !name.equals("Drive to Park")
-                && !name.equals("Emergency Park");
-        navigation.begin(name, path, target, checkHeading,
-                (currentPose,targetPose)->
-                        paths.recoverPath(name,currentPose,targetPose));
-    }
 
     /**
      * Verifies both follower completion and arrival near the target.
      * A follower that becomes idle far from its target is treated as a fault.
      * @return true when the robot has arrived within tolerance
      */
+    /*
     private boolean arrived() {
 
         boolean parking = currentState == RSAutoState.DRIVE_TO_PARK_Path||
@@ -407,7 +378,7 @@ public final class RedScoringAuto extends OpMode {
                 return false;
         }
     }
-
+*/
     /**
      * Detects gross discontinuities in the Pedro pose, such as a Pinpoint
      * read failure causing an unexpected (0,0,0) pose.
@@ -420,10 +391,10 @@ public final class RedScoringAuto extends OpMode {
         if (previousPose != null) {
             double distance = Math.hypot(now.x() - previousPose.x(),
                     now.y() - previousPose.y());
-            double angle = Math.abs(Math.toDegrees(angleDifference(
+            double angle = Math.abs(Math.toDegrees(PathUtility.angleDifference(
                     now.heading(), previousPose.heading())));
             if (distance > MAX_POSITION_JUMP_INCHES || angle > MAX_HEADING_JUMP_DEGREES) {
-                RobotLog.ee("RedScoringAuto",
+                RobotLog.ee(LOG_TAG,
                         "LOCALIZATION_JUMP dx=%.2f headingDelta=%.1f", distance, angle);
                 return false;
             }
@@ -432,15 +403,7 @@ public final class RedScoringAuto extends OpMode {
         return true;
     }
 
-    /**
-     * Returns the shortest signed angular difference in radians.
-     * @param a first angle
-     * @param b second angle
-     * @return signed angular difference in [-pi, pi]
-     */
-    private static double angleDifference(double a, double b) {
-        return Math.atan2(Math.sin(a - b), Math.cos(a - b));
-    }
+
 
     /**
      * Immediately stops the follower on a detected safety fault.
@@ -448,29 +411,17 @@ public final class RedScoringAuto extends OpMode {
      */
     private void fault(String reason) {
         faultReason = reason;
-        RobotLog.ee("RedScoringAuto", "t=%.2f FAULT: %s", autoTimer.seconds(), reason);
-        if (navigation!=null) navigation.cancel();
-        if (follower!=null) follower.stop();
+        PathUtility.error(LOG_TAG,"Fault"+reason);
+        if (follower!=null) stopForStationaryState("Fault");
         currentState = RSAutoState.FAULT;
-
     }
 
-    /**
-     * Writes pose, follower status, and currentState to the robot log.
-     * @param event event description
-     */
-//    private void logPose(String event) {
-//        if (follower == null) return;
- //       Pose pose = follower.pose();
-  //      RobotLog.ii("RedScoringAuto",
-  //              "t=%.2f event=%s currentState=%s, pose=%s busy=%b",
-  //              autoTimer.seconds(), event, currentState, PathUtility.formatPose(pose), follower.isBusy());
-  //  }
 
     /** Displays current currentState, time, localization and fault reason. */
     private void showTelemetry() {
         telemetry.addData("State", currentState);
         telemetry.addData("Auto seconds", "%.2f / %.0f", autoTimer.seconds(), AUTO_SECONDS);
+        telemetry.addData("Time Elapsed","%.2f",stateTimer.seconds());
         telemetry.addData("Remaining", "%.2f", Math.max(0, AUTO_SECONDS - autoTimer.seconds()));
         telemetry.addData("Navigation only", NAVIGATION_ONLY);
         telemetry.addData("Fault", faultReason);
@@ -489,7 +440,6 @@ public final class RedScoringAuto extends OpMode {
     @Override
     public void stop() {
         started = false;
-        if (navigation!=null) navigation.cancel();
         if (follower != null) follower.stop();
     }
 }

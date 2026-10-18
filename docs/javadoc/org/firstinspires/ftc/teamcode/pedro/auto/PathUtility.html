@@ -54,8 +54,14 @@ loadScripts(document, 'script');</script>
 <ol class="toc-list" tabindex="-1">
 <li><a href="#" tabindex="0">Description</a></li>
 <li><a href="#nested-class-summary" tabindex="0">Nested Class Summary</a></li>
+<li><a href="#field-summary" tabindex="0">Field Summary</a></li>
 <li><a href="#constructor-summary" tabindex="0">Constructor Summary</a></li>
 <li><a href="#method-summary" tabindex="0">Method Summary</a></li>
+<li><a href="#field-detail" tabindex="0">Field Details</a>
+<ol class="toc-list">
+<li><a href="#Default_Tag" tabindex="0">Default_Tag</a></li>
+</ol>
+</li>
 <li><a href="#constructor-detail" tabindex="0">Constructor Details</a>
 <ol class="toc-list">
 <li><a href="#%3Cinit%3E()" tabindex="0">PathUtility()</a></li>
@@ -64,7 +70,17 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
 <li><a href="#formatPose(com.pedropathing.math.Pose)" tabindex="0">formatPose(Pose)</a></li>
-<li><a href="#logPose(java.lang.String,com.pedropathing.follower.Follower,com.qualcomm.robotcore.util.ElapsedTime,org.firstinspires.ftc.teamcode.pedro.auto.PathUtility.AutoState)" tabindex="0">logPose(String, Follower, ElapsedTime, PathUtility.AutoState)</a></li>
+<li><a href="#robotStatus(double,java.lang.Object,java.lang.String,com.pedropathing.follower.Follower)" tabindex="0">robotStatus(double, Object, String, Follower)</a></li>
+<li><a href="#angleDifference(double,double)" tabindex="0">angleDifference(double, double)</a></li>
+<li><a href="#stateChange(double,java.lang.Object,java.lang.Object,java.lang.String)" tabindex="0">stateChange(double, Object, Object, String)</a></li>
+<li><a href="#pathStart(double,java.lang.String,com.pedropathing.math.Pose)" tabindex="0">pathStart(double, String, Pose)</a></li>
+<li><a href="#deadline(double,double,double)" tabindex="0">deadline(double, double, double)</a></li>
+<li><a href="#poseDelta(double,java.lang.Object,com.pedropathing.math.Pose,com.pedropathing.math.Pose)" tabindex="0">poseDelta(double, Object, Pose, Pose)</a></li>
+<li><a href="#info(java.lang.String,java.lang.String)" tabindex="0">info(String, String)</a></li>
+<li><a href="#warning(java.lang.String,java.lang.String)" tabindex="0">warning(String, String)</a></li>
+<li><a href="#error(java.lang.String,java.lang.String)" tabindex="0">error(String, String)</a></li>
+<li><a href="#logPose(java.lang.String,java.lang.String,com.pedropathing.follower.Follower,com.qualcomm.robotcore.util.ElapsedTime,org.firstinspires.ftc.teamcode.pedro.auto.PathUtility.AutoState)" tabindex="0">logPose(String, String, Follower, ElapsedTime, PathUtility.AutoState)</a></li>
+<li><a href="#motorPower(double,java.lang.Object,java.lang.String,double,double,double,double)" tabindex="0">motorPower(double, Object, String, double, double, double, double)</a></li>
 </ol>
 </li>
 </ol>
@@ -101,6 +117,21 @@ loadScripts(document, 'script');</script>
 </div>
 </section>
 </li>
+<!-- =========== FIELD SUMMARY =========== -->
+<li>
+<section class="field-summary" id="field-summary">
+<h2>Field Summary</h2>
+<div class="caption"><span>Fields</span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Field</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color"><code><a href="#Default_Tag" class="member-name-link">Default_Tag</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <li>
 <section class="constructor-summary" id="constructor-summary">
@@ -125,17 +156,87 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#formatPose(com.pedropathing.math.Pose)" class="member-name-link">formatPose</a><wbr>(com.pedropathing.math.Pose&nbsp;pose)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static double</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#angleDifference(double,double)" class="member-name-link">angleDifference</a><wbr>(double&nbsp;a,
+ double&nbsp;b)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Returns the shortest signed angular difference in radians.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#deadline(double,double,double)" class="member-name-link">deadline</a><wbr>(double&nbsp;time,
+ double&nbsp;remaining,
+ double&nbsp;reserve)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Display time deadline information</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#error(java.lang.String,java.lang.String)" class="member-name-link">error</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;tag,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#formatPose(com.pedropathing.math.Pose)" class="member-name-link">formatPose</a><wbr>(com.pedropathing.math.Pose&nbsp;pose)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Display position information</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#info(java.lang.String,java.lang.String)" class="member-name-link">info</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;tag,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#logPose(java.lang.String,com.pedropathing.follower.Follower,com.qualcomm.robotcore.util.ElapsedTime,org.firstinspires.ftc.teamcode.pedro.auto.PathUtility.AutoState)" class="member-name-link">logPose</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;event,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#logPose(java.lang.String,java.lang.String,com.pedropathing.follower.Follower,com.qualcomm.robotcore.util.ElapsedTime,org.firstinspires.ftc.teamcode.pedro.auto.PathUtility.AutoState)" class="member-name-link">logPose</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;tag,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;event,
  com.pedropathing.follower.Follower&nbsp;follower,
  com.qualcomm.robotcore.util.ElapsedTime&nbsp;autoTimer,
  <a href="PathUtility.AutoState.html" title="interface in org.firstinspires.ftc.teamcode.pedro.auto">PathUtility.AutoState</a>&nbsp;currentState)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Writes pose, follower status, and currentState to the robot log.</div>
 </div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#motorPower(double,java.lang.Object,java.lang.String,double,double,double,double)" class="member-name-link">motorPower</a><wbr>(double&nbsp;time,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;state,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;event,
+ double&nbsp;fl,
+ double&nbsp;fr,
+ double&nbsp;bl,
+ double&nbsp;br)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Display motor power information</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#pathStart(double,java.lang.String,com.pedropathing.math.Pose)" class="member-name-link">pathStart</a><wbr>(double&nbsp;time,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ com.pedropathing.math.Pose&nbsp;target)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Display Robot Path information</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#poseDelta(double,java.lang.Object,com.pedropathing.math.Pose,com.pedropathing.math.Pose)" class="member-name-link">poseDelta</a><wbr>(double&nbsp;time,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;state,
+ com.pedropathing.math.Pose&nbsp;before,
+ com.pedropathing.math.Pose&nbsp;after)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Computes the shortest signed heading difference.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#robotStatus(double,java.lang.Object,java.lang.String,com.pedropathing.follower.Follower)" class="member-name-link">robotStatus</a><wbr>(double&nbsp;time,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;state,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;event,
+ com.pedropathing.follower.Follower&nbsp;follower)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Display Robot current status</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#stateChange(double,java.lang.Object,java.lang.Object,java.lang.String)" class="member-name-link">stateChange</a><wbr>(double&nbsp;time,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;from,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;to,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;reason)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Display Robot state change</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#warning(java.lang.String,java.lang.String)" class="member-name-link">warning</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;tag,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -148,6 +249,30 @@ loadScripts(document, 'script');</script>
 </section>
 <section class="details">
 <ul class="details-list">
+<!-- ============ FIELD DETAIL =========== -->
+<li>
+<section class="field-details" id="field-detail">
+<h2>Field Details</h2>
+<ul class="member-list">
+<li>
+<section class="detail" id="Default_Tag">
+<h3>Default_Tag</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">Default_Tag</span></div>
+<dl class="notes">
+<dt>See Also:</dt>
+<dd>
+<ul class="tag-list">
+<li><a href="../../../../../../constant-values.html#org.firstinspires.ftc.teamcode.pedro.auto.PathUtility.Default_Tag">Constant Field Values</a></li>
+</ul>
+</dd>
+</dl>
+</div>
+</section>
+</li>
+</ul>
+</section>
+</li>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <li>
 <section class="constructor-details" id="constructor-detail">
@@ -174,14 +299,132 @@ loadScripts(document, 'script');</script>
 <h3>formatPose</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">formatPose</span><wbr><span class="parameters">(com.pedropathing.math.Pose&nbsp;pose)</span></div>
+<div class="block">Display position information</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>pose</code> - </dd>
+<dt>Returns:</dt>
+</dl>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="logPose(java.lang.String,com.pedropathing.follower.Follower,com.qualcomm.robotcore.util.ElapsedTime,org.firstinspires.ftc.teamcode.pedro.auto.PathUtility.AutoState)">
+<section class="detail" id="robotStatus(double,java.lang.Object,java.lang.String,com.pedropathing.follower.Follower)">
+<h3>robotStatus</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">robotStatus</span><wbr><span class="parameters">(double&nbsp;time,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;state,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;event,
+ com.pedropathing.follower.Follower&nbsp;follower)</span></div>
+<div class="block">Display Robot current status</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="angleDifference(double,double)">
+<h3>angleDifference</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">angleDifference</span><wbr><span class="parameters">(double&nbsp;a,
+ double&nbsp;b)</span></div>
+<div class="block">Returns the shortest signed angular difference in radians.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>a</code> - first angle</dd>
+<dd><code>b</code> - second angle</dd>
+<dt>Returns:</dt>
+<dd>signed angular difference in [-pi, pi]</dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="stateChange(double,java.lang.Object,java.lang.Object,java.lang.String)">
+<h3>stateChange</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">stateChange</span><wbr><span class="parameters">(double&nbsp;time,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;from,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;to,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;reason)</span></div>
+<div class="block">Display Robot state change</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="pathStart(double,java.lang.String,com.pedropathing.math.Pose)">
+<h3>pathStart</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">pathStart</span><wbr><span class="parameters">(double&nbsp;time,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ com.pedropathing.math.Pose&nbsp;target)</span></div>
+<div class="block">Display Robot Path information</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="deadline(double,double,double)">
+<h3>deadline</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">deadline</span><wbr><span class="parameters">(double&nbsp;time,
+ double&nbsp;remaining,
+ double&nbsp;reserve)</span></div>
+<div class="block">Display time deadline information</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="poseDelta(double,java.lang.Object,com.pedropathing.math.Pose,com.pedropathing.math.Pose)">
+<h3>poseDelta</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">poseDelta</span><wbr><span class="parameters">(double&nbsp;time,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;state,
+ com.pedropathing.math.Pose&nbsp;before,
+ com.pedropathing.math.Pose&nbsp;after)</span></div>
+<div class="block">Computes the shortest signed heading difference.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>time</code> - </dd>
+<dd><code>state</code> - </dd>
+<dd><code>before</code> - pose of before</dd>
+<dd><code>after</code> - pose of after</dd>
+<dt>Returns:</dt>
+<dd>difference in [-pi, pi]</dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="info(java.lang.String,java.lang.String)">
+<h3>info</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">info</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;tag,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="warning(java.lang.String,java.lang.String)">
+<h3>warning</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">warning</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;tag,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="error(java.lang.String,java.lang.String)">
+<h3>error</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">error</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;tag,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="logPose(java.lang.String,java.lang.String,com.pedropathing.follower.Follower,com.qualcomm.robotcore.util.ElapsedTime,org.firstinspires.ftc.teamcode.pedro.auto.PathUtility.AutoState)">
 <h3>logPose</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">logPose</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;event,
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">logPose</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;tag,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;event,
  com.pedropathing.follower.Follower&nbsp;follower,
  com.qualcomm.robotcore.util.ElapsedTime&nbsp;autoTimer,
  <a href="PathUtility.AutoState.html" title="interface in org.firstinspires.ftc.teamcode.pedro.auto">PathUtility.AutoState</a>&nbsp;currentState)</span></div>
@@ -190,6 +433,21 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>event</code> - event description</dd>
 </dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="motorPower(double,java.lang.Object,java.lang.String,double,double,double,double)">
+<h3>motorPower</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">motorPower</span><wbr><span class="parameters">(double&nbsp;time,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;state,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;event,
+ double&nbsp;fl,
+ double&nbsp;fr,
+ double&nbsp;bl,
+ double&nbsp;br)</span></div>
+<div class="block">Display motor power information</div>
 </div>
 </section>
 </li>

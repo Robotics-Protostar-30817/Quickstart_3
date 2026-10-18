@@ -32,7 +32,7 @@ public final class RedScoringPaths {
     public RedScoringPaths() {
         initialApproach = straight(startPose, scoringPose);
         driveToFlower = fixHeadingStraight(scoringPose, collectionPose);
-        flowerToScoring = straight(collectionPose, scoringPose);
+        flowerToScoring = fixHeadingStraight(collectionPose, scoringPose);
         scoringToPark = straight(scoringPose, parkPose);
     }
 
