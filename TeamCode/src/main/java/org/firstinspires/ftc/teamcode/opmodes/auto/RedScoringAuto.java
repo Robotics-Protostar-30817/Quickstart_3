@@ -250,12 +250,12 @@ public final class RedScoringAuto extends OpMode {
                 break;
             case WAIT_FOR_SCORING_SCORABLE:
                 // Navigation-only: simulated CELL status; not real vision.
-                if (stateTimer.seconds() >= SIMULATED_SCORABLE_WAIT_SECONDS) {
+                if (isAudienceScorable()) {
                     changeState(RSAutoState.SHOOT_FIRST,"The cell is ready");
                 }
                 break;
             case SHOOT_FIRST:
-                if (stateTimer.seconds() >= TEST_SHOOT) {
+                if (shootingFinished()) {
                     changeState(RSAutoState.DRIVE_TO_FLOWER_Path,"The shoot is complete");
                 }
                 break;
@@ -263,7 +263,7 @@ public final class RedScoringAuto extends OpMode {
                 if (pathComplete) changeState(RSAutoState.COLLECT_FLOWER,"Arrived at Flower");
                 break;
             case COLLECT_FLOWER:
-                if (stateTimer.seconds() >= TEST_COLLECTION) {
+                if (collectionFinished()) {
                     changeState(RSAutoState.FLOWER_TO_SCORING_Path,"The flower is collected");
                 }
                 break;
@@ -271,7 +271,7 @@ public final class RedScoringAuto extends OpMode {
                 if (pathComplete) changeState(RSAutoState.SHOOT_SECOND, "Arrived at Scoring ");
                 break;
             case SHOOT_SECOND:
-                if (stateTimer.seconds() >= TEST_SHOOT) {
+                if (shootingFinished()) {
                     changeState(RSAutoState.DRIVE_TO_PARK_Path,"The second shoot is complete");
                 }
                 break;
@@ -322,6 +322,15 @@ public final class RedScoringAuto extends OpMode {
                         paths.flowerToScoring,
                         paths.scoringPose);
                 break;
+            case SHOOT_FIRST:
+                beginShooting();
+                break;
+            case SHOOT_SECOND:
+                beginShooting();
+                break;
+            case COLLECT_FLOWER:
+                beginCollectionFlower();
+                break;
             case DRIVE_TO_PARK_Path:
                 parkingPathStarted = true;
                 beginPath("Drive to Park",
@@ -360,7 +369,79 @@ public final class RedScoringAuto extends OpMode {
         }
     }
 
+    private boolean isAudienceScorable(){
+        //will change to vision detection
+        return stateTimer.seconds() >= SIMULATED_SCORABLE_WAIT_SECONDS;
+    }
+    /**
+     * Starts the shooting operation.
+     */
+    private void beginShooting() {
 
+        if (NAVIGATION_ONLY) {
+            return;
+        }
+
+        /*
+         * TODO: Connect your existing Shooter subsystem.
+         *
+         * Aim turret using Vision CELL X/Y.
+         * Spin up flywheel.
+         * Feed POLLEN sequentially.
+         * Stop if CELL becomes unscorable.
+         */
+    }
+
+    /**
+     * Checks whether the current shooting operation is complete.
+     *
+     * @return true when shooting is finished
+     */
+    private boolean shootingFinished() {
+
+        if (NAVIGATION_ONLY) {
+            return stateTimer.seconds() >= TEST_SHOOT;
+        }
+
+        /*
+         * TODO: Query your actual shooting controller.
+         * Do not use a fixed timer to assume four shots succeeded.
+         */
+        return false;
+    }
+
+    /**
+     * Starts the POLLEN intake from Flower.
+     */
+    private void beginCollectionFlower() {
+
+        if (NAVIGATION_ONLY) {
+            return;
+        }
+
+        /*
+         * TODO: Activate the intake mechanism.
+         */
+    }
+
+    /**
+     * Checks whether collection has finished.
+     *
+     * @return true when full or a collection timeout is reached
+     */
+    private boolean collectionFinished() {
+
+        if (NAVIGATION_ONLY) {
+            return stateTimer.seconds() >= TEST_COLLECTION;
+        }
+
+        /*
+         * TODO: Return true when the robot is full
+         * (maximum four POLLEN) or the collection timeout expires.
+         */
+       //return stateTimer.seconds()>=MAX_COLLECTION_TIME;
+       return true;
+    }
     /**
      * Verifies both follower completion and arrival near the target.
      * A follower that becomes idle far from its target is treated as a fault.

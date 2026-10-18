@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.pedro.Constants;
+import org.firstinspires.ftc.teamcode.pedro.auto.DriveDiagnostics;
+import org.firstinspires.ftc.teamcode.pedro.auto.PathUtility;
 import org.firstinspires.ftc.teamcode.pedro.auto.RedAudiencePaths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,12 +41,10 @@ import org.firstinspires.ftc.teamcode.pedro.auto.PathCompletionRecovery;
 @Autonomous(name = "Red Audience Auto - State Machine", group = "Autonomous")
 public class RedAudienceAuto extends OpMode {
 
-    private static final Logger log = LoggerFactory.getLogger(RedAudienceAuto.class);
-
     /**
      * States used exclusively by this autonomous routine.
      */
-    private enum AutoState {
+    private enum RAAutoState implements PathUtility.AutoState {
         READY,//the robot is ready
         INITIAL_APPROACH_Path,//from start pose to shoot pose
         INITIAL_SHOOT, //shooting
@@ -64,7 +64,8 @@ public class RedAudienceAuto extends OpMode {
 
         DRIVE_TO_PARK_Path,//from shoot pose to park pose
         EMERGENCY_PARK_Path,//from current pose to park pose
-        FINISHED  //finish the whole process
+        FINISHED,  //finish the whole process,
+        FAULT
     }
 
     /**
@@ -72,13 +73,15 @@ public class RedAudienceAuto extends OpMode {
      * intake or shooting mechanism.
      */
     private static final boolean NAVIGATION_ONLY = true;
-
+    private static final String LOG_TAG = "RedAudienceAuto";
     //only when audience cell is ready again and all pollens are shot
     private static boolean ENABLE_FLOWER_CYCLE= true;//test only the first part shoot and garden.
 
+    private static final boolean testDrive = true;
     //total duration period
-    private static final double AUTO_DURATION_SECONDS = 30.0;
+    private static final double AUTO_SECONDS = 30.0;
     private static final double SAFETY_MARGIN_SECONDS=1.0;
+    private static final double LOG_INTERVAL_SECONDS=0.1;
     /**
      * Reserve time for the final parking movement.
      * Replace this estimate with a measured value.
@@ -104,34 +107,28 @@ public class RedAudienceAuto extends OpMode {
     private static final double AUDIENCE_WAIT = 2.0;
     private static final double MAX_AUDIENCE_WAIT = 3.0;
 
+    private static final double MAX_POSITION_JUMP_INCHES = 12.0;
+    private static final double MAX_HEADING_JUMP_DEGREES = 100.0;
 
+    private static final boolean TEST_A = true;//A
     private Follower follower;
-
-    private AutoState currentState;
+    private DriveDiagnostics driveDiagnostics;
+    private RAAutoState currentState;
     private RedAudiencePaths paths;
     private boolean emergencyParkStarted;
     private boolean parkingPathStarted;
     private boolean finished;
     private boolean started;
 
-    private AutoState previousState;
+    private Pose previousPose;
     private String lastTransition ="Not Started";
     private String transitionReason="";
+    private String faultReason="";
 
     private final ElapsedTime autoTimer = new ElapsedTime();
     private final ElapsedTime stateTimer = new ElapsedTime();
     private final ElapsedTime logTimer = new ElapsedTime();
-    private static final double Log_interval_seconds=0.1;
-    /**
-     * Records the current Pedro follower pose and autonomous status.
-     */
-    private void logRobotStatus(String event){
-        Pose p = follower.pose();
-        RobotLog.ii("RedAudienceAuto",
-                "t=%.2f event=%s state=%s x=%.2f y=%.2f heading=%.1f busy=%b",
-                autoTimer.seconds(),event,currentState,
-                p.x(),p.y(),Math.toDegrees(p.heading()),follower.isBusy());
-    }
+
 
     @Override
     public void init() {
@@ -141,12 +138,16 @@ public class RedAudienceAuto extends OpMode {
 
         follower = Constants.create(hardwareMap);
         paths = new RedAudiencePaths();
+        driveDiagnostics = new DriveDiagnostics(hardwareMap,
+                "leftFront","rightFront",
+                "leftBack","rightBack",LOG_TAG);
 
         if (follower != null) {
             follower.setPose(paths.startPose);
         }
 
-        currentState = AutoState.READY;
+        previousPose = follower.pose();
+        currentState = RAAutoState.READY;
         started = false;
         parkingPathStarted = false;
 
@@ -164,148 +165,301 @@ public class RedAudienceAuto extends OpMode {
         stateTimer.reset();
         logTimer.reset();
         started = true;
-        changeState(AutoState.INITIAL_APPROACH_Path);
+        PathUtility.info(LOG_TAG,"Diagnostic_Test= %s"+(TEST_A?"A":"B"));
+        changeState(RAAutoState.INITIAL_APPROACH_Path,"Start Auto");
+    }
+
+    /**
+     * Detect the stationary state
+     */
+    private boolean isStationaryState(){
+        switch (currentState){
+            case INITIAL_SHOOT:
+            case COLLECT_FLOWER:
+            case COLLECT_GARDEN:
+            case WAIT_FOR_AUDIENCE_SCORABLE:
+            case CONFIRM_AUDIENCE_SCORABLE:
+            case SHOOT_GARDEN_POLLEN:
+            case SHOOT_FLOWER_POLLEN:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * check whether the robot starts parking
+     */
+    private boolean parking(){
+        return currentState == RAAutoState.DRIVE_TO_PARK_Path ||
+                currentState == RAAutoState.EMERGENCY_PARK_Path;
+    }
+
+    /**
+     * to stop the follower if the state is stationary.
+     * To detect whether the robot shaking
+     */
+    private void stopForStationaryState(String event){
+        Pose previous = follower.pose();
+        if (testDrive){
+            driveDiagnostics.log(autoTimer.seconds(),
+                    currentState.name(),
+                    event+"Before Stop",follower);
+        }
+
+        follower.stop();
+        Pose after = follower.pose();
+
+        if (testDrive){
+            driveDiagnostics.log(autoTimer.seconds(),
+                    currentState.name(),
+                    event+"After Stop",follower);
+        }
+
+        if (testDrive){
+            driveDiagnostics.logPoseDifference(autoTimer.seconds(),
+                    currentState.name(),previous,after);
+        }
+
+        PathUtility.logPose(LOG_TAG,event,follower,autoTimer,currentState);
+    }
+
+
+    /**
+     * Begin a path
+     */
+    private void beginPath(String name, Path path,Pose target){
+        PathUtility.info(LOG_TAG,PathUtility.pathStart(autoTimer.seconds(),name,target));
+        follower.follow(path);
+        if (testDrive){
+            driveDiagnostics.log(autoTimer.seconds(),
+                    currentState.name(),
+                    name+"Path started",follower);
+        }
+    }
+
+    /**
+     * Detects gross discontinuities in the Pedro pose, such as a Pinpoint
+     * read failure causing an unexpected (0,0,0) pose.
+     * @return true if the pose is finite and continuous
+     */
+    private boolean validLocalization() {
+        Pose now = follower.pose();
+        if (now == null || !Double.isFinite(now.x()) ||
+                !Double.isFinite(now.y()) || !Double.isFinite(now.heading())) return false;
+        if (previousPose != null) {
+            double distance = Math.hypot(now.x() - previousPose.x(),
+                    now.y() - previousPose.y());
+            double angle = Math.abs(Math.toDegrees(PathUtility.angleDifference(
+                    now.heading(), previousPose.heading())));
+            if (distance > MAX_POSITION_JUMP_INCHES || angle > MAX_HEADING_JUMP_DEGREES) {
+                RobotLog.ee(LOG_TAG,
+                        "LOCALIZATION_JUMP dx=%.2f headingDelta=%.1f", distance, angle);
+                return false;
+            }
+        }
+        previousPose = now;
+        return true;
+    }
+
+    /**
+     * Immediately stops the follower on a detected safety fault.
+     * @param reason explanation included in RobotLog and telemetry
+     */
+    private void fault(String reason) {
+        faultReason = reason;
+        PathUtility.error(LOG_TAG,"Fault"+reason);
+        if (follower!=null) stopForStationaryState("Fault");
+        currentState = RAAutoState.FAULT;
+    }
+
+    /** Displays current currentState, time, localization and fault reason. */
+    private void showTelemetry() {
+        telemetry.addData("State", currentState);
+        telemetry.addData("Auto seconds", "%.2f / %.0f", autoTimer.seconds(), AUTO_SECONDS);
+        telemetry.addData("Time Elapsed","%.2f",stateTimer.seconds());
+        telemetry.addData("Remaining", "%.2f", Math.max(0, AUTO_SECONDS - autoTimer.seconds()));
+        telemetry.addData("Navigation only", NAVIGATION_ONLY);
+        telemetry.addData("Fault", faultReason);
+        if (follower != null) {
+            Pose pose = follower.pose();
+            telemetry.addData("Pose: ",PathUtility.formatPose(pose));
+            //telemetry.addData("X", "%.2f", pose.x());
+            //telemetry.addData("Y", "%.2f", pose.y());
+            //telemetry.addData("Heading deg", "%.1f", Math.toDegrees(pose.heading()));
+            telemetry.addData("Path busy", follower.isBusy());
+        }
+        telemetry.update();
+    }
+
+    /*
+     *check whether the robt starts Pathing state
+     */
+    private boolean isParkingState(){
+        return currentState == RAAutoState.DRIVE_TO_PARK_Path ||
+                currentState == RAAutoState.EMERGENCY_PARK_Path;
+    }
+    /**
+     * Determines whether the robot must begin parking.
+     *
+     * @return true when the parking reserve has been reached
+     */
+    private boolean mustParkNow() {
+        return autoTimer.seconds()
+                >= AUTO_SECONDS - PARK_RESERVE_SECONDS;
     }
 
     @Override
     public void loop() {
-
-       if (!started){
+        //already done the whole process
+       if (!started || currentState == RAAutoState.FAULT
+               || currentState == RAAutoState.FINISHED){
+           showTelemetry();
            return;
        }
-       follower.update();
-       if(logTimer.seconds()>=Log_interval_seconds){
-           logRobotStatus("Periodic");
+
+       //stop the follower is the state is stationary
+        //only update when it is a path
+       if (TEST_A ||!isStationaryState()) {
+           follower.update();
+       }
+
+       //log trouble
+       if(logTimer.seconds()>=LOG_INTERVAL_SECONDS){
+           if (testDrive){
+               String event = TEST_A? "Test A": "Test B";
+               driveDiagnostics.log(autoTimer.seconds(),
+                       currentState.name(),
+                       event+"Periodic",follower);
+           }
            logTimer.reset();
        }
+
+       //check odom error
+       if (!validLocalization()){
+           fault("Pose discontinuity / invalid localization");
+           showTelemetry();
+           return;
+       }
+
+       //30 seconds run out
+       if (autoTimer.seconds()>=AUTO_SECONDS){
+           changeState(RAAutoState.FINISHED,"30 seconds due");
+           showTelemetry();
+           return;
+       }
+
         /*
          * TODO: Update any subsystem that requires periodic updates,
          * including your existing Vision and Shooter implementations.
          */
+        //let shooting flower pollen complete, even before emergency parking
+        boolean protectedFlowerShooting = currentState == RAAutoState.SHOOT_FLOWER_POLLEN;
 
-        boolean parking = currentState == AutoState.DRIVE_TO_PARK_Path
-                || currentState == AutoState.EMERGENCY_PARK_Path
-                || currentState == AutoState.FINISHED;
-        boolean protectedFlowerShooting = currentState == AutoState.SHOOT_FLOWER_POLLEN;
-
-        if (mustParkNow()
-                && !parking
-                && !protectedFlowerShooting) {
-
-            changeState(AutoState.EMERGENCY_PARK_Path);
+        //emergency parking
+        if (!protectedFlowerShooting && !isParkingState() && mustParkNow()) {
+            PathUtility.warning(LOG_TAG,PathUtility.deadline(autoTimer.seconds(),
+                    AUTO_SECONDS-autoTimer.seconds(),PARK_RESERVE_SECONDS));
+            changeState(RAAutoState.EMERGENCY_PARK_Path, "Parking Time Reserved");
+            showTelemetry();
+            return;
         }
 
 
+        double elapsed = autoTimer.seconds();
+        boolean pathComplete = elapsed>=0.05 && !follower.isBusy();
+
         switch (currentState) {
             case INITIAL_APPROACH_Path:
-                if(pathFinished()) changeState(AutoState.INITIAL_SHOOT);
+                if(pathComplete) changeState(RAAutoState.INITIAL_SHOOT,"Ready to Shoot");
                 break;
             case INITIAL_SHOOT:
                 if (shootingFinished()) {
-                    changeState(AutoState.DRIVE_TO_GARDEN_Path);
+                    changeState(RAAutoState.DRIVE_TO_GARDEN_Path,"Shoot Completed");
                 }
                 break;
-
             case DRIVE_TO_GARDEN_Path:
-                if (pathFinished()) {
-                    changeState(AutoState.COLLECT_GARDEN);
+                if (pathComplete) {
+                    changeState(RAAutoState.COLLECT_GARDEN,"Arrived at Garden");
                 }
                 break;
             case COLLECT_GARDEN:
                 if (collectionFinished()) {
                     //stopCollectionGarden();
-                    changeState(AutoState.GARDEN_TO_AUDIENCE_Path);
+                    changeState(RAAutoState.GARDEN_TO_AUDIENCE_Path,"Garden Collection Completed.");
                 }
                 break;
-
             case GARDEN_TO_AUDIENCE_Path:
-                if (pathFinished()) {
-                    changeState(AutoState.WAIT_FOR_AUDIENCE_SCORABLE);
+                if (pathComplete) {
+                    changeState(RAAutoState.WAIT_FOR_AUDIENCE_SCORABLE,"Arrived at Shooting pose");
                 }
                 break;
 
             case WAIT_FOR_AUDIENCE_SCORABLE:
-                if (!hasTimeFor(TEST_SHOOT,PARK_RESERVE_SECONDS)){
-                    changeState(AutoState.EMERGENCY_PARK_Path);
-                }
-                else if (isAudienceCellScorable()) {
-                    changeState(AutoState.SHOOT_GARDEN_POLLEN);
+                if (isAudienceCellScorable()){
+                    changeState(RAAutoState.SHOOT_GARDEN_POLLEN,"Audience Cell Ready");
+                }else if (!hasTimeFor(TEST_SHOOT,PARK_RESERVE_SECONDS)){
+                    changeState(RAAutoState.EMERGENCY_PARK_Path,"Audience Cell Not Ready, go park");
                 }
                 break;
-
             case SHOOT_GARDEN_POLLEN:
                 if (shootingFinished()) {
-
                     if (canAttemptFlowerCycle()) {
-                        changeState(AutoState.DRIVE_TO_FLOWER_Path);
+                        changeState(RAAutoState.DRIVE_TO_FLOWER_Path,"Shooting garden pollen finished");
                     }else{
-                        changeState(AutoState.EMERGENCY_PARK_Path);
+                        changeState(RAAutoState.EMERGENCY_PARK_Path, "no time for flower collection");
                     }
                 }
                 break;
 
             case DRIVE_TO_FLOWER_Path:
-                if (pathFinished()) {
-                    changeState(AutoState.COLLECT_FLOWER);
+                if (pathComplete) {
+                    changeState(RAAutoState.COLLECT_FLOWER,"Arrived at Flower");
                 }
                 break;
 
             case COLLECT_FLOWER:
                 if (collectionFinished()) {
                     //stopFlowerCollection();
-                    changeState(AutoState.FLOWER_TO_AUDIENCE_Path);
+                    changeState(RAAutoState.FLOWER_TO_AUDIENCE_Path,"Collection Flower finished");
                 }
                 break;
 
             case FLOWER_TO_AUDIENCE_Path:
-                if (pathFinished()){
-                    changeState(AutoState.CONFIRM_AUDIENCE_SCORABLE);
+                if (pathComplete){
+                    changeState(RAAutoState.CONFIRM_AUDIENCE_SCORABLE,"Arrived at Audience");
                 }
                 break;
             case CONFIRM_AUDIENCE_SCORABLE:
                 if (isAudienceCellScorable()) {
                     if (hasTimeFor(TEST_SHOOT,PARK_RESERVE_SECONDS)) {
-                        changeState(AutoState.SHOOT_FLOWER_POLLEN);
+                        changeState(RAAutoState.SHOOT_FLOWER_POLLEN,"Audience Cell Ready for shooting");
                     }else{
-                        changeState(AutoState.EMERGENCY_PARK_Path);
+                        changeState(RAAutoState.EMERGENCY_PARK_Path,"No time to shoot, emergency park");
                     }
-                } else if(stateTimer.seconds()>=MAX_AUDIENCE_WAIT){
-                    changeState(AutoState.EMERGENCY_PARK_Path);
                 }
                 break;
-
             case SHOOT_FLOWER_POLLEN:
                 if (shootingFinished()) {
-                    changeState(AutoState.DRIVE_TO_PARK_Path);
+                    changeState(RAAutoState.DRIVE_TO_PARK_Path,"Finish last shooting, Go Park");
                 }
                 break;
 
             case DRIVE_TO_PARK_Path:
-                if (parkingPathStarted && pathFinished()) {
-                    changeState(AutoState.FINISHED);
+                if (parkingPathStarted && pathComplete) {
+                    changeState(RAAutoState.FINISHED,"complete the auto");
                 }
                 break;
             case EMERGENCY_PARK_Path:
-                if (parkingPathStarted && pathFinished()) {
-                    changeState(AutoState.FINISHED);
+                if (parkingPathStarted && pathComplete) {
+                    changeState(RAAutoState.FINISHED,"Complete the auto with emergency parking");
                 }
                 break;
             case FINISHED:
                 break;
         }
 
-        telemetry.addData("State", currentState);
-        telemetry.addData("Last transition", lastTransition);
-        telemetry.addData("Transition reason", transitionReason);
-        telemetry.addData("state time", "%.1f", stateTimer.seconds());
-        telemetry.addData("Auto time", "%.1f", autoTimer.seconds());
-        telemetry.addData("Remaining", "%.1f",
-                Math.max(0, AUTO_DURATION_SECONDS - autoTimer.seconds()));
-        telemetry.addData("Path busy", follower.isBusy());
-        telemetry.addData("X", "%.1f", follower.pose().x());
-        telemetry.addData("Y", "%.1f", follower.pose().y());
-        telemetry.addData("Heading", "%.1f", Math.toDegrees(follower.pose().heading()));
-        telemetry.update();
+        showTelemetry();
     }
 
     /**
@@ -313,30 +467,35 @@ public class RedAudienceAuto extends OpMode {
      *
      * @param nextState state to execute on the next loop
      */
-    private void changeState(AutoState nextState) {
+    private void changeState(RAAutoState nextState, String reason) {
 
-        if(currentState == AutoState.DRIVE_TO_PARK_Path && nextState!=AutoState.FINISHED){
+        if (currentState == RAAutoState.FINISHED ||
+        currentState== RAAutoState.FAULT) {return;}
+
+        if(parking() &&nextState != RAAutoState.FINISHED
+                && nextState!=RAAutoState.FAULT){
+
             return;//do not interrupt parking to earn points
         }
-        if (currentState == AutoState.EMERGENCY_PARK_Path && nextState!=AutoState.FINISHED){
-            return;//do not interrupt emergency parking
-        }
-        stopCollection();
-        stopShooting();
 
-        previousState = currentState;
-        lastTransition = previousState +"->"+nextState;
-
-        RobotLog.ii("RedAudienceAuto","Time: %.2f Tansition: %s",
-                autoTimer.seconds(),lastTransition);
-        logRobotStatus("Exit_to_"+nextState);
+        PathUtility.info(LOG_TAG,
+                PathUtility.stateChange(autoTimer.seconds(),currentState,
+                        nextState,reason));
+        //stopCollection();
+        //stopShooting();
 
         currentState = nextState;
         stateTimer.reset();
 
+        if(isStationaryState()){
+            stopForStationaryState("Stationary State Entry");
+        }
+
         switch(nextState){
             case INITIAL_APPROACH_Path:
-                follower.follow(paths.initialApproach);
+                //follower.follow(paths.initialApproach);
+                beginPath("Initial Approach",paths.initialApproach,
+                        paths.shootPose);
                 break;
             case INITIAL_SHOOT:
             case SHOOT_FLOWER_POLLEN:
@@ -344,7 +503,9 @@ public class RedAudienceAuto extends OpMode {
                 beginShooting();
                 break;
             case DRIVE_TO_GARDEN_Path:
-                follower.follow(paths.driveToGarden);
+                //follower.follow(paths.driveToGarden);
+                beginPath("Drive to Garden",
+                        paths.driveToGarden,paths.gardenPose);
                 break;
             case COLLECT_FLOWER:
                 beginCollectionFlower();
@@ -353,24 +514,38 @@ public class RedAudienceAuto extends OpMode {
                 beginCollectionGarden();
                 break;
             case GARDEN_TO_AUDIENCE_Path:
-                follower.follow(paths.gardenToAudience);
+                //follower.follow(paths.gardenToAudience);
+                beginPath("Garden to Audience",paths.gardenToAudience,
+                        paths.shootPose);
                 break;
             case DRIVE_TO_FLOWER_Path:
-                follower.follow(paths.driveToFlower);
+                //follower.follow(paths.driveToFlower);
+                beginPath("Drive to Flower",paths.driveToFlower,paths.flowerPose);
                 break;
             case FLOWER_TO_AUDIENCE_Path:
-                follower.follow(paths.flowerToAudience);
+                //follower.follow(paths.flowerToAudience);
+                beginPath("Flower to Audience",paths.flowerToAudience,paths.shootPose);
                 break;
             case EMERGENCY_PARK_Path:
-                follower.stop();
-                Path parkingPath = paths.emergencyPark(follower.pose());
+                //follower.stop();
+                stopForStationaryState("Emergency Park");
+                Pose current = follower.pose();
+                if (current == null){
+                    fault("No pose for emergency park");
+                    return;
+                }
                 parkingPathStarted = true;
-                follower.follow(parkingPath);
+                beginPath("Emergency Park",
+                        paths.emergencyPark(current),
+                        paths.parkPose);
+                //follower.follow(parkingPath);
                 break;
             case DRIVE_TO_PARK_Path:
 
                 parkingPathStarted = true;
-                follower.follow(paths.driveToPark);
+                //follower.follow(paths.driveToPark);
+                beginPath("Drive to Park",
+                        paths.driveToPark,paths.parkPose);
                 break;
             case WAIT_FOR_AUDIENCE_SCORABLE:
                 break;
@@ -378,31 +553,27 @@ public class RedAudienceAuto extends OpMode {
             case CONFIRM_AUDIENCE_SCORABLE:
                 break;
             case FINISHED:
+                if(testDrive){
+                    driveDiagnostics.log(autoTimer.seconds(),
+                            currentState.name(),
+                            "In finished, before calling stop",follower);
+                }
+                stopForStationaryState("Finished");
+                follower.update();
+                if(testDrive)
+                {
+                    driveDiagnostics.log(autoTimer.seconds(),
+                            currentState.name(),
+                            "In finished, after calling stop",follower);
+                    driveDiagnostics.stopAllMotors();
+                }
                 finished = true;
                 break;
-
+            default:
+                break;
         }
     }
 
-    /**
-     * Determines whether the robot must begin parking.
-     *
-     * @return true when the parking reserve has been reached
-     */
-    private boolean mustParkNow() {
-        return autoTimer.seconds()
-                >= AUTO_DURATION_SECONDS - PARK_RESERVE_SECONDS;
-    }
-
-
-    /**
-     * Checks whether the active Pedro path has completed.
-     *
-     * @return true if the follower is no longer following a path
-     */
-    private boolean pathFinished() {
-        return !follower.isBusy();
-    }
 
     /**
      * Determines whether there is sufficient time to attempt
@@ -540,7 +711,7 @@ public class RedAudienceAuto extends OpMode {
      * preserving enough time for parking.
      */
     private boolean hasTimeFor(double taskSeconds, double parkSeconds){
-        double remaining = AUTO_DURATION_SECONDS - autoTimer.seconds();
+        double remaining = AUTO_SECONDS - autoTimer.seconds();
         return remaining >= taskSeconds + parkSeconds+SAFETY_MARGIN_SECONDS;
     }
 
