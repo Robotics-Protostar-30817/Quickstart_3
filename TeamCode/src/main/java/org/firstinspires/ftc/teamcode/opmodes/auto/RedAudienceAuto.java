@@ -271,6 +271,7 @@ public class RedAudienceAuto extends OpMode {
         PathUtility.error(LOG_TAG,"Fault"+reason);
         if (follower!=null) stopForStationaryState("Fault");
         currentState = RAAutoState.FAULT;
+        driveDiagnostics.stopAllMotors();
     }
 
     /** Displays current currentState, time, localization and fault reason. */
@@ -366,7 +367,7 @@ public class RedAudienceAuto extends OpMode {
         }
 
 
-        double elapsed = autoTimer.seconds();
+        double elapsed = stateTimer.seconds();
         boolean pathComplete = elapsed>=0.05 && !follower.isBusy();
 
         switch (currentState) {
@@ -596,7 +597,7 @@ public class RedAudienceAuto extends OpMode {
 
         /*
          * TODO: Connect your existing Shooter subsystem.
-         *
+         * AprilTagCluster is detected as scorable
          * Aim turret using Vision CELL X/Y.
          * Spin up flywheel.
          * Feed POLLEN sequentially.

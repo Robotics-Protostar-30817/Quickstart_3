@@ -32,7 +32,8 @@ public final class RedScoringAuto extends OpMode {
      */
     private enum RSAutoState implements PathUtility.AutoState {
         READY, INITIAL_APPROACH_Path, 
-        WAIT_FOR_SCORING_SCORABLE, 
+        WAIT_FOR_SCORING_SCORABLE,
+        CONFIRM_SCORING_SCORABLE,
         SHOOT_FIRST,
         DRIVE_TO_FLOWER_Path, 
         COLLECT_FLOWER, 
@@ -75,11 +76,14 @@ public final class RedScoringAuto extends OpMode {
     private static final double NO_PROGRESS_TIMEOUT_SECONDS=2.0;
     private static final double MAX_ATTEMPTS_SECONDS=5.0;
     private static final double MIN_PROGRESS_INCHES=1;
+    private static boolean ENABLE_FLOWER_CYCLE= true;//test only the first part shoot and garden.
 
-
+    private static final double SAFETY_MARGIN_SECONDS=1.0;
     private static final double MAX_POSITION_JUMP_INCHES = 12.0;
     private static final double MAX_HEADING_JUMP_DEGREES = 100.0;
-
+    private static final double DRIVE_TO_FLOWER_TIME = 1.0;
+    private static final double FLOWER_CYCLE=2*DRIVE_TO_FLOWER_TIME +
+            TEST_COLLECTION + TEST_SHOOT; //FULL CYCLE
     private final ElapsedTime autoTimer = new ElapsedTime();
     private final ElapsedTime stateTimer = new ElapsedTime();
     private final ElapsedTime logTimer = new ElapsedTime();
@@ -250,13 +254,19 @@ public final class RedScoringAuto extends OpMode {
                 break;
             case WAIT_FOR_SCORING_SCORABLE:
                 // Navigation-only: simulated CELL status; not real vision.
-                if (isAudienceScorable()) {
+                if (isScoringScorable()) {
                     changeState(RSAutoState.SHOOT_FIRST,"The cell is ready");
+                }else if(!hasTimeFor(0,PARK_RESERVE_SECONDS)){
+                    changeState(RSAutoState.EMERGENCY_PARK_Path,"Scoring Cell is not ready");
                 }
                 break;
             case SHOOT_FIRST:
                 if (shootingFinished()) {
-                    changeState(RSAutoState.DRIVE_TO_FLOWER_Path,"The shoot is complete");
+                    if (canAttemptFlowerCycle()) {
+                        changeState(RSAutoState.DRIVE_TO_FLOWER_Path, "The shoot is complete");
+                    }else{
+                        changeState(RSAutoState.EMERGENCY_PARK_Path, "no time for flower cycle");
+                    }
                 }
                 break;
             case DRIVE_TO_FLOWER_Path:
@@ -268,7 +278,17 @@ public final class RedScoringAuto extends OpMode {
                 }
                 break;
             case FLOWER_TO_SCORING_Path:
-                if (pathComplete) changeState(RSAutoState.SHOOT_SECOND, "Arrived at Scoring ");
+                //if (pathComplete) changeState(RSAutoState.SHOOT_SECOND, "Arrived at Scoring ");
+                if (pathComplete) changeState(RSAutoState.CONFIRM_SCORING_SCORABLE,"Arrived at Scoring pose");
+                break;
+            case CONFIRM_SCORING_SCORABLE:
+                if (isScoringScorable()) {
+                    if (hasTimeFor(TEST_SHOOT,PARK_RESERVE_SECONDS)) {
+                        changeState(RSAutoState.SHOOT_SECOND,"Scroing Cell Ready for shooting");
+                    }else{
+                        changeState(RSAutoState.EMERGENCY_PARK_Path,"No time to shoot, emergency park");
+                    }
+                }
                 break;
             case SHOOT_SECOND:
                 if (shootingFinished()) {
@@ -311,6 +331,9 @@ public final class RedScoringAuto extends OpMode {
                 beginPath("Initial Approach Path",
                         paths.initialApproach,
                         paths.scoringPose);
+                break;
+            case WAIT_FOR_SCORING_SCORABLE:
+            case CONFIRM_SCORING_SCORABLE:
                 break;
             case DRIVE_TO_FLOWER_Path:
                 beginPath("Drive to Flower",
@@ -369,7 +392,27 @@ public final class RedScoringAuto extends OpMode {
         }
     }
 
-    private boolean isAudienceScorable(){
+    /**
+     * Determines whether there is sufficient time to attempt
+     * the optional Flower collection and shooting cycle.
+     *
+     * @return true if the optional cycle may be attempted
+     */
+    private boolean canAttemptFlowerCycle(){
+        boolean restTask = hasTimeFor(FLOWER_CYCLE,PARK_RESERVE_SECONDS);
+        return ENABLE_FLOWER_CYCLE && restTask;
+    }
+
+    /**
+     * Checks whether the next task can be completed while
+     * preserving enough time for parking.
+     */
+    private boolean hasTimeFor(double taskSeconds, double parkSeconds){
+        double remaining = AUTO_SECONDS - autoTimer.seconds();
+        return remaining >= taskSeconds + parkSeconds+SAFETY_MARGIN_SECONDS;
+    }
+
+    private boolean isScoringScorable(){
         //will change to vision detection
         return stateTimer.seconds() >= SIMULATED_SCORABLE_WAIT_SECONDS;
     }
@@ -508,6 +551,7 @@ public final class RedScoringAuto extends OpMode {
         PathUtility.error(LOG_TAG,"Fault"+reason);
         if (follower!=null) stopForStationaryState("Fault");
         currentState = RSAutoState.FAULT;
+        driveDiagnostics.stopAllMotors();
     }
 
 
