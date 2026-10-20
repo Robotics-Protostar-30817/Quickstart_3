@@ -11,14 +11,20 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.pedro.auto.DriveDiagnostics;
 import org.firstinspires.ftc.teamcode.pedro.auto.PathUtility;
 import org.firstinspires.ftc.teamcode.pedro.auto.RedAudiencePaths;
+import org.firstinspires.ftc.teamcode.subsystems.Vision;
+import org.firstinspires.ftc.vision.apriltag.AprilTagClusterDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.firstinspires.ftc.teamcode.pedro.auto.PathCompletionRecovery;
+
+import java.util.Locale;
 
 /**
  * Autonomous routine for one Red alliance robot operating in the
@@ -74,6 +80,10 @@ public class RedAudienceAuto extends OpMode {
      */
     private static final boolean NAVIGATION_ONLY = true;
     private static final String LOG_TAG = "RedAudienceAuto";
+
+    private final Vision cam = Robot.INSTANCE.vision;
+    private boolean audienceCellScorable = false;
+    private String audienceCellStatus = "Not checked";
     //only when audience cell is ready again and all pollens are shot
     private static boolean ENABLE_FLOWER_CYCLE= true;//test only the first part shoot and garden.
 
@@ -137,6 +147,8 @@ public class RedAudienceAuto extends OpMode {
         }
 
         follower = Constants.create(hardwareMap);
+        cam.init(hardwareMap,telemetry);//camera
+        PathUtility.info(LOG_TAG,"Vision initialized");
         paths = new RedAudiencePaths();
         driveDiagnostics = new DriveDiagnostics(hardwareMap,
                 "leftFront","rightFront",
@@ -148,6 +160,7 @@ public class RedAudienceAuto extends OpMode {
 
         previousPose = follower.pose();
         currentState = RAAutoState.READY;
+
         started = false;
         parkingPathStarted = false;
 
@@ -549,9 +562,11 @@ public class RedAudienceAuto extends OpMode {
                         paths.driveToPark,paths.parkPose);
                 break;
             case WAIT_FOR_AUDIENCE_SCORABLE:
-                break;
             //case WAIT_FOR_AUDIENCE_AGAIN:
             case CONFIRM_AUDIENCE_SCORABLE:
+                PathUtility.info(LOG_TAG,"Waiting for scorable Audience cell"+nextState);
+                PathUtility.logPose(LOG_TAG,"Cell Wait start",follower,autoTimer,currentState);
+
                 break;
             case FINISHED:
                 if(testDrive){
@@ -690,21 +705,36 @@ public class RedAudienceAuto extends OpMode {
     }
 
     /**
-     * Determines whether the Red Audience CELL is scorable.
-     *
-     * @return true when Vision confirms a scorable CELL
+     * Use the current Vision AprilTagCluster detection to confirm the
+     * Red Audience cell is scorable.
+     * A missing detection is treated as not scorable.
+     * @return true if the cell is scorable
      */
-    private boolean isAudienceCellScorable() {
-
-        if (NAVIGATION_ONLY) {
-            return stateTimer.seconds()>= AUDIENCE_WAIT;
+    private boolean isAudienceCellScorable(){
+        //will change to vision detection
+        //return stateTimer.seconds() >= SIMULATED_SCORABLE_WAIT_SECONDS;
+        audienceCellScorable = false;
+        audienceCellStatus = "No scorable red scoring cluster";
+        for(AprilTagDetection detection: cam.getDetections()){
+            if(!(detection instanceof AprilTagClusterDetection)) continue;
+            AprilTagClusterDetection cluster = (AprilTagClusterDetection) detection;
+            if(cluster.metadata == null || cluster.metadata.name == null) continue;
+            String name = cluster.metadata.name.toUpperCase(Locale.ROOT);
+            if(!name.contains("RED") || !name.contains("AUDIENCE")) continue;
+            if(cam.isCellScorable(cluster)){
+                audienceCellScorable = true;
+                audienceCellStatus = cluster.metadata.name+" roll"
+                        +String.format(Locale.US, "%.1f", cluster.ftcPose.roll);
+                break;
+            }
+            audienceCellStatus = cluster.metadata.name+" detected, not scorable";
         }
-
-        /*
-         * TODO: Call your existing Vision roll-based
-         * scorable CELL detection method.
-         */
-        return false;
+        if (audienceCellScorable == true){
+            PathUtility.info(LOG_TAG,
+                    String.format(Locale.US,"Red Audience Cell: detected%b, scorable=%b, cluster=%s",
+                            true,true,"Red Audience"));
+        }
+        return audienceCellScorable;
     }
 
     /**
@@ -724,6 +754,11 @@ public class RedAudienceAuto extends OpMode {
         if (follower != null) {
             follower.stop();
         }
+        if (driveDiagnostics!=null){
+            driveDiagnostics.stopAllMotors();
+        }
+        cam.close();
+        PathUtility.info(LOG_TAG,"Auto stopped, camera closed, drivetrain stopped.");
     }
 }
 

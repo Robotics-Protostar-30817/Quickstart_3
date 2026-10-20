@@ -7,11 +7,16 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
+
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.pedro.auto.DriveDiagnostics;
 import org.firstinspires.ftc.teamcode.pedro.auto.PathCompletionRecovery;
 import org.firstinspires.ftc.teamcode.pedro.auto.PathUtility;
 import org.firstinspires.ftc.teamcode.pedro.auto.RedScoringPaths;
+import org.firstinspires.ftc.teamcode.subsystems.Vision;
+import org.firstinspires.ftc.vision.apriltag.AprilTagClusterDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 import java.util.Locale;
 
@@ -56,6 +61,9 @@ public final class RedScoringAuto extends OpMode {
     private static final boolean testDrive = true;
     private DriveDiagnostics driveDiagnostics;
 
+    private static final Vision cam = Robot.INSTANCE.vision;
+    private static boolean scoringCellScorable = false;
+    private String scoringCellStatus = "Not Checked";
     private static final String LOG_TAG ="RedScoringAuto";
     private static final double AUTO_SECONDS = 30.0;
     private static final double PARK_RESERVE_SECONDS = 3.0;
@@ -103,6 +111,7 @@ public final class RedScoringAuto extends OpMode {
     private boolean isStationaryState(){
         switch (currentState){
             case WAIT_FOR_SCORING_SCORABLE:
+            case CONFIRM_SCORING_SCORABLE:
             case SHOOT_FIRST:
             case COLLECT_FLOWER:
             case SHOOT_SECOND:
@@ -178,6 +187,8 @@ public final class RedScoringAuto extends OpMode {
 
         follower.setPose(paths.startPose);
         previousPose = follower.pose();
+        cam.init(hardwareMap,telemetry);//camera
+        PathUtility.info(LOG_TAG,"Vision initialized");
         currentState = RSAutoState.READY;
         started = false;
         parkingPathStarted = false;
@@ -334,6 +345,8 @@ public final class RedScoringAuto extends OpMode {
                 break;
             case WAIT_FOR_SCORING_SCORABLE:
             case CONFIRM_SCORING_SCORABLE:
+                PathUtility.info(LOG_TAG,"Waiting for scorable Scoring cell"+nextState);
+                PathUtility.logPose(LOG_TAG,"Cell Wait start",follower,autoTimer,currentState);
                 break;
             case DRIVE_TO_FLOWER_Path:
                 beginPath("Drive to Flower",
@@ -412,10 +425,39 @@ public final class RedScoringAuto extends OpMode {
         return remaining >= taskSeconds + parkSeconds+SAFETY_MARGIN_SECONDS;
     }
 
+    /**
+     * Use the current Vision AprilTagCluster detection to confirm the
+     * Red Scoring cell is scorable.
+     * A missing detection is treated as not scorable.
+     * @return true if the cell is scorable
+     */
     private boolean isScoringScorable(){
         //will change to vision detection
-        return stateTimer.seconds() >= SIMULATED_SCORABLE_WAIT_SECONDS;
+        //return stateTimer.seconds() >= SIMULATED_SCORABLE_WAIT_SECONDS;
+        scoringCellScorable = false;
+        scoringCellStatus = "No scorable red scoring cluster";
+        for(AprilTagDetection detection: cam.getDetections()){
+            if(!(detection instanceof AprilTagClusterDetection)) continue;
+            AprilTagClusterDetection cluster = (AprilTagClusterDetection) detection;
+            if(cluster.metadata == null || cluster.metadata.name == null) continue;
+            String name = cluster.metadata.name.toUpperCase(Locale.ROOT);
+            if(!name.contains("RED") || !name.contains("SCORING")) continue;
+            if(cam.isCellScorable(cluster)){
+                scoringCellScorable = true;
+                scoringCellStatus = cluster.metadata.name+" roll"
+                        +String.format(Locale.US, "%.1f", cluster.ftcPose.roll);
+                break;
+            }
+            scoringCellStatus = cluster.metadata.name+" detected, not scorable";
+        }
+        if (scoringCellScorable == true){
+            PathUtility.info(LOG_TAG,
+                    String.format(Locale.US,"Red Scoring Cell: detected%b, scorable=%b",
+                            true,true));
+        }
+        return scoringCellScorable;
     }
+
     /**
      * Starts the shooting operation.
      */
@@ -579,6 +621,11 @@ public final class RedScoringAuto extends OpMode {
     public void stop() {
         started = false;
         if (follower != null) follower.stop();
+        if (driveDiagnostics!=null){
+            driveDiagnostics.stopAllMotors();
+        }
+        cam.close();
+        PathUtility.info(LOG_TAG,"Auto stopped, camera closed, drivetrain stopped.");
     }
 }
 
