@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 import org.firstinspires.ftc.teamcode.subsystems.Odom;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.subsystems.Vision;
@@ -35,8 +36,8 @@ public class Robot {
     /**
      * Shooter subsystem instance for flywheel launching mechanism.
      */
-    public final Shooter shooter;
-
+    //public final Shooter shooter;
+    public final Flywheel flywheel;
     /**
      * Private constructor initializing all subsystem instances from their respective singletons.
      */
@@ -44,6 +45,7 @@ public class Robot {
         dt = Drivetrain.INSTANCE;
         odom = Odom.INSTANCE;
         vision = Vision.INSTANCE;
-        shooter = Shooter.INSTANCE;
+        //shooter = Shooter.INSTANCE;
+        flywheel = Flywheel.INSTANCE;
     }
 }
