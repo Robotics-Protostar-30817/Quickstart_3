@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.subsystems.Feeder;
 import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 import org.firstinspires.ftc.teamcode.subsystems.Odom;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
@@ -38,14 +39,17 @@ public class Robot {
      */
     //public final Shooter shooter;
     public final Flywheel flywheel;
+    public final Feeder feeder;
     /**
      * Private constructor initializing all subsystem instances from their respective singletons.
      */
     private Robot() {
+
         dt = Drivetrain.INSTANCE;
         odom = Odom.INSTANCE;
         vision = Vision.INSTANCE;
         //shooter = Shooter.INSTANCE;
         flywheel = Flywheel.INSTANCE;
+        feeder = Feeder.INSTANCE;
     }
 }

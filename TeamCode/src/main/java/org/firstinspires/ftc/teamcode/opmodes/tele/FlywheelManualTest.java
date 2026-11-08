@@ -31,7 +31,7 @@ public final class FlywheelManualTest extends OpMode {
 
     private final Flywheel flywheel = Flywheel.INSTANCE;
 
-    private double selectedPower = 0.30;
+    private double selectedPower = 0.30;//initial power setting, it can be increased during testing
 
     private boolean running = false;
 

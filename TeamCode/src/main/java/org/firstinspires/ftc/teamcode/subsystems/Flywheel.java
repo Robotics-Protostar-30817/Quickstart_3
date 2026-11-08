@@ -24,6 +24,7 @@ public final class Flywheel implements Subsystem {
     public static final Flywheel INSTANCE = new Flywheel();
 
     public static final double RATED_MOTOR_RPM = 6000.0; // nominal, not a commanded speed limit
+    public static final double TICKS_PER_REVOLUTION = 28.0; // encoder CPR
     public static final double BELT_RATIO = 1.0; // flywheel RPM / motor output-shaft RPM
 
     private DcMotorEx motor;
