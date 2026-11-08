@@ -11,7 +11,7 @@ import dev.nextftc.core.subsystems.Subsystem;
  */
 public final class Feeder implements Subsystem {
     public static final Feeder INSTANCE = new Feeder();
-    public static final double RATED_NO_LOAD_RPM = 1150.0;
+    public static final double RATED_NO_LOAD_RPM = 1620.0;
 
     private DcMotorEx motor;
     private double commandedPower = 0.0;

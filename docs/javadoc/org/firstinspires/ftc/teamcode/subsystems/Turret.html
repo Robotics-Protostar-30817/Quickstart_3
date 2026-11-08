@@ -58,19 +58,27 @@ loadScripts(document, 'script');</script>
 <li><a href="#field-detail" tabindex="0">Field Details</a>
 <ol class="toc-list">
 <li><a href="#INSTANCE" tabindex="0">INSTANCE</a></li>
+<li><a href="#RATED_MOTOR_RPM" tabindex="0">RATED_MOTOR_RPM</a></li>
+<li><a href="#MOTOR_REVS_PER_TURRET_REV" tabindex="0">MOTOR_REVS_PER_TURRET_REV</a></li>
+<li><a href="#MIN_ANGLE_DEG" tabindex="0">MIN_ANGLE_DEG</a></li>
+<li><a href="#MAX_ANGLE_DEG" tabindex="0">MAX_ANGLE_DEG</a></li>
+<li><a href="#MAX_POWER" tabindex="0">MAX_POWER</a></li>
+<li><a href="#KP" tabindex="0">KP</a></li>
+<li><a href="#ANGLE_TOLERANCE_DEG" tabindex="0">ANGLE_TOLERANCE_DEG</a></li>
 </ol>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
-<li><a href="#init(com.qualcomm.robotcore.hardware.Servo)" tabindex="0">init(Servo)</a></li>
+<li><a href="#init(com.qualcomm.robotcore.hardware.DcMotorEx)" tabindex="0">init(DcMotorEx)</a></li>
+<li><a href="#getTicksPerMotorRevolution()" tabindex="0">getTicksPerMotorRevolution()</a></li>
+<li><a href="#getAngleDegrees()" tabindex="0">getAngleDegrees()</a></li>
+<li><a href="#getEncoderTicks()" tabindex="0">getEncoderTicks()</a></li>
 <li><a href="#setTargetAngle(double)" tabindex="0">setTargetAngle(double)</a></li>
 <li><a href="#getTargetAngle()" tabindex="0">getTargetAngle()</a></li>
-<li><a href="#getServoPosition()" tabindex="0">getServoPosition()</a></li>
-<li><a href="#center()" tabindex="0">center()</a></li>
-<li><a href="#setCenterPosition(double)" tabindex="0">setCenterPosition(double)</a></li>
-<li><a href="#setDegreesPerServoRange(double)" tabindex="0">setDegreesPerServoRange(double)</a></li>
-<li><a href="#setAngleLimits(double,double)" tabindex="0">setAngleLimits(double, double)</a></li>
-<li><a href="#calculateTurretAngle(org.firstinspires.ftc.teamcode.subsystems.Vision.Cell)" tabindex="0">calculateTurretAngle(Vision.Cell)</a></li>
+<li><a href="#isAtTarget()" tabindex="0">isAtTarget()</a></li>
+<li><a href="#setManualPower(double)" tabindex="0">setManualPower(double)</a></li>
+<li><a href="#stop()" tabindex="0">stop()</a></li>
+<li><a href="#isPositionMode()" tabindex="0">isPositionMode()</a></li>
 <li><a href="#periodic()" tabindex="0">periodic()</a></li>
 </ol>
 </li>
@@ -91,23 +99,14 @@ loadScripts(document, 'script');</script>
 </dl>
 <hr>
 <div class="horizontal-scroll">
-<div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">Turret</span>
+<div class="type-signature"><span class="modifiers">public final class </span><span class="element-name type-name-label">Turret</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
 implements dev.nextftc.core.subsystems.Subsystem</span></div>
-<div class="block">Controls the horizontal rotation of the shooter turret using an
-Axon MINI Servo MK2.
+<div class="block">Encoder-relative turret positioning. The position at init() is zero;
+this is NOT an absolute/home reference.
 
-<p>The turret rotates the shooter horizontally so that the shooter
-can point toward the center of a detected CELL.</p>
-
-<p>The servo is controlled using FTC normalized servo positions in
-the range <code>[0.0, 1.0]</code>. A calibrated center servo position
-corresponds to a turret angle of 0 degrees. Positive and negative
-turret angles represent rotation to opposite sides of the robot.</p>
-
-<p>The conversion between turret angle and servo position depends
-on the mechanical linkage and usable servo rotation range and must
-therefore be calibrated on the physical robot.</p></div>
+Set MOTOR_REVS_PER_TURRET_REV to the actual external gear ratio.
+Set safe angle limits for your mechanical installation BEFORE testing.</div>
 </div>
 </section>
 <section class="summary">
@@ -121,11 +120,30 @@ therefore be calibrated on the physical robot.</p></div>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Field</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>static final <a href="Turret.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Turret</a></code></div>
-<div class="col-second even-row-color"><code><a href="#INSTANCE" class="member-name-link">INSTANCE</a></code></div>
-<div class="col-last even-row-color">
-<div class="block">Singleton turret subsystem instance.</div>
-</div>
+<div class="col-first even-row-color"><code>static double</code></div>
+<div class="col-second even-row-color"><code><a href="#ANGLE_TOLERANCE_DEG" class="member-name-link">ANGLE_TOLERANCE_DEG</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static final <a href="Turret.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Turret</a></code></div>
+<div class="col-second odd-row-color"><code><a href="#INSTANCE" class="member-name-link">INSTANCE</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static double</code></div>
+<div class="col-second even-row-color"><code><a href="#KP" class="member-name-link">KP</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static double</code></div>
+<div class="col-second odd-row-color"><code><a href="#MAX_ANGLE_DEG" class="member-name-link">MAX_ANGLE_DEG</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static double</code></div>
+<div class="col-second even-row-color"><code><a href="#MAX_POWER" class="member-name-link">MAX_POWER</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static double</code></div>
+<div class="col-second odd-row-color"><code><a href="#MIN_ANGLE_DEG" class="member-name-link">MIN_ANGLE_DEG</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static double</code></div>
+<div class="col-second even-row-color"><code><a href="#MOTOR_REVS_PER_TURRET_REV" class="member-name-link">MOTOR_REVS_PER_TURRET_REV</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static final double</code></div>
+<div class="col-second odd-row-color"><code><a href="#RATED_MOTOR_RPM" class="member-name-link">RATED_MOTOR_RPM</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
@@ -141,59 +159,41 @@ therefore be calibrated on the physical robot.</p></div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>double</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#calculateTurretAngle(org.firstinspires.ftc.teamcode.subsystems.Vision.Cell)" class="member-name-link">calculateTurretAngle</a><wbr>(<a href="Vision.Cell.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Vision.Cell</a>&nbsp;cell)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Calculates the horizontal turret angle required to point toward the center
-of the cell.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#center()" class="member-name-link">center</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Commands the turret to point straight forward.</div>
-</div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAngleDegrees()" class="member-name-link">getAngleDegrees</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getEncoderTicks()" class="member-name-link">getEncoderTicks</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>double</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getServoPosition()" class="member-name-link">getServoPosition</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Returns the currently commanded FTC servo position.</div>
-</div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTargetAngle()" class="member-name-link">getTargetAngle</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>double</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTargetAngle()" class="member-name-link">getTargetAngle</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Returns the most recently requested turret angle.</div>
-</div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTicksPerMotorRevolution()" class="member-name-link">getTicksPerMotorRevolution</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#init(com.qualcomm.robotcore.hardware.Servo)" class="member-name-link">init</a><wbr>(com.qualcomm.robotcore.hardware.Servo&nbsp;servo)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Initializes the Axon MINI Servo MK2 used to rotate the turret.</div>
-</div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#init(com.qualcomm.robotcore.hardware.DcMotorEx)" class="member-name-link">init</a><wbr>(com.qualcomm.robotcore.hardware.DcMotorEx&nbsp;turretMotor)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isAtTarget()" class="member-name-link">isAtTarget</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isPositionMode()" class="member-name-link">isPositionMode</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#periodic()" class="member-name-link">periodic</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Performs periodic turret processing.</div>
-</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAngleLimits(double,double)" class="member-name-link">setAngleLimits</a><wbr>(double&nbsp;minimumDegrees,
- double&nbsp;maximumDegrees)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setManualPower(double)" class="member-name-link">setManualPower</a><wbr>(double&nbsp;power)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Sets the safe mechanical angular limits of the turret.</div>
+<div class="block">Manual motor power, still constrained by the configured angle limits.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setCenterPosition(double)" class="member-name-link">setCenterPosition</a><wbr>(double&nbsp;position)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Sets the calibrated servo position corresponding to a turret
-angle of 0 degrees.</div>
-</div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setTargetAngle(double)" class="member-name-link">setTargetAngle</a><wbr>(double&nbsp;degrees)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setDegreesPerServoRange(double)" class="member-name-link">setDegreesPerServoRange</a><wbr>(double&nbsp;degrees)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#stop()" class="member-name-link">stop</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Sets the measured turret angular range represented by a servo
-position change of 1.0.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setTargetAngle(double)" class="member-name-link">setTargetAngle</a><wbr>(double&nbsp;angleDegrees)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Sets the desired turret angle relative to the robot's forward
-direction.</div>
+<div class="block">Stop commanding motion; hold with motor BRAKE (not active angle hold).</div>
 </div>
 </div>
 </div>
@@ -220,7 +220,70 @@ direction.</div>
 <h3>INSTANCE</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="Turret.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Turret</a></span>&nbsp;<span class="element-name">INSTANCE</span></div>
-<div class="block">Singleton turret subsystem instance.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="RATED_MOTOR_RPM">
+<h3>RATED_MOTOR_RPM</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">RATED_MOTOR_RPM</span></div>
+<dl class="notes">
+<dt>See Also:</dt>
+<dd>
+<ul class="tag-list">
+<li><a href="../../../../../constant-values.html#org.firstinspires.ftc.teamcode.subsystems.Turret.RATED_MOTOR_RPM">Constant Field Values</a></li>
+</ul>
+</dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="MOTOR_REVS_PER_TURRET_REV">
+<h3>MOTOR_REVS_PER_TURRET_REV</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">MOTOR_REVS_PER_TURRET_REV</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="MIN_ANGLE_DEG">
+<h3>MIN_ANGLE_DEG</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">MIN_ANGLE_DEG</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="MAX_ANGLE_DEG">
+<h3>MAX_ANGLE_DEG</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">MAX_ANGLE_DEG</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="MAX_POWER">
+<h3>MAX_POWER</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">MAX_POWER</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="KP">
+<h3>KP</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">KP</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="ANGLE_TOLERANCE_DEG">
+<h3>ANGLE_TOLERANCE_DEG</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">ANGLE_TOLERANCE_DEG</span></div>
 </div>
 </section>
 </li>
@@ -233,18 +296,34 @@ direction.</div>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="init(com.qualcomm.robotcore.hardware.Servo)">
+<section class="detail" id="init(com.qualcomm.robotcore.hardware.DcMotorEx)">
 <h3>init</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">init</span><wbr><span class="parameters">(com.qualcomm.robotcore.hardware.Servo&nbsp;servo)</span></div>
-<div class="block">Initializes the Axon MINI Servo MK2 used to rotate the turret.
-
-<p>After initialization, the turret is commanded to the calibrated
-center position, corresponding to a turret angle of 0 degrees.</p></div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>servo</code> - turret servo obtained from the FTC hardware map</dd>
-</dl>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">init</span><wbr><span class="parameters">(com.qualcomm.robotcore.hardware.DcMotorEx&nbsp;turretMotor)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="getTicksPerMotorRevolution()">
+<h3>getTicksPerMotorRevolution</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">getTicksPerMotorRevolution</span>()</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="getAngleDegrees()">
+<h3>getAngleDegrees</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">getAngleDegrees</span>()</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="getEncoderTicks()">
+<h3>getEncoderTicks</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">getEncoderTicks</span>()</div>
 </div>
 </section>
 </li>
@@ -252,16 +331,7 @@ center position, corresponding to a turret angle of 0 degrees.</p></div>
 <section class="detail" id="setTargetAngle(double)">
 <h3>setTargetAngle</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setTargetAngle</span><wbr><span class="parameters">(double&nbsp;angleDegrees)</span></div>
-<div class="block">Sets the desired turret angle relative to the robot's forward
-direction.
-
-<p>The requested angle is limited to the configured safe mechanical
-range and converted to an FTC servo position.</p></div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>angleDegrees</code> - requested turret angle in degrees</dd>
-</dl>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setTargetAngle</span><wbr><span class="parameters">(double&nbsp;degrees)</span></div>
 </div>
 </section>
 </li>
@@ -270,122 +340,40 @@ range and converted to an FTC servo position.</p></div>
 <h3>getTargetAngle</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">getTargetAngle</span>()</div>
-<div class="block">Returns the most recently requested turret angle.
-
-<p>This is the commanded angle rather than an independently
-measured physical turret angle.</p></div>
-<dl class="notes">
-<dt>Returns:</dt>
-<dd>requested turret angle in degrees</dd>
-</dl>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="getServoPosition()">
-<h3>getServoPosition</h3>
+<section class="detail" id="isAtTarget()">
+<h3>isAtTarget</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">getServoPosition</span>()</div>
-<div class="block">Returns the currently commanded FTC servo position.</div>
-<dl class="notes">
-<dt>Returns:</dt>
-<dd>normalized servo position in the range <code>[0.0, 1.0]</code></dd>
-</dl>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isAtTarget</span>()</div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="center()">
-<h3>center</h3>
+<section class="detail" id="setManualPower(double)">
+<h3>setManualPower</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">center</span>()</div>
-<div class="block">Commands the turret to point straight forward.
-
-<p>The forward direction corresponds to a turret angle of
-0 degrees.</p></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setManualPower</span><wbr><span class="parameters">(double&nbsp;power)</span></div>
+<div class="block">Manual motor power, still constrained by the configured angle limits.</div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="setCenterPosition(double)">
-<h3>setCenterPosition</h3>
+<section class="detail" id="stop()">
+<h3>stop</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setCenterPosition</span><wbr><span class="parameters">(double&nbsp;position)</span></div>
-<div class="block">Sets the calibrated servo position corresponding to a turret
-angle of 0 degrees.</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>position</code> - normalized FTC servo position in the range
-                <code>[0.0, 1.0]</code></dd>
-</dl>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">stop</span>()</div>
+<div class="block">Stop commanding motion; hold with motor BRAKE (not active angle hold).</div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="setDegreesPerServoRange(double)">
-<h3>setDegreesPerServoRange</h3>
+<section class="detail" id="isPositionMode()">
+<h3>isPositionMode</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setDegreesPerServoRange</span><wbr><span class="parameters">(double&nbsp;degrees)</span></div>
-<div class="block">Sets the measured turret angular range represented by a servo
-position change of 1.0.
-
-<p>For example, if the physical mechanism rotates 180 degrees
-while the servo command changes by 1.0, this value should be
-180 degrees.</p></div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>degrees</code> - angular range in degrees per full servo-position range</dd>
-</dl>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="setAngleLimits(double,double)">
-<h3>setAngleLimits</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setAngleLimits</span><wbr><span class="parameters">(double&nbsp;minimumDegrees,
- double&nbsp;maximumDegrees)</span></div>
-<div class="block">Sets the safe mechanical angular limits of the turret.</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>minimumDegrees</code> - minimum permitted turret angle in degrees</dd>
-<dd><code>maximumDegrees</code> - maximum permitted turret angle in degrees</dd>
-</dl>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="calculateTurretAngle(org.firstinspires.ftc.teamcode.subsystems.Vision.Cell)">
-<h3>calculateTurretAngle</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">calculateTurretAngle</span><wbr><span class="parameters">(<a href="Vision.Cell.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Vision.Cell</a>&nbsp;cell)</span></div>
-<div class="block">Calculates the horizontal turret angle required to point toward the center
-of the cell.
-
-<p>The supplied cell X and Y coordinates describe the detected cell
-position relative to the robot center. The coordinates use the convention: </p>
-
-<ul>
-    <li>+X = right</li>
-    <li>+Y = forward</li>
-    <li>+Z = up</li>
-</ul>
-
-<p>The returned angle uses the turret convention:</p>
-
-<ul>
-    <li>0 degrees = straight forward</li>
-    <li>positive angle = toward robot right</li>
-    <li>negative angle = toward robot left</li>
-</ul>
-
-<p>The Cell Z coordinate is not used directly for horizontal turret rotation.</p></div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>cell</code> - detected Cell containing camera-relative position</dd>
-<dt>Returns:</dt>
-<dd>required horizontal turret angle in degrees.</dd>
-</dl>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isPositionMode</span>()</div>
 </div>
 </section>
 </li>
@@ -394,10 +382,6 @@ position relative to the robot center. The coordinates use the convention: </p>
 <h3>periodic</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">periodic</span>()</div>
-<div class="block">Performs periodic turret processing.
-
-<p>No periodic controller is required because the servo's internal
-controller moves toward the commanded servo position.</p></div>
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code>periodic</code>&nbsp;in interface&nbsp;<code>dev.nextftc.core.subsystems.Subsystem</code></dd>
