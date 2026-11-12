@@ -81,6 +81,11 @@ public class ShooterManualTest extends OpMode {
      */
     private boolean previousDpadDown = false;
 
+    /**
+     * store for X
+     */
+    private boolean previousX = false;
+
 
     /**
      * Initializes the shooter subsystem.
@@ -197,6 +202,15 @@ public class ShooterManualTest extends OpMode {
             Shooter.INSTANCE.stop();
         }
 
+        // X = Toggle flywheel direction
+        if (gamepad1.x && !previousX) {
+
+            shooterRunning = false;
+
+            Shooter.INSTANCE.toggleDirection();
+        }
+
+        previousX = gamepad1.x;
 
         /*
          * Save the current D-pad states for edge detection during
@@ -250,6 +264,11 @@ public class ShooterManualTest extends OpMode {
         telemetry.addLine("");
         telemetry.addLine("A: START   B: STOP");
         telemetry.addLine("D-pad Up/Down: Adjust Power");
+
+        telemetry.addData(
+                "Flywheel Direction",
+                Shooter.INSTANCE.getDirection()
+        );
 
         telemetry.update();
     }

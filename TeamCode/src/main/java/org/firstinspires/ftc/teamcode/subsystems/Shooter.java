@@ -33,6 +33,12 @@ public class Shooter implements Subsystem {
     private DcMotorEx flywheelMotor;
 
     /**
+     * control direction of flywheel motor
+     */
+    private DcMotorSimple.Direction flywheelDirection =
+            DcMotorSimple.Direction.REVERSE;
+
+    /**
      * Currently commanded flywheel motor power.
      */
     private double targetPower = 0.0;
@@ -70,9 +76,8 @@ public class Shooter implements Subsystem {
         /*
          * Verify this direction on the physical robot.
          */
-        flywheelMotor.setDirection(
-                DcMotorSimple.Direction.FORWARD
-        );
+        flywheelDirection = DcMotorSimple.Direction.REVERSE;
+        flywheelMotor.setDirection(flywheelDirection);
 
         /*
          * Use the encoder so that flywheel velocity can be measured.
@@ -107,6 +112,23 @@ public class Shooter implements Subsystem {
                 Math.max(-1.0, Math.min(1.0, power));
 
         flywheelMotor.setPower(targetPower);
+    }
+
+    /**
+     * change motor direction
+     */
+    public void toggleDirection() {
+
+        // Stop the motor before changing direction
+        stop();
+
+        if (flywheelDirection == DcMotorSimple.Direction.REVERSE) {
+            flywheelDirection = DcMotorSimple.Direction.FORWARD;
+        } else {
+            flywheelDirection = DcMotorSimple.Direction.REVERSE;
+        }
+
+        flywheelMotor.setDirection(flywheelDirection);
     }
 
     /**
@@ -184,6 +206,13 @@ public class Shooter implements Subsystem {
         return flywheelMotor.getVelocity();
     }
 
+    /**
+     * gets direction
+     * @return direction of motor
+     */
+    public String getDirection() {
+        return flywheelDirection.toString();
+    }
 
     /**
      * Performs periodic shooter processing.
