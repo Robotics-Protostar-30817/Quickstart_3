@@ -64,12 +64,14 @@ loadScripts(document, 'script');</script>
 <ol class="toc-list">
 <li><a href="#init(com.qualcomm.robotcore.hardware.DcMotorEx)" tabindex="0">init(DcMotorEx)</a></li>
 <li><a href="#setPower(double)" tabindex="0">setPower(double)</a></li>
+<li><a href="#toggleDirection()" tabindex="0">toggleDirection()</a></li>
 <li><a href="#setVelocity(double)" tabindex="0">setVelocity(double)</a></li>
 <li><a href="#getTargetVelocity()" tabindex="0">getTargetVelocity()</a></li>
 <li><a href="#isAtSpeed()" tabindex="0">isAtSpeed()</a></li>
 <li><a href="#stop()" tabindex="0">stop()</a></li>
 <li><a href="#getTargetPower()" tabindex="0">getTargetPower()</a></li>
 <li><a href="#getVelocity()" tabindex="0">getVelocity()</a></li>
+<li><a href="#getDirection()" tabindex="0">getDirection()</a></li>
 <li><a href="#periodic()" tabindex="0">periodic()</a></li>
 </ol>
 </li>
@@ -136,50 +138,60 @@ operating velocity has been characterized.</p></div>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>double</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTargetPower()" class="member-name-link">getTargetPower</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getDirection()" class="member-name-link">getDirection</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Returns the currently commanded motor power.</div>
+<div class="block">gets direction</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>double</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTargetVelocity()" class="member-name-link">getTargetVelocity</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTargetPower()" class="member-name-link">getTargetPower</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Returns the currently requested flywheel velocity.</div>
+<div class="block">Returns the currently commanded motor power.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>double</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getVelocity()" class="member-name-link">getVelocity</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTargetVelocity()" class="member-name-link">getTargetVelocity</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Returns the currently requested flywheel velocity.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>double</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getVelocity()" class="member-name-link">getVelocity</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the measured flywheel motor velocity.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#init(com.qualcomm.robotcore.hardware.DcMotorEx)" class="member-name-link">init</a><wbr>(com.qualcomm.robotcore.hardware.DcMotorEx&nbsp;motor)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#init(com.qualcomm.robotcore.hardware.DcMotorEx)" class="member-name-link">init</a><wbr>(com.qualcomm.robotcore.hardware.DcMotorEx&nbsp;motor)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Initializes the flywheel motor.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isAtSpeed()" class="member-name-link">isAtSpeed</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isAtSpeed()" class="member-name-link">isAtSpeed</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Determines whether the flywheel has reached approximately the requested shooting velocity.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#periodic()" class="member-name-link">periodic</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#periodic()" class="member-name-link">periodic</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Performs periodic shooter processing.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setPower(double)" class="member-name-link">setPower</a><wbr>(double&nbsp;power)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setPower(double)" class="member-name-link">setPower</a><wbr>(double&nbsp;power)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets flywheel motor power.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setVelocity(double)" class="member-name-link">setVelocity</a><wbr>(double&nbsp;velocityTicksPerSecond)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setVelocity(double)" class="member-name-link">setVelocity</a><wbr>(double&nbsp;velocityTicksPerSecond)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Commands that flywheel to run at a specified encoder velocity.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#stop()" class="member-name-link">stop</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#stop()" class="member-name-link">stop</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Stops the flywheel motor.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toggleDirection()" class="member-name-link">toggleDirection</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">change motor direction</div>
 </div>
 </div>
 </div>
@@ -248,6 +260,15 @@ range.</p></div>
 <dt>Parameters:</dt>
 <dd><code>power</code> - requested motor power in the range <code>[-1.0, 1.0]</code></dd>
 </dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="toggleDirection()">
+<h3>toggleDirection</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">toggleDirection</span>()</div>
+<div class="block">change motor direction</div>
 </div>
 </section>
 </li>
@@ -328,6 +349,19 @@ zero-power behavior is configured as FLOAT.</p></div>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>encoder velocity in ticks per second</dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="getDirection()">
+<h3>getDirection</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getDirection</span>()</div>
+<div class="block">gets direction</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>direction of motor</dd>
 </dl>
 </div>
 </section>
