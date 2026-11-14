@@ -65,6 +65,9 @@ public final class Turret implements Subsystem {
         return motor.getCurrentPosition();
     }
 
+    /*
+    * The function is for auto-aimming. After calculation, the calculated angle is set.
+     */
     public void setTargetAngle(double degrees) {
         requireInitialized();
         targetAngleDeg = Range.clip(degrees, MIN_ANGLE_DEG, MAX_ANGLE_DEG);
