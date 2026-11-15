@@ -1,27 +1,65 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Servo;
 import dev.nextftc.core.subsystems.Subsystem;
 
-/** Continuous-rotation servo driving the floor intake ramp. */
+/** Positional servo that raises/lowers the floor intake ramp. */
 public final class IntakeRamp implements Subsystem {
     public static final IntakeRamp INSTANCE = new IntakeRamp();
-    public static double INTAKE_POWER = 0.5;
-    private CRServo servo;
-    private double power;
+
+    // PLACEHOLDERS: calibrate with linkage disconnected to avoid mechanical damage.
+    public static double RAISED_POSITION = 0.50;
+    public static double LOWERED_POSITION = 0.60;
+
+    private Servo servo;
+    private boolean lowered;
+
     private IntakeRamp() {}
-    public void init(CRServo servo) {
-        if (servo == null) throw new IllegalArgumentException("Ramp CRServo is null");
-        this.servo = servo; stop();
+
+    public void init(Servo rampServo) {
+        if (rampServo == null) {
+            throw new IllegalArgumentException("Intake ramp servo is null");
+        }
+        servo = rampServo;
+        lowered = false;
+        // Explicitly command a safe initial position.
+        raise();
     }
-    public void setPower(double value) {
+
+    private void command(double position) {
+        if (servo == null) {
+            throw new IllegalStateException("IntakeRamp.init() required");
+        }
+        if (!Double.isFinite(position) || position < 0.0 || position > 1.0) {
+            throw new IllegalStateException("Invalid intake ramp servo position");
+        }
+        servo.setPosition(position);
+    }
+
+    public void lower() {
+        command(LOWERED_POSITION);
+        lowered = true;
+    }
+
+    public void raise() {
+        command(RAISED_POSITION);
+        lowered = false;
+    }
+
+    /** Compatibility with CompleteShooter.startCollecting(). */
+    public void intake() { lower(); }
+
+    /** Compatibility with CompleteShooter.stopCollecting(). */
+    public void stop() { if (servo != null) raise(); }
+
+    /** Returns the last commanded state, not a measured servo position. */
+    public boolean isLowered() { return lowered; }
+
+    /** Returns the last commanded position (FTC Servo does not report physical feedback). */
+    public double getPosition() {
         if (servo == null) throw new IllegalStateException("IntakeRamp.init() required");
-        if (!Double.isFinite(value)) throw new IllegalArgumentException("Invalid ramp power");
-        power = Math.max(-1, Math.min(1, value)); servo.setPower(power);
+        return lowered ? LOWERED_POSITION : RAISED_POSITION;
     }
-    public void intake() { setPower(INTAKE_POWER); }
-    public void stop() { power = 0; if (servo != null) servo.setPower(0); }
-    public double getPower() { return power; }
+
     @Override public void periodic() {}
 }
-

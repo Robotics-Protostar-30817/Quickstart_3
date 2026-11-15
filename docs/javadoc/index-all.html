@@ -110,6 +110,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Independent safety gate preventing POLLEN from reaching the flywheel.</div>
 </dd>
+<dt><a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html#BLOCKER_OPEN_SECONDS" class="member-name-link">BLOCKER_OPEN_SECONDS</a> - Static variable in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/PollenCollectionTest.html#BLOCKER_SERVO_NAME" class="member-name-link">BLOCKER_SERVO_NAME</a> - Static variable in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/PollenCollectionTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">PollenCollectionTest</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/Vision.Cell.Color.html#BLUE" class="member-name-link">BLUE</a> - Enum constant in enum class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/Vision.Cell.Color.html" title="enum class in org.firstinspires.ftc.teamcode.subsystems">Vision.Cell.Color</a></dt>
@@ -135,8 +137,12 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Cancels task tracking without commanding motors.</div>
 </dd>
-<dt><a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html#cancel()" class="member-name-link">cancel()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></dt>
+<dt><a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html#cancelShot()" class="member-name-link">cancelShot()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html#canDetectEmptyStorage()" class="member-name-link">canDetectEmptyStorage()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></dt>
+<dd>
+<div class="block">No storage sensor is present; this method intentionally does not infer emptiness.</div>
+</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/utility/AutoTimeManager.html#canStartTask(double)" class="member-name-link">canStartTask(double)</a> - Method in class org.firstinspires.ftc.teamcode.utility.<a href="org/firstinspires/ftc/teamcode/utility/AutoTimeManager.html" title="class in org.firstinspires.ftc.teamcode.utility">AutoTimeManager</a></dt>
 <dd>
 <div class="block">Determines whether there is enough remaining autonomous time
@@ -160,8 +166,14 @@ to safely begin a proposed task.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html" class="type-name-link" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a> - Class in <a href="org/firstinspires/ftc/teamcode/subsystems/package-summary.html">org.firstinspires.ftc.teamcode.subsystems</a></dt>
 <dd>
-<div class="block">Coordinates AutoAim and Transfer.</div>
+<div class="block">Coordinates intake, vision-guided aiming, blocker and upper feed motor.</div>
 </dd>
+<dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/CompleteShooterTest.html" class="type-name-link" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">CompleteShooterTest</a> - Class in <a href="org/firstinspires/ftc/teamcode/opmodes/tele/package-summary.html">org.firstinspires.ftc.teamcode.opmodes.tele</a></dt>
+<dd>
+<div class="block">Complete shooter integration test.</div>
+</dd>
+<dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/CompleteShooterTest.html#%3Cinit%3E()" class="member-name-link">CompleteShooterTest()</a> - Constructor for class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/CompleteShooterTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">CompleteShooterTest</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/pedro/Constants.html" class="type-name-link" title="class in org.firstinspires.ftc.teamcode.pedro">Constants</a> - Class in <a href="org/firstinspires/ftc/teamcode/pedro/package-summary.html">org.firstinspires.ftc.teamcode.pedro</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/pedro/Constants.html#%3Cinit%3E()" class="member-name-link">Constants()</a> - Constructor for class org.firstinspires.ftc.teamcode.pedro.<a href="org/firstinspires/ftc/teamcode/pedro/Constants.html" title="class in org.firstinspires.ftc.teamcode.pedro">Constants</a></dt>
@@ -237,6 +249,8 @@ to safely begin a proposed task.</div>
 <dl class="index">
 <dt><a href="org/firstinspires/ftc/teamcode/pedro/auto/PathCompletionRecovery.Result.html#FAILED" class="member-name-link">FAILED</a> - Enum constant in enum class org.firstinspires.ftc.teamcode.pedro.auto.<a href="org/firstinspires/ftc/teamcode/pedro/auto/PathCompletionRecovery.Result.html" title="enum class in org.firstinspires.ftc.teamcode.pedro.auto">PathCompletionRecovery.Result</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html#FEED_POWER" class="member-name-link">FEED_POWER</a> - Static variable in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/pedro/auto/RedScoringPaths.html#fixHeadingStraight(com.pedropathing.math.Pose,com.pedropathing.math.Pose)" class="member-name-link">fixHeadingStraight(Pose, Pose)</a> - Static method in class org.firstinspires.ftc.teamcode.pedro.auto.<a href="org/firstinspires/ftc/teamcode/pedro/auto/RedScoringPaths.html" title="class in org.firstinspires.ftc.teamcode.pedro.auto">RedScoringPaths</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/pedro/auto/RedDualPaths.html#flowerAudiencePose" class="member-name-link">flowerAudiencePose</a> - Variable in class org.firstinspires.ftc.teamcode.pedro.auto.<a href="org/firstinspires/ftc/teamcode/pedro/auto/RedDualPaths.html" title="class in org.firstinspires.ftc.teamcode.pedro.auto">RedDualPaths</a></dt>
@@ -291,6 +305,8 @@ Planetary Gear Motor.</div>
 <dl class="index">
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/AutoAimManualTest.html#gamepad1" class="member-name-link">gamepad1</a> - Variable in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/AutoAimManualTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">AutoAimManualTest</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/CompleteShooterTest.html#gamepad1" class="member-name-link">gamepad1</a> - Variable in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/CompleteShooterTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">CompleteShooterTest</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/auto/ExampleAuto.html#gamepad1" class="member-name-link">gamepad1</a> - Variable in class org.firstinspires.ftc.teamcode.opmodes.auto.<a href="org/firstinspires/ftc/teamcode/opmodes/auto/ExampleAuto.html" title="class in org.firstinspires.ftc.teamcode.opmodes.auto">ExampleAuto</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/FlywheelManualTest.html#gamepad1" class="member-name-link">gamepad1</a> - Variable in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/FlywheelManualTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">FlywheelManualTest</a></dt>
@@ -322,6 +338,8 @@ Planetary Gear Motor.</div>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/VisionTest.html#gamepad1" class="member-name-link">gamepad1</a> - Variable in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/VisionTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">VisionTest</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/AutoAimManualTest.html#gamepad2" class="member-name-link">gamepad2</a> - Variable in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/AutoAimManualTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">AutoAimManualTest</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/CompleteShooterTest.html#gamepad2" class="member-name-link">gamepad2</a> - Variable in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/CompleteShooterTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">CompleteShooterTest</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/auto/ExampleAuto.html#gamepad2" class="member-name-link">gamepad2</a> - Variable in class org.firstinspires.ftc.teamcode.opmodes.auto.<a href="org/firstinspires/ftc/teamcode/opmodes/auto/ExampleAuto.html" title="class in org.firstinspires.ftc.teamcode.opmodes.auto">ExampleAuto</a></dt>
 <dd>&nbsp;</dd>
@@ -447,8 +465,10 @@ Planetary Gear Motor.</div>
 <dd>
 <div class="block">Last requested position; not independent position feedback.</div>
 </dd>
-<dt><a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html#getPower()" class="member-name-link">getPower()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html" title="class in org.firstinspires.ftc.teamcode.subsystems">IntakeRamp</a></dt>
-<dd>&nbsp;</dd>
+<dt><a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html#getPosition()" class="member-name-link">getPosition()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html" title="class in org.firstinspires.ftc.teamcode.subsystems">IntakeRamp</a></dt>
+<dd>
+<div class="block">Returns the last commanded position (FTC Servo does not report physical feedback).</div>
+</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/Vision.Cell.html#getRange()" class="member-name-link">getRange()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/Vision.Cell.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Vision.Cell</a></dt>
 <dd>
 <div class="block">Gets the range (distance) to the cell.</div>
@@ -462,6 +482,8 @@ Planetary Gear Motor.</div>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/Drivetrain.html#getRightBackMotor()" class="member-name-link">getRightBackMotor()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/Drivetrain.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Drivetrain</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/Drivetrain.html#getRightFrontMotor()" class="member-name-link">getRightFrontMotor()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/Drivetrain.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Drivetrain</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html#getStage()" class="member-name-link">getStage()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/utility/AutoTimeManager.html#getStateTime()" class="member-name-link">getStateTime()</a> - Method in class org.firstinspires.ftc.teamcode.utility.<a href="org/firstinspires/ftc/teamcode/utility/AutoTimeManager.html" title="class in org.firstinspires.ftc.teamcode.utility">AutoTimeManager</a></dt>
 <dd>
@@ -538,6 +560,8 @@ Planetary Gear Motor.</div>
 <dl class="index">
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/AutoAimManualTest.html#hardwareMap" class="member-name-link">hardwareMap</a> - Variable in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/AutoAimManualTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">AutoAimManualTest</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/CompleteShooterTest.html#hardwareMap" class="member-name-link">hardwareMap</a> - Variable in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/CompleteShooterTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">CompleteShooterTest</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/auto/ExampleAuto.html#hardwareMap" class="member-name-link">hardwareMap</a> - Variable in class org.firstinspires.ftc.teamcode.opmodes.auto.<a href="org/firstinspires/ftc/teamcode/opmodes/auto/ExampleAuto.html" title="class in org.firstinspires.ftc.teamcode.opmodes.auto">ExampleAuto</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/FlywheelManualTest.html#hardwareMap" class="member-name-link">hardwareMap</a> - Variable in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/FlywheelManualTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">FlywheelManualTest</a></dt>
@@ -591,6 +615,8 @@ Planetary Gear Motor.</div>
 </dl>
 <h2 class="title" id="I:I">I</h2>
 <dl class="index">
+<dt><a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html#IDLE_FLYWHEEL_RPM" class="member-name-link">IDLE_FLYWHEEL_RPM</a> - Static variable in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/pedro/auto/PathUtility.html#info(java.lang.String,java.lang.String)" class="member-name-link">info(String, String)</a> - Static method in class org.firstinspires.ftc.teamcode.pedro.auto.<a href="org/firstinspires/ftc/teamcode/pedro/auto/PathUtility.html" title="class in org.firstinspires.ftc.teamcode.pedro.auto">PathUtility</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/auto/ExampleAuto.html#init()" class="member-name-link">init()</a> - Method in class org.firstinspires.ftc.teamcode.opmodes.auto.<a href="org/firstinspires/ftc/teamcode/opmodes/auto/ExampleAuto.html" title="class in org.firstinspires.ftc.teamcode.opmodes.auto">ExampleAuto</a></dt>
@@ -606,6 +632,8 @@ Planetary Gear Motor.</div>
 <div class="block">Initializes Pedro localization and the navigation-only test.</div>
 </dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/AutoAimManualTest.html#init()" class="member-name-link">init()</a> - Method in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/AutoAimManualTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">AutoAimManualTest</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/CompleteShooterTest.html#init()" class="member-name-link">init()</a> - Method in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/CompleteShooterTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">CompleteShooterTest</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/FlywheelManualTest.html#init()" class="member-name-link">init()</a> - Method in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/FlywheelManualTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">FlywheelManualTest</a></dt>
 <dd>&nbsp;</dd>
@@ -624,8 +652,6 @@ Planetary Gear Motor.</div>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/TurretManualTest.html#init()" class="member-name-link">init()</a> - Method in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/TurretManualTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">TurretManualTest</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/VisionTest.html#init()" class="member-name-link">init()</a> - Method in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/VisionTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">VisionTest</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html#init(com.qualcomm.robotcore.hardware.CRServo)" class="member-name-link">init(CRServo)</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html" title="class in org.firstinspires.ftc.teamcode.subsystems">IntakeRamp</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/Flywheel.html#init(com.qualcomm.robotcore.hardware.DcMotorEx)" class="member-name-link">init(DcMotorEx)</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/Flywheel.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Flywheel</a></dt>
 <dd>
@@ -651,11 +677,13 @@ Planetary Gear Motor.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/Hood.html#init(com.qualcomm.robotcore.hardware.Servo)" class="member-name-link">init(Servo)</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/Hood.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Hood</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html#init(com.qualcomm.robotcore.hardware.Servo)" class="member-name-link">init(Servo)</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html" title="class in org.firstinspires.ftc.teamcode.subsystems">IntakeRamp</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/AutoAim.html#init(org.firstinspires.ftc.teamcode.subsystems.Vision.Cell.Color)" class="member-name-link">init(Vision.Cell.Color)</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/AutoAim.html" title="class in org.firstinspires.ftc.teamcode.subsystems">AutoAim</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html#init(org.firstinspires.ftc.teamcode.subsystems.Vision.Cell.Color)" class="member-name-link">init(Vision.Cell.Color)</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></dt>
 <dd>
-<div class="block">Call after initializing Vision, Turret, Hood, Flywheel and Transfer.</div>
+<div class="block">Call after Vision, Turret, Hood, Flywheel, Transfer, Blocker and IntakeRamp init().</div>
 </dd>
 <dt><a href="org/firstinspires/ftc/teamcode/pedro/auto/RedDualPaths.html#initalApproach" class="member-name-link">initalApproach</a> - Variable in class org.firstinspires.ftc.teamcode.pedro.auto.<a href="org/firstinspires/ftc/teamcode/pedro/auto/RedDualPaths.html" title="class in org.firstinspires.ftc.teamcode.pedro.auto">RedDualPaths</a></dt>
 <dd>&nbsp;</dd>
@@ -694,19 +722,25 @@ Planetary Gear Motor.</div>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/Vision.html#INSTANCE" class="member-name-link">INSTANCE</a> - Static variable in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/Vision.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Vision</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html#intake()" class="member-name-link">intake()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html" title="class in org.firstinspires.ftc.teamcode.subsystems">IntakeRamp</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html#INTAKE_POWER" class="member-name-link">INTAKE_POWER</a> - Static variable in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html" title="class in org.firstinspires.ftc.teamcode.subsystems">IntakeRamp</a></dt>
+<dd>
+<div class="block">Compatibility with CompleteShooter.startCollecting().</div>
+</dd>
+<dt><a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html#INTAKE_POWER" class="member-name-link">INTAKE_POWER</a> - Static variable in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/Robot.html#intakeRamp" class="member-name-link">intakeRamp</a> - Variable in class org.firstinspires.ftc.teamcode.<a href="org/firstinspires/ftc/teamcode/Robot.html" title="class in org.firstinspires.ftc.teamcode">Robot</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html" class="type-name-link" title="class in org.firstinspires.ftc.teamcode.subsystems">IntakeRamp</a> - Class in <a href="org/firstinspires/ftc/teamcode/subsystems/package-summary.html">org.firstinspires.ftc.teamcode.subsystems</a></dt>
 <dd>
-<div class="block">Continuous-rotation servo driving the floor intake ramp.</div>
+<div class="block">Positional servo that raises/lowers the floor intake ramp.</div>
 </dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/Hood.html#invalidateReadiness()" class="member-name-link">invalidateReadiness()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/Hood.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Hood</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/pedro/auto/PathCompletionRecovery.html#isActive()" class="member-name-link">isActive()</a> - Method in class org.firstinspires.ftc.teamcode.pedro.auto.<a href="org/firstinspires/ftc/teamcode/pedro/auto/PathCompletionRecovery.html" title="class in org.firstinspires.ftc.teamcode.pedro.auto">PathCompletionRecovery</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html#isAimReady()" class="member-name-link">isAimReady()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></dt>
+<dd>
+<div class="block">True whenever AutoAim has a valid ready-to-fire solution.</div>
+</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/Flywheel.html#isAtSpeed()" class="member-name-link">isAtSpeed()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/Flywheel.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Flywheel</a></dt>
 <dd>
 <div class="block">Readiness applies only to velocity control, not direct power testing.</div>
@@ -729,10 +763,16 @@ Planetary Gear Motor.</div>
 <dd>
 <div class="block">Determines whether an AprilTag cluster detection is in a scorable orientation.</div>
 </dd>
+<dt><a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html#isCollecting()" class="member-name-link">isCollecting()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/AutoAim.html#isEnabled()" class="member-name-link">isEnabled()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/AutoAim.html" title="class in org.firstinspires.ftc.teamcode.subsystems">AutoAim</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html#isFiring()" class="member-name-link">isFiring()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html#isLowered()" class="member-name-link">isLowered()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html" title="class in org.firstinspires.ftc.teamcode.subsystems">IntakeRamp</a></dt>
+<dd>
+<div class="block">Returns the last commanded state, not a measured servo position.</div>
+</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/Blocker.html#isOpen()" class="member-name-link">isOpen()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/Blocker.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Blocker</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/Turret.html#isPositionMode()" class="member-name-link">isPositionMode()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/Turret.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Turret</a></dt>
@@ -759,6 +799,8 @@ Planetary Gear Motor.</div>
 <dd>
 <div class="block">Checks if the cell is in the scoring location.</div>
 </dd>
+<dt><a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html#isShootingActive()" class="member-name-link">isShootingActive()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html#isShotPending()" class="member-name-link">isShotPending()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/Flywheel.html#isVelocityMode()" class="member-name-link">isVelocityMode()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/Flywheel.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Flywheel</a></dt>
@@ -801,6 +843,8 @@ Planetary Gear Motor.</div>
 </dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/AutoAimManualTest.html#loop()" class="member-name-link">loop()</a> - Method in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/AutoAimManualTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">AutoAimManualTest</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/CompleteShooterTest.html#loop()" class="member-name-link">loop()</a> - Method in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/CompleteShooterTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">CompleteShooterTest</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/FlywheelManualTest.html#loop()" class="member-name-link">loop()</a> - Method in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/FlywheelManualTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">FlywheelManualTest</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/FlywheelTestPollen.html#loop()" class="member-name-link">loop()</a> - Method in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/FlywheelTestPollen.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">FlywheelTestPollen</a></dt>
@@ -819,24 +863,28 @@ Planetary Gear Motor.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/VisionTest.html#loop()" class="member-name-link">loop()</a> - Method in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/VisionTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">VisionTest</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html#lower()" class="member-name-link">lower()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html" title="class in org.firstinspires.ftc.teamcode.subsystems">IntakeRamp</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/Transfer.html#LOWER_DIRECTION" class="member-name-link">LOWER_DIRECTION</a> - Static variable in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/Transfer.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Transfer</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/PollenCollectionTest.html#LOWER_INTAKE_POWER" class="member-name-link">LOWER_INTAKE_POWER</a> - Static variable in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/PollenCollectionTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">PollenCollectionTest</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/PollenCollectionTest.html#LOWER_MOTOR_NAME" class="member-name-link">LOWER_MOTOR_NAME</a> - Static variable in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/PollenCollectionTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">PollenCollectionTest</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html#LOWERED_POSITION" class="member-name-link">LOWERED_POSITION</a> - Static variable in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html" title="class in org.firstinspires.ftc.teamcode.subsystems">IntakeRamp</a></dt>
+<dd>&nbsp;</dd>
 </dl>
 <h2 class="title" id="I:M">M</h2>
 <dl class="index">
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/Turret.html#MAX_ANGLE_DEG" class="member-name-link">MAX_ANGLE_DEG</a> - Static variable in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/Turret.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Turret</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html#MAX_CONTINUOUS_FEED_SECONDS" class="member-name-link">MAX_CONTINUOUS_FEED_SECONDS</a> - Static variable in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/Hood.html#MAX_POSITION" class="member-name-link">MAX_POSITION</a> - Static variable in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/Hood.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Hood</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/Turret.html#MAX_POWER" class="member-name-link">MAX_POWER</a> - Static variable in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/Turret.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Turret</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/AutoAim.html#MAX_TARGET_CHANGE_DEG" class="member-name-link">MAX_TARGET_CHANGE_DEG</a> - Static variable in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/AutoAim.html" title="class in org.firstinspires.ftc.teamcode.subsystems">AutoAim</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html#MAX_TRANSFER_SECONDS" class="member-name-link">MAX_TRANSFER_SECONDS</a> - Static variable in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/pedro/Tuning.html#meanumTuner()" class="member-name-link">meanumTuner()</a> - Static method in class org.firstinspires.ftc.teamcode.pedro.<a href="org/firstinspires/ftc/teamcode/pedro/Tuning.html" title="class in org.firstinspires.ftc.teamcode.pedro">Tuning</a></dt>
 <dd>&nbsp;</dd>
@@ -855,6 +903,8 @@ Planetary Gear Motor.</div>
 <div class="block">Display motor power information</div>
 </dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/AutoAimManualTest.html#MS_BEFORE_FORCE_STOP_AFTER_STOP_REQUESTED" class="member-name-link">MS_BEFORE_FORCE_STOP_AFTER_STOP_REQUESTED</a> - Static variable in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/AutoAimManualTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">AutoAimManualTest</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/CompleteShooterTest.html#MS_BEFORE_FORCE_STOP_AFTER_STOP_REQUESTED" class="member-name-link">MS_BEFORE_FORCE_STOP_AFTER_STOP_REQUESTED</a> - Static variable in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/CompleteShooterTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">CompleteShooterTest</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/auto/ExampleAuto.html#MS_BEFORE_FORCE_STOP_AFTER_STOP_REQUESTED" class="member-name-link">MS_BEFORE_FORCE_STOP_AFTER_STOP_REQUESTED</a> - Static variable in class org.firstinspires.ftc.teamcode.opmodes.auto.<a href="org/firstinspires/ftc/teamcode/opmodes/auto/ExampleAuto.html" title="class in org.firstinspires.ftc.teamcode.opmodes.auto">ExampleAuto</a></dt>
 <dd>&nbsp;</dd>
@@ -887,6 +937,10 @@ Planetary Gear Motor.</div>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/VisionTest.html#MS_BEFORE_FORCE_STOP_AFTER_STOP_REQUESTED" class="member-name-link">MS_BEFORE_FORCE_STOP_AFTER_STOP_REQUESTED</a> - Static variable in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/VisionTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">VisionTest</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/AutoAimManualTest.html#msStuckDetectStop" class="member-name-link">msStuckDetectStop</a> - Variable in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/AutoAimManualTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">AutoAimManualTest</a></dt>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
+</dd>
+<dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/CompleteShooterTest.html#msStuckDetectStop" class="member-name-link">msStuckDetectStop</a> - Variable in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/CompleteShooterTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">CompleteShooterTest</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 </dd>
@@ -1086,7 +1140,9 @@ and RBE metrics (range in inches, bearing in degrees, elevation in degrees).</di
 </dl>
 <h2 class="title" id="I:R">R</h2>
 <dl class="index">
-<dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/PollenCollectionTest.html#RAMP_INTAKE_POWER" class="member-name-link">RAMP_INTAKE_POWER</a> - Static variable in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/PollenCollectionTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">PollenCollectionTest</a></dt>
+<dt><a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html#raise()" class="member-name-link">raise()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html" title="class in org.firstinspires.ftc.teamcode.subsystems">IntakeRamp</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html#RAISED_POSITION" class="member-name-link">RAISED_POSITION</a> - Static variable in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html" title="class in org.firstinspires.ftc.teamcode.subsystems">IntakeRamp</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/PollenCollectionTest.html#RAMP_SERVO_NAME" class="member-name-link">RAMP_SERVO_NAME</a> - Static variable in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/PollenCollectionTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">PollenCollectionTest</a></dt>
 <dd>&nbsp;</dd>
@@ -1139,7 +1195,11 @@ Red Audience quarter of the BIOBUZZ field.</div>
 <dd>
 <div class="block">Constructs the four estimated strategy segments.</div>
 </dd>
+<dt><a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html#REQUEST_TIMEOUT_SECONDS" class="member-name-link">REQUEST_TIMEOUT_SECONDS</a> - Static variable in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/AutoAimManualTest.html#requestOpModeStop()" class="member-name-link">requestOpModeStop()</a> - Method in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/AutoAimManualTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">AutoAimManualTest</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/CompleteShooterTest.html#requestOpModeStop()" class="member-name-link">requestOpModeStop()</a> - Method in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/CompleteShooterTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">CompleteShooterTest</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/auto/ExampleAuto.html#requestOpModeStop()" class="member-name-link">requestOpModeStop()</a> - Method in class org.firstinspires.ftc.teamcode.opmodes.auto.<a href="org/firstinspires/ftc/teamcode/opmodes/auto/ExampleAuto.html" title="class in org.firstinspires.ftc.teamcode.opmodes.auto">ExampleAuto</a></dt>
 <dd>&nbsp;</dd>
@@ -1173,7 +1233,7 @@ Red Audience quarter of the BIOBUZZ field.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html#requestShot()" class="member-name-link">requestShot()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></dt>
 <dd>
-<div class="block">Queues one timed feed.</div>
+<div class="block">One-button command: enable AutoAim and start continuous shooting once ready.</div>
 </dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/Odom.html#resetPosition()" class="member-name-link">resetPosition()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/Odom.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Odom</a></dt>
 <dd>&nbsp;</dd>
@@ -1252,8 +1312,6 @@ Red Audience quarter of the BIOBUZZ field.</div>
 <dd>
 <div class="block">Direct motor-power control for initial bench testing (0.0 to 1.0).</div>
 </dd>
-<dt><a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html#setPower(double)" class="member-name-link">setPower(double)</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html" title="class in org.firstinspires.ftc.teamcode.subsystems">IntakeRamp</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/Shooter.html#setPower(double)" class="member-name-link">setPower(double)</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/Shooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Shooter</a></dt>
 <dd>
 <div class="block">Sets flywheel motor power.</div>
@@ -1294,10 +1352,6 @@ Red Audience quarter of the BIOBUZZ field.</div>
 </dd>
 <dt><a href="org/firstinspires/ftc/teamcode/pedro/auto/RedDualPaths.html#shootScoringPose" class="member-name-link">shootScoringPose</a> - Variable in class org.firstinspires.ftc.teamcode.pedro.auto.<a href="org/firstinspires/ftc/teamcode/pedro/auto/RedDualPaths.html" title="class in org.firstinspires.ftc.teamcode.pedro.auto">RedDualPaths</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html#SHOT_REQUEST_TIMEOUT_SECONDS" class="member-name-link">SHOT_REQUEST_TIMEOUT_SECONDS</a> - Static variable in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></dt>
-<dd>
-<div class="block">Cancel a queued request if readiness never arrives.</div>
-</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/AutoAim.html#SHOT_TABLE" class="member-name-link">SHOT_TABLE</a> - Static variable in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/AutoAim.html" title="class in org.firstinspires.ftc.teamcode.subsystems">AutoAim</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/ShotCalibration.html" class="type-name-link" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">ShotCalibration</a> - Class in <a href="org/firstinspires/ftc/teamcode/opmodes/tele/package-summary.html">org.firstinspires.ftc.teamcode.opmodes.tele</a></dt>
@@ -1324,6 +1378,10 @@ Red Audience quarter of the BIOBUZZ field.</div>
 <dd>
 <div class="block">Starts the autonomous and state timers.</div>
 </dd>
+<dt><a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html#startCollecting()" class="member-name-link">startCollecting()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></dt>
+<dd>
+<div class="block">Lower transfer motor + ramp only.</div>
+</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/pedro/auto/RedAudiencePaths.html#startPose" class="member-name-link">startPose</a> - Variable in class org.firstinspires.ftc.teamcode.pedro.auto.<a href="org/firstinspires/ftc/teamcode/pedro/auto/RedAudiencePaths.html" title="class in org.firstinspires.ftc.teamcode.pedro.auto">RedAudiencePaths</a></dt>
 <dd>
 <div class="block">Initial robot-center pose, from the strategy sheet.</div>
@@ -1348,6 +1406,8 @@ Red Audience quarter of the BIOBUZZ field.</div>
 </dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/AutoAimManualTest.html#stop()" class="member-name-link">stop()</a> - Method in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/AutoAimManualTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">AutoAimManualTest</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/CompleteShooterTest.html#stop()" class="member-name-link">stop()</a> - Method in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/CompleteShooterTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">CompleteShooterTest</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/FlywheelManualTest.html#stop()" class="member-name-link">stop()</a> - Method in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/FlywheelManualTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">FlywheelManualTest</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/FlywheelTestPollen.html#stop()" class="member-name-link">stop()</a> - Method in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/FlywheelTestPollen.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">FlywheelTestPollen</a></dt>
@@ -1367,13 +1427,17 @@ Red Audience quarter of the BIOBUZZ field.</div>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/VisionTest.html#stop()" class="member-name-link">stop()</a> - Method in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/VisionTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">VisionTest</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html#stop()" class="member-name-link">stop()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Emergency stop: no standby flywheel after stop().</div>
+</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/Flywheel.html#stop()" class="member-name-link">stop()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/Flywheel.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Flywheel</a></dt>
 <dd>
 <div class="block">Removes drive power; FLOAT means the wheel may continue coasting.</div>
 </dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html#stop()" class="member-name-link">stop()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/IntakeRamp.html" title="class in org.firstinspires.ftc.teamcode.subsystems">IntakeRamp</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Compatibility with CompleteShooter.stopCollecting().</div>
+</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/Shooter.html#stop()" class="member-name-link">stop()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/Shooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Shooter</a></dt>
 <dd>
 <div class="block">Stops the flywheel motor.</div>
@@ -1388,6 +1452,8 @@ Red Audience quarter of the BIOBUZZ field.</div>
 <dd>
 <div class="block">Stop all motors</div>
 </dd>
+<dt><a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html#stopCollecting()" class="member-name-link">stopCollecting()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/Transfer.html#stopFeed()" class="member-name-link">stopFeed()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/Transfer.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Transfer</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/subsystems/Transfer.html#stopIntake()" class="member-name-link">stopIntake()</a> - Method in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/Transfer.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Transfer</a></dt>
@@ -1398,6 +1464,8 @@ Red Audience quarter of the BIOBUZZ field.</div>
 <h2 class="title" id="I:T">T</h2>
 <dl class="index">
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/AutoAimManualTest.html#telemetry" class="member-name-link">telemetry</a> - Variable in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/AutoAimManualTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">AutoAimManualTest</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/CompleteShooterTest.html#telemetry" class="member-name-link">telemetry</a> - Variable in class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/CompleteShooterTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">CompleteShooterTest</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/auto/ExampleAuto.html#telemetry" class="member-name-link">telemetry</a> - Variable in class org.firstinspires.ftc.teamcode.opmodes.auto.<a href="org/firstinspires/ftc/teamcode/opmodes/auto/ExampleAuto.html" title="class in org.firstinspires.ftc.teamcode.opmodes.auto">ExampleAuto</a></dt>
 <dd>&nbsp;</dd>
@@ -1461,12 +1529,6 @@ Red Audience quarter of the BIOBUZZ field.</div>
 <dd>
 <div class="block">Two independent paths: lower floor intake and upper feed to flywheel.</div>
 </dd>
-<dt><a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html#TRANSFER_POWER" class="member-name-link">TRANSFER_POWER</a> - Static variable in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></dt>
-<dd>
-<div class="block">Calibrate on the real mechanism; one interval does not guarantee one POLLEN.</div>
-</dd>
-<dt><a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html#TRANSFER_SECONDS" class="member-name-link">TRANSFER_SECONDS</a> - Static variable in class org.firstinspires.ftc.teamcode.subsystems.<a href="org/firstinspires/ftc/teamcode/subsystems/CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/TransferManualTest.html" class="type-name-link" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">TransferManualTest</a> - Class in <a href="org/firstinspires/ftc/teamcode/opmodes/tele/package-summary.html">org.firstinspires.ftc.teamcode.opmodes.tele</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/firstinspires/ftc/teamcode/opmodes/tele/TransferManualTest.html#%3Cinit%3E()" class="member-name-link">TransferManualTest()</a> - Constructor for class org.firstinspires.ftc.teamcode.opmodes.tele.<a href="org/firstinspires/ftc/teamcode/opmodes/tele/TransferManualTest.html" title="class in org.firstinspires.ftc.teamcode.opmodes.tele">TransferManualTest</a></dt>

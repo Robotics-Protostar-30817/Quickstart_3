@@ -59,22 +59,31 @@ loadScripts(document, 'script');</script>
 <li><a href="#field-detail" tabindex="0">Field Details</a>
 <ol class="toc-list">
 <li><a href="#INSTANCE" tabindex="0">INSTANCE</a></li>
-<li><a href="#TRANSFER_POWER" tabindex="0">TRANSFER_POWER</a></li>
-<li><a href="#TRANSFER_SECONDS" tabindex="0">TRANSFER_SECONDS</a></li>
-<li><a href="#MAX_TRANSFER_SECONDS" tabindex="0">MAX_TRANSFER_SECONDS</a></li>
-<li><a href="#SHOT_REQUEST_TIMEOUT_SECONDS" tabindex="0">SHOT_REQUEST_TIMEOUT_SECONDS</a></li>
+<li><a href="#INTAKE_POWER" tabindex="0">INTAKE_POWER</a></li>
+<li><a href="#FEED_POWER" tabindex="0">FEED_POWER</a></li>
+<li><a href="#IDLE_FLYWHEEL_RPM" tabindex="0">IDLE_FLYWHEEL_RPM</a></li>
+<li><a href="#BLOCKER_OPEN_SECONDS" tabindex="0">BLOCKER_OPEN_SECONDS</a></li>
+<li><a href="#MAX_CONTINUOUS_FEED_SECONDS" tabindex="0">MAX_CONTINUOUS_FEED_SECONDS</a></li>
+<li><a href="#REQUEST_TIMEOUT_SECONDS" tabindex="0">REQUEST_TIMEOUT_SECONDS</a></li>
 </ol>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
 <li><a href="#init(org.firstinspires.ftc.teamcode.subsystems.Vision.Cell.Color)" tabindex="0">init(Vision.Cell.Color)</a></li>
+<li><a href="#startCollecting()" tabindex="0">startCollecting()</a></li>
+<li><a href="#stopCollecting()" tabindex="0">stopCollecting()</a></li>
+<li><a href="#isCollecting()" tabindex="0">isCollecting()</a></li>
 <li><a href="#enableAim()" tabindex="0">enableAim()</a></li>
 <li><a href="#disableAim()" tabindex="0">disableAim()</a></li>
 <li><a href="#requestShot()" tabindex="0">requestShot()</a></li>
-<li><a href="#cancel()" tabindex="0">cancel()</a></li>
+<li><a href="#cancelShot()" tabindex="0">cancelShot()</a></li>
 <li><a href="#isFiring()" tabindex="0">isFiring()</a></li>
+<li><a href="#isShootingActive()" tabindex="0">isShootingActive()</a></li>
+<li><a href="#isAimReady()" tabindex="0">isAimReady()</a></li>
+<li><a href="#canDetectEmptyStorage()" tabindex="0">canDetectEmptyStorage()</a></li>
 <li><a href="#isShotPending()" tabindex="0">isShotPending()</a></li>
 <li><a href="#isReadyToShoot()" tabindex="0">isReadyToShoot()</a></li>
+<li><a href="#getStage()" tabindex="0">getStage()</a></li>
 <li><a href="#getStatus()" tabindex="0">getStatus()</a></li>
 <li><a href="#periodic()" tabindex="0">periodic()</a></li>
 <li><a href="#stop()" tabindex="0">stop()</a></li>
@@ -100,7 +109,9 @@ loadScripts(document, 'script');</script>
 <div class="type-signature"><span class="modifiers">public final class </span><span class="element-name type-name-label">CompleteShooter</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
 implements dev.nextftc.core.subsystems.Subsystem</span></div>
-<div class="block">Coordinates AutoAim and Transfer. Does not count actual POLLEN.</div>
+<div class="block">Coordinates intake, vision-guided aiming, blocker and upper feed motor.
+  Continuous feed does NOT detect when storage is empty.
+  Call periodic() exactly once per OpMode loop; do not also call AutoAim.periodic().</div>
 </div>
 </section>
 <section class="summary">
@@ -114,24 +125,26 @@ implements dev.nextftc.core.subsystems.Subsystem</span></div>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Field</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>static final <a href="CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></code></div>
-<div class="col-second even-row-color"><code><a href="#INSTANCE" class="member-name-link">INSTANCE</a></code></div>
+<div class="col-first even-row-color"><code>static double</code></div>
+<div class="col-second even-row-color"><code><a href="#BLOCKER_OPEN_SECONDS" class="member-name-link">BLOCKER_OPEN_SECONDS</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>static double</code></div>
-<div class="col-second odd-row-color"><code><a href="#MAX_TRANSFER_SECONDS" class="member-name-link">MAX_TRANSFER_SECONDS</a></code></div>
+<div class="col-second odd-row-color"><code><a href="#FEED_POWER" class="member-name-link">FEED_POWER</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>static double</code></div>
-<div class="col-second even-row-color"><code><a href="#SHOT_REQUEST_TIMEOUT_SECONDS" class="member-name-link">SHOT_REQUEST_TIMEOUT_SECONDS</a></code></div>
-<div class="col-last even-row-color">
-<div class="block">Cancel a queued request if readiness never arrives.</div>
-</div>
-<div class="col-first odd-row-color"><code>static double</code></div>
-<div class="col-second odd-row-color"><code><a href="#TRANSFER_POWER" class="member-name-link">TRANSFER_POWER</a></code></div>
-<div class="col-last odd-row-color">
-<div class="block">Calibrate on the real mechanism; one interval does not guarantee one POLLEN.</div>
-</div>
+<div class="col-second even-row-color"><code><a href="#IDLE_FLYWHEEL_RPM" class="member-name-link">IDLE_FLYWHEEL_RPM</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static final <a href="CompleteShooter.html" title="class in org.firstinspires.ftc.teamcode.subsystems">CompleteShooter</a></code></div>
+<div class="col-second odd-row-color"><code><a href="#INSTANCE" class="member-name-link">INSTANCE</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>static double</code></div>
-<div class="col-second even-row-color"><code><a href="#TRANSFER_SECONDS" class="member-name-link">TRANSFER_SECONDS</a></code></div>
+<div class="col-second even-row-color"><code><a href="#INTAKE_POWER" class="member-name-link">INTAKE_POWER</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static double</code></div>
+<div class="col-second odd-row-color"><code><a href="#MAX_CONTINUOUS_FEED_SECONDS" class="member-name-link">MAX_CONTINUOUS_FEED_SECONDS</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static double</code></div>
+<div class="col-second even-row-color"><code><a href="#REQUEST_TIMEOUT_SECONDS" class="member-name-link">REQUEST_TIMEOUT_SECONDS</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -148,13 +161,21 @@ implements dev.nextftc.core.subsystems.Subsystem</span></div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#cancel()" class="member-name-link">cancel</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#cancelShot()" class="member-name-link">cancelShot</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#canDetectEmptyStorage()" class="member-name-link">canDetectEmptyStorage</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">No storage sensor is present; this method intentionally does not infer emptiness.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#disableAim()" class="member-name-link">disableAim</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#disableAim()" class="member-name-link">disableAim</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#enableAim()" class="member-name-link">enableAim</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#enableAim()" class="member-name-link">enableAim</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getStage()" class="member-name-link">getStage</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getStatus()" class="member-name-link">getStatus</a>()</code></div>
@@ -162,8 +183,16 @@ implements dev.nextftc.core.subsystems.Subsystem</span></div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#init(org.firstinspires.ftc.teamcode.subsystems.Vision.Cell.Color)" class="member-name-link">init</a><wbr>(<a href="Vision.Cell.Color.html" title="enum class in org.firstinspires.ftc.teamcode.subsystems">Vision.Cell.Color</a>&nbsp;alliance)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Call after initializing Vision, Turret, Hood, Flywheel and Transfer.</div>
+<div class="block">Call after Vision, Turret, Hood, Flywheel, Transfer, Blocker and IntakeRamp init().</div>
 </div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isAimReady()" class="member-name-link">isAimReady</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">True whenever AutoAim has a valid ready-to-fire solution.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isCollecting()" class="member-name-link">isCollecting</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isFiring()" class="member-name-link">isFiring</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
@@ -171,19 +200,32 @@ implements dev.nextftc.core.subsystems.Subsystem</span></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isReadyToShoot()" class="member-name-link">isReadyToShoot</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isShotPending()" class="member-name-link">isShotPending</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isShootingActive()" class="member-name-link">isShootingActive</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#periodic()" class="member-name-link">periodic</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isShotPending()" class="member-name-link">isShotPending</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#requestShot()" class="member-name-link">requestShot</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#periodic()" class="member-name-link">periodic</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#requestShot()" class="member-name-link">requestShot</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">One-button command: enable AutoAim and start continuous shooting once ready.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#startCollecting()" class="member-name-link">startCollecting</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Queues one timed feed.</div>
+<div class="block">Lower transfer motor + ramp only.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#stop()" class="member-name-link">stop</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Emergency stop: no standby flywheel after stop().</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#stopCollecting()" class="member-name-link">stopCollecting</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -213,36 +255,50 @@ implements dev.nextftc.core.subsystems.Subsystem</span></div>
 </section>
 </li>
 <li>
-<section class="detail" id="TRANSFER_POWER">
-<h3>TRANSFER_POWER</h3>
+<section class="detail" id="INTAKE_POWER">
+<h3>INTAKE_POWER</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">TRANSFER_POWER</span></div>
-<div class="block">Calibrate on the real mechanism; one interval does not guarantee one POLLEN.</div>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">INTAKE_POWER</span></div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="TRANSFER_SECONDS">
-<h3>TRANSFER_SECONDS</h3>
+<section class="detail" id="FEED_POWER">
+<h3>FEED_POWER</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">TRANSFER_SECONDS</span></div>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">FEED_POWER</span></div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="MAX_TRANSFER_SECONDS">
-<h3>MAX_TRANSFER_SECONDS</h3>
+<section class="detail" id="IDLE_FLYWHEEL_RPM">
+<h3>IDLE_FLYWHEEL_RPM</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">MAX_TRANSFER_SECONDS</span></div>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">IDLE_FLYWHEEL_RPM</span></div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="SHOT_REQUEST_TIMEOUT_SECONDS">
-<h3>SHOT_REQUEST_TIMEOUT_SECONDS</h3>
+<section class="detail" id="BLOCKER_OPEN_SECONDS">
+<h3>BLOCKER_OPEN_SECONDS</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">SHOT_REQUEST_TIMEOUT_SECONDS</span></div>
-<div class="block">Cancel a queued request if readiness never arrives.</div>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">BLOCKER_OPEN_SECONDS</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="MAX_CONTINUOUS_FEED_SECONDS">
+<h3>MAX_CONTINUOUS_FEED_SECONDS</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">MAX_CONTINUOUS_FEED_SECONDS</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="REQUEST_TIMEOUT_SECONDS">
+<h3>REQUEST_TIMEOUT_SECONDS</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">REQUEST_TIMEOUT_SECONDS</span></div>
 </div>
 </section>
 </li>
@@ -259,7 +315,32 @@ implements dev.nextftc.core.subsystems.Subsystem</span></div>
 <h3>init</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">init</span><wbr><span class="parameters">(<a href="Vision.Cell.Color.html" title="enum class in org.firstinspires.ftc.teamcode.subsystems">Vision.Cell.Color</a>&nbsp;alliance)</span></div>
-<div class="block">Call after initializing Vision, Turret, Hood, Flywheel and Transfer.</div>
+<div class="block">Call after Vision, Turret, Hood, Flywheel, Transfer, Blocker and IntakeRamp init().</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="startCollecting()">
+<h3>startCollecting</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">startCollecting</span>()</div>
+<div class="block">Lower transfer motor + ramp only. Upper motor and blocker remain independent.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="stopCollecting()">
+<h3>stopCollecting</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">stopCollecting</span>()</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="isCollecting()">
+<h3>isCollecting</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isCollecting</span>()</div>
 </div>
 </section>
 </li>
@@ -284,15 +365,17 @@ implements dev.nextftc.core.subsystems.Subsystem</span></div>
 <h3>requestShot</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">requestShot</span>()</div>
-<div class="block">Queues one timed feed. It will start only while AutoAim is ready.</div>
+<div class="block">One-button command: enable AutoAim and start continuous shooting once ready.
+ Continues until driver calls cancelShot(), or a safety fault.
+ Does not interrupt floor collection.</div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="cancel()">
-<h3>cancel</h3>
+<section class="detail" id="cancelShot()">
+<h3>cancelShot</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">cancel</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">cancelShot</span>()</div>
 </div>
 </section>
 </li>
@@ -301,6 +384,32 @@ implements dev.nextftc.core.subsystems.Subsystem</span></div>
 <h3>isFiring</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isFiring</span>()</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="isShootingActive()">
+<h3>isShootingActive</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isShootingActive</span>()</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="isAimReady()">
+<h3>isAimReady</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isAimReady</span>()</div>
+<div class="block">True whenever AutoAim has a valid ready-to-fire solution.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="canDetectEmptyStorage()">
+<h3>canDetectEmptyStorage</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">canDetectEmptyStorage</span>()</div>
+<div class="block">No storage sensor is present; this method intentionally does not infer emptiness.</div>
 </div>
 </section>
 </li>
@@ -317,6 +426,14 @@ implements dev.nextftc.core.subsystems.Subsystem</span></div>
 <h3>isReadyToShoot</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isReadyToShoot</span>()</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="getStage()">
+<h3>getStage</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getStage</span>()</div>
 </div>
 </section>
 </li>
@@ -345,6 +462,7 @@ implements dev.nextftc.core.subsystems.Subsystem</span></div>
 <h3>stop</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">stop</span>()</div>
+<div class="block">Emergency stop: no standby flywheel after stop().</div>
 </div>
 </section>
 </li>

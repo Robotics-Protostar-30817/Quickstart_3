@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.tele;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+//import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -25,7 +26,7 @@ public final class PollenCollectionTest extends OpMode {
 
     // Start conservatively; change signs if the mechanisms move backward.
     public static double LOWER_INTAKE_POWER = 0.25;
-    public static double RAMP_INTAKE_POWER = 0.25;
+    //public static double RAMP_INTAKE_POWER = 0.25;
 
     private final Transfer transfer = Transfer.INSTANCE;
     private final IntakeRamp ramp = IntakeRamp.INSTANCE;
@@ -37,7 +38,7 @@ public final class PollenCollectionTest extends OpMode {
         transfer.init(
                 hardwareMap.get(DcMotorEx.class, LOWER_MOTOR_NAME),
                 hardwareMap.get(DcMotorEx.class, UPPER_MOTOR_NAME));
-        ramp.init(hardwareMap.get(CRServo.class, RAMP_SERVO_NAME));
+        ramp.init(hardwareMap.get(Servo.class, RAMP_SERVO_NAME));
         blocker.init(hardwareMap.get(Servo.class, BLOCKER_SERVO_NAME));
         stopCollection();
         blocker.close();
@@ -67,7 +68,8 @@ public final class PollenCollectionTest extends OpMode {
         telemetry.addData("Collecting", collecting);
         telemetry.addData("Lower intake power", "%.2f", transfer.getIntakePower());
         telemetry.addData("Lower motor velocity (ticks/s)", "%.1f", transfer.getVelocity1());
-        telemetry.addData("Ramp servo power", "%.2f", ramp.getPower());
+        telemetry.addData("Ramp position (commanded)", "%.2f", ramp.getPosition());
+        telemetry.addData("Ramp lowered (commanded)", "%.1f", ramp.isLowered());
         telemetry.addData("Upper feed power (must be 0)", "%.2f", transfer.getFeedPower());
         telemetry.addData("Blocker closed (commanded)", !blocker.isOpen());
         telemetry.addLine("No sensor confirms the blocker physical position.");
@@ -76,8 +78,7 @@ public final class PollenCollectionTest extends OpMode {
     }
 
     private void startCollection() {
-        if (!Double.isFinite(LOWER_INTAKE_POWER) || Math.abs(LOWER_INTAKE_POWER) > 1.0
-                || !Double.isFinite(RAMP_INTAKE_POWER) || Math.abs(RAMP_INTAKE_POWER) > 1.0) {
+        if (!Double.isFinite(LOWER_INTAKE_POWER) || Math.abs(LOWER_INTAKE_POWER) > 1.0) {
             stopCollection();
             telemetry.addLine("Invalid collection powers; collection not started");
             return;
@@ -85,7 +86,7 @@ public final class PollenCollectionTest extends OpMode {
         blocker.close();
         transfer.stopFeed();
         transfer.setIntakePower(LOWER_INTAKE_POWER);
-        ramp.setPower(RAMP_INTAKE_POWER);
+        ramp.lower();
         collecting = true;
     }
 

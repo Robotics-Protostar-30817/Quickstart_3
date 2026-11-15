@@ -59,16 +59,19 @@ loadScripts(document, 'script');</script>
 <li><a href="#field-detail" tabindex="0">Field Details</a>
 <ol class="toc-list">
 <li><a href="#INSTANCE" tabindex="0">INSTANCE</a></li>
-<li><a href="#INTAKE_POWER" tabindex="0">INTAKE_POWER</a></li>
+<li><a href="#RAISED_POSITION" tabindex="0">RAISED_POSITION</a></li>
+<li><a href="#LOWERED_POSITION" tabindex="0">LOWERED_POSITION</a></li>
 </ol>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
-<li><a href="#init(com.qualcomm.robotcore.hardware.CRServo)" tabindex="0">init(CRServo)</a></li>
-<li><a href="#setPower(double)" tabindex="0">setPower(double)</a></li>
+<li><a href="#init(com.qualcomm.robotcore.hardware.Servo)" tabindex="0">init(Servo)</a></li>
+<li><a href="#lower()" tabindex="0">lower()</a></li>
+<li><a href="#raise()" tabindex="0">raise()</a></li>
 <li><a href="#intake()" tabindex="0">intake()</a></li>
 <li><a href="#stop()" tabindex="0">stop()</a></li>
-<li><a href="#getPower()" tabindex="0">getPower()</a></li>
+<li><a href="#isLowered()" tabindex="0">isLowered()</a></li>
+<li><a href="#getPosition()" tabindex="0">getPosition()</a></li>
 <li><a href="#periodic()" tabindex="0">periodic()</a></li>
 </ol>
 </li>
@@ -92,7 +95,7 @@ loadScripts(document, 'script');</script>
 <div class="type-signature"><span class="modifiers">public final class </span><span class="element-name type-name-label">IntakeRamp</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
 implements dev.nextftc.core.subsystems.Subsystem</span></div>
-<div class="block">Continuous-rotation servo driving the floor intake ramp.</div>
+<div class="block">Positional servo that raises/lowers the floor intake ramp.</div>
 </div>
 </section>
 <section class="summary">
@@ -110,8 +113,11 @@ implements dev.nextftc.core.subsystems.Subsystem</span></div>
 <div class="col-second even-row-color"><code><a href="#INSTANCE" class="member-name-link">INSTANCE</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>static double</code></div>
-<div class="col-second odd-row-color"><code><a href="#INTAKE_POWER" class="member-name-link">INTAKE_POWER</a></code></div>
+<div class="col-second odd-row-color"><code><a href="#LOWERED_POSITION" class="member-name-link">LOWERED_POSITION</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static double</code></div>
+<div class="col-second even-row-color"><code><a href="#RAISED_POSITION" class="member-name-link">RAISED_POSITION</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
@@ -127,23 +133,37 @@ implements dev.nextftc.core.subsystems.Subsystem</span></div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>double</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPower()" class="member-name-link">getPower</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPosition()" class="member-name-link">getPosition</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Returns the last commanded position (FTC Servo does not report physical feedback).</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#init(com.qualcomm.robotcore.hardware.CRServo)" class="member-name-link">init</a><wbr>(com.qualcomm.robotcore.hardware.CRServo&nbsp;servo)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#init(com.qualcomm.robotcore.hardware.Servo)" class="member-name-link">init</a><wbr>(com.qualcomm.robotcore.hardware.Servo&nbsp;rampServo)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#intake()" class="member-name-link">intake</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Compatibility with CompleteShooter.startCollecting().</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isLowered()" class="member-name-link">isLowered</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Returns the last commanded state, not a measured servo position.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#lower()" class="member-name-link">lower</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#periodic()" class="member-name-link">periodic</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setPower(double)" class="member-name-link">setPower</a><wbr>(double&nbsp;value)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#raise()" class="member-name-link">raise</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#stop()" class="member-name-link">stop</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Compatibility with CompleteShooter.stopCollecting().</div>
+</div>
 </div>
 </div>
 </div>
@@ -173,10 +193,18 @@ implements dev.nextftc.core.subsystems.Subsystem</span></div>
 </section>
 </li>
 <li>
-<section class="detail" id="INTAKE_POWER">
-<h3>INTAKE_POWER</h3>
+<section class="detail" id="RAISED_POSITION">
+<h3>RAISED_POSITION</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">INTAKE_POWER</span></div>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">RAISED_POSITION</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="LOWERED_POSITION">
+<h3>LOWERED_POSITION</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">LOWERED_POSITION</span></div>
 </div>
 </section>
 </li>
@@ -189,18 +217,26 @@ implements dev.nextftc.core.subsystems.Subsystem</span></div>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="init(com.qualcomm.robotcore.hardware.CRServo)">
+<section class="detail" id="init(com.qualcomm.robotcore.hardware.Servo)">
 <h3>init</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">init</span><wbr><span class="parameters">(com.qualcomm.robotcore.hardware.CRServo&nbsp;servo)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">init</span><wbr><span class="parameters">(com.qualcomm.robotcore.hardware.Servo&nbsp;rampServo)</span></div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="setPower(double)">
-<h3>setPower</h3>
+<section class="detail" id="lower()">
+<h3>lower</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setPower</span><wbr><span class="parameters">(double&nbsp;value)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">lower</span>()</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="raise()">
+<h3>raise</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">raise</span>()</div>
 </div>
 </section>
 </li>
@@ -209,6 +245,7 @@ implements dev.nextftc.core.subsystems.Subsystem</span></div>
 <h3>intake</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">intake</span>()</div>
+<div class="block">Compatibility with CompleteShooter.startCollecting().</div>
 </div>
 </section>
 </li>
@@ -217,14 +254,25 @@ implements dev.nextftc.core.subsystems.Subsystem</span></div>
 <h3>stop</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">stop</span>()</div>
+<div class="block">Compatibility with CompleteShooter.stopCollecting().</div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="getPower()">
-<h3>getPower</h3>
+<section class="detail" id="isLowered()">
+<h3>isLowered</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">getPower</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isLowered</span>()</div>
+<div class="block">Returns the last commanded state, not a measured servo position.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="getPosition()">
+<h3>getPosition</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">getPosition</span>()</div>
+<div class="block">Returns the last commanded position (FTC Servo does not report physical feedback).</div>
 </div>
 </section>
 </li>
