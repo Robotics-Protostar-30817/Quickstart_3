@@ -1,120 +1,57 @@
-
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-
 import dev.nextftc.core.subsystems.Subsystem;
 
-/**
- * Transfer subsystem
- *
- * Controls the two transfer motors.
- */
-public class Transfer implements Subsystem {
-
+/** Two independent paths: lower floor intake and upper feed to flywheel. */
+public final class Transfer implements Subsystem {
     public static final Transfer INSTANCE = new Transfer();
+    public static DcMotorSimple.Direction LOWER_DIRECTION = DcMotorSimple.Direction.FORWARD;
+    public static DcMotorSimple.Direction UPPER_DIRECTION = DcMotorSimple.Direction.FORWARD;
+    private DcMotorEx lower, upper;
+    private double lowerPower, upperPower;
+    private Transfer() {}
 
-    private DcMotorEx transferMotor1;
-    private DcMotorEx transferMotor2;
-
-    private DcMotorSimple.Direction transferDirection =
-            DcMotorSimple.Direction.FORWARD;
-
-    private double targetPower = 0.0;
-
-    private Transfer() {
-    }
-
-    /**
-     * Initializes both transfer motors.
-     */
+    /** motor1 = floor intake; motor2 = flywheel feed. */
     public void init(DcMotorEx motor1, DcMotorEx motor2) {
-        if (motor1 == null || motor2 == null) {
-            throw new IllegalArgumentException("Transfer motors cannot be null");
+        if (motor1 == null || motor2 == null || motor1 == motor2)
+            throw new IllegalArgumentException("Two distinct transfer motors required");
+        lower = motor1; upper = motor2;
+        lower.setDirection(LOWER_DIRECTION);
+        upper.setDirection(UPPER_DIRECTION);
+        for (DcMotorEx motor : new DcMotorEx[]{lower, upper}) {
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
-
-        transferMotor1 = motor1;
-        transferMotor2 = motor2;
-
-        transferMotor1.setDirection(transferDirection);
-        transferMotor2.setDirection(transferDirection);
-
-        transferMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        transferMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        transferMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        transferMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
         stop();
     }
-
-    /**
-     * Sets the power of both transfer motors.
-     */
-    public void setPower(double power) {
-        if (transferMotor1 == null || transferMotor2 == null) {
-            throw new IllegalStateException("Transfer has not been initialized");
-        }
-
-        if (!Double.isFinite(power)) {
-            throw new IllegalArgumentException("Power must be a finite number");
-        }
-
-        targetPower = Math.max(-1.0, Math.min(1.0, power));
-
-        transferMotor1.setPower(targetPower);
-        transferMotor2.setPower(targetPower);
+    private void checkInit() {
+        if (lower == null || upper == null) throw new IllegalStateException("Transfer.init() required");
     }
-
-    /**
-     * Toggles the direction of both transfer motors.
-     */
-    public void toggleDirection() {
-        stop();
-
-        transferDirection =
-                (transferDirection == DcMotorSimple.Direction.FORWARD)
-                        ? DcMotorSimple.Direction.REVERSE
-                        : DcMotorSimple.Direction.FORWARD;
-
-        transferMotor1.setDirection(transferDirection);
-        transferMotor2.setDirection(transferDirection);
+    private static double power(double value) {
+        if (!Double.isFinite(value)) throw new IllegalArgumentException("Non-finite motor power");
+        return Math.max(-1, Math.min(1, value));
     }
-
-    /**
-     * Stops both transfer motors.
-     */
-    public void stop() {
-        targetPower = 0.0;
-
-        if (transferMotor1 != null) {
-            transferMotor1.setPower(0.0);
-        }
-
-        if (transferMotor2 != null) {
-            transferMotor2.setPower(0.0);
-        }
+    public void setIntakePower(double value) { checkInit(); lowerPower = power(value); lower.setPower(lowerPower); }
+    public void setFeedPower(double value) { checkInit(); upperPower = power(value); upper.setPower(upperPower); }
+    public void stopIntake() { lowerPower = 0; if (lower != null) lower.setPower(0); }
+    public void stopFeed() { upperPower = 0; if (upper != null) upper.setPower(0); }
+    public void stop() { stopIntake(); stopFeed(); }
+    public double getIntakePower() { return lowerPower; }
+    public double getFeedPower() { return upperPower; }
+    public double getVelocity1() { return lower == null ? 0 : lower.getVelocity(); }
+    public double getVelocity2() { return upper == null ? 0 : upper.getVelocity(); }
+    /** Legacy API for older tests. Prefer independent commands above. */
+    @Deprecated public void setPower(double value) { setIntakePower(value); setFeedPower(value); }
+    @Deprecated public double getTargetPower() { return lowerPower; }
+    @Deprecated public String getDirection() { return LOWER_DIRECTION.toString(); }
+    @Deprecated public void toggleDirection() {
+        checkInit(); stop();
+        LOWER_DIRECTION = LOWER_DIRECTION == DcMotorSimple.Direction.FORWARD ? DcMotorSimple.Direction.REVERSE : DcMotorSimple.Direction.FORWARD;
+        UPPER_DIRECTION = UPPER_DIRECTION == DcMotorSimple.Direction.FORWARD ? DcMotorSimple.Direction.REVERSE : DcMotorSimple.Direction.FORWARD;
+        lower.setDirection(LOWER_DIRECTION); upper.setDirection(UPPER_DIRECTION);
     }
-
-    public double getTargetPower() {
-        return targetPower;
-    }
-
-    public double getVelocity1() {
-        return transferMotor1 == null ? 0.0 : transferMotor1.getVelocity();
-    }
-
-    public double getVelocity2() {
-        return transferMotor2 == null ? 0.0 : transferMotor2.getVelocity();
-    }
-
-    public String getDirection() {
-        return transferDirection.toString();
-    }
-
-    @Override
-    public void periodic() {
-    }
+    @Override public void periodic() {}
 }

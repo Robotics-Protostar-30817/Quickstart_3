@@ -8,6 +8,8 @@ import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
 
 /**
+ * The old test file for Flywheel.
+ * Now it is the test file for Shooter.java which is for any Motor.
  * Manual TeleOp test for the {@link Shooter} subsystem.
  *
  * <p>This OpMode is intended for the first-stage testing of the two

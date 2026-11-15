@@ -30,6 +30,7 @@ loadScripts(document, 'script');</script>
 <li><a href="../../../../../index.html">Overview</a></li>
 <li class="nav-bar-cell1-rev">Class</li>
 <li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../deprecated-list.html">Deprecated</a></li>
 <li><a href="../../../../../index-all.html">Index</a></li>
 <li><a href="../../../../../search.html">Search</a></li>
 <li><a href="../../../../../help-doc.html#class">Help</a></li>
@@ -63,8 +64,6 @@ loadScripts(document, 'script');</script>
 <li><a href="#TURRET_DIRECTION" tabindex="0">TURRET_DIRECTION</a></li>
 <li><a href="#TURRET_FORWARD_OFFSET_DEG" tabindex="0">TURRET_FORWARD_OFFSET_DEG</a></li>
 <li><a href="#MAX_TARGET_CHANGE_DEG" tabindex="0">MAX_TARGET_CHANGE_DEG</a></li>
-<li><a href="#HOOD_SETTLE_SECONDS" tabindex="0">HOOD_SETTLE_SECONDS</a></li>
-<li><a href="#HOOD_CHANGE_THRESHOLD" tabindex="0">HOOD_CHANGE_THRESHOLD</a></li>
 </ol>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
@@ -78,6 +77,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#getDistanceInches()" tabindex="0">getDistanceInches()</a></li>
 <li><a href="#getTargetTurretDegrees()" tabindex="0">getTargetTurretDegrees()</a></li>
 <li><a href="#getTargetHoodPosition()" tabindex="0">getTargetHoodPosition()</a></li>
+<li><a href="#getTargetHoodAngleDegrees()" tabindex="0">getTargetHoodAngleDegrees()</a></li>
 <li><a href="#getTargetFlywheelRPM()" tabindex="0">getTargetFlywheelRPM()</a></li>
 <li><a href="#periodic()" tabindex="0">periodic()</a></li>
 </ol>
@@ -103,7 +103,7 @@ loadScripts(document, 'script');</script>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
 implements dev.nextftc.core.subsystems.Subsystem</span></div>
 <div class="block">Stationary, vision-guided aiming. Call periodic() once per OpMode loop.
-Initialize Vision, Turret, Hood and Flywheel first. Never actuates the feeder.
+Initialize Vision, Turret, Hood and Flywheel first. Never actuates Transfer.
 CELL coordinates must be validated as robot-centered inches; turret zero is forward.</div>
 </div>
 </section>
@@ -120,12 +120,6 @@ CELL coordinates must be validated as robot-centered inches; turret zero is forw
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>static boolean</code></div>
 <div class="col-second even-row-color"><code><a href="#CALIBRATION_VERIFIED" class="member-name-link">CALIBRATION_VERIFIED</a></code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>static double</code></div>
-<div class="col-second odd-row-color"><code><a href="#HOOD_CHANGE_THRESHOLD" class="member-name-link">HOOD_CHANGE_THRESHOLD</a></code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code>static double</code></div>
-<div class="col-second even-row-color"><code><a href="#HOOD_SETTLE_SECONDS" class="member-name-link">HOOD_SETTLE_SECONDS</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>static final <a href="AutoAim.html" title="class in org.firstinspires.ftc.teamcode.subsystems">AutoAim</a></code></div>
 <div class="col-second odd-row-color"><code><a href="#INSTANCE" class="member-name-link">INSTANCE</a></code></div>
@@ -172,25 +166,28 @@ CELL coordinates must be validated as robot-centered inches; turret zero is forw
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTargetFlywheelRPM()" class="member-name-link">getTargetFlywheelRPM</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>double</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTargetHoodPosition()" class="member-name-link">getTargetHoodPosition</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTargetHoodAngleDegrees()" class="member-name-link">getTargetHoodAngleDegrees</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>double</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTargetTurretDegrees()" class="member-name-link">getTargetTurretDegrees</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTargetHoodPosition()" class="member-name-link">getTargetHoodPosition</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#init(org.firstinspires.ftc.teamcode.subsystems.Vision.Cell.Color)" class="member-name-link">init</a><wbr>(<a href="Vision.Cell.Color.html" title="enum class in org.firstinspires.ftc.teamcode.subsystems">Vision.Cell.Color</a>&nbsp;color)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>double</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTargetTurretDegrees()" class="member-name-link">getTargetTurretDegrees</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isEnabled()" class="member-name-link">isEnabled</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#init(org.firstinspires.ftc.teamcode.subsystems.Vision.Cell.Color)" class="member-name-link">init</a><wbr>(<a href="Vision.Cell.Color.html" title="enum class in org.firstinspires.ftc.teamcode.subsystems">Vision.Cell.Color</a>&nbsp;color)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isReadyToShoot()" class="member-name-link">isReadyToShoot</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isEnabled()" class="member-name-link">isEnabled</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isReadyToShoot()" class="member-name-link">isReadyToShoot</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Readiness is approximate: positional servos have no hood position feedback.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#periodic()" class="member-name-link">periodic</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#periodic()" class="member-name-link">periodic</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -256,22 +253,6 @@ CELL coordinates must be validated as robot-centered inches; turret zero is forw
 <h3>MAX_TARGET_CHANGE_DEG</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">MAX_TARGET_CHANGE_DEG</span></div>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="HOOD_SETTLE_SECONDS">
-<h3>HOOD_SETTLE_SECONDS</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">HOOD_SETTLE_SECONDS</span></div>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="HOOD_CHANGE_THRESHOLD">
-<h3>HOOD_CHANGE_THRESHOLD</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">HOOD_CHANGE_THRESHOLD</span></div>
 </div>
 </section>
 </li>
@@ -353,6 +334,14 @@ CELL coordinates must be validated as robot-centered inches; turret zero is forw
 <h3>getTargetHoodPosition</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">getTargetHoodPosition</span>()</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="getTargetHoodAngleDegrees()">
+<h3>getTargetHoodAngleDegrees</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">getTargetHoodAngleDegrees</span>()</div>
 </div>
 </section>
 </li>

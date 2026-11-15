@@ -1,30 +1,26 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * Stationary, vision-guided aiming. Call periodic() once per OpMode loop.
- * Initialize Vision, Turret, Hood and Flywheel first. Never actuates the feeder.
+ * Initialize Vision, Turret, Hood and Flywheel first. Never actuates Transfer.
  * CELL coordinates must be validated as robot-centered inches; turret zero is forward.
  */
 public final class AutoAim implements dev.nextftc.core.subsystems.Subsystem {
     public static final AutoAim INSTANCE = new AutoAim();
 
     // COPY VERIFIED SUCCESSFUL ROWS from ShotCalibration here, sorted by distance.
-    // Each row: {horizontal distance in inches, hood servo position, flywheel RPM}.
+    // Each row: {horizontal distance in inches, physical hood launch angle (degrees), flywheel RPM}.
     // At least two distinct distance rows required. No extrapolation.
     public static final double[][] SHOT_TABLE = {
-             {36.0, 0.48, 2500.0},  // EXAMPLE ONLY: DO NOT UNCOMMENT UNTIL MEASURED
-             {60.0, 0.50, 3000.0},
+            {36.0, Double.NaN, 2500.0}, // Replace angle with measured successful shot
+            {60.0, Double.NaN, 3000.0}, // Replace angle with measured successful shot
     };
     public static boolean CALIBRATION_VERIFIED = false;//after fill in the table with experimented values, set to true
     public static double TURRET_DIRECTION = 1.0; // set -1 if positive angle turns left
     public static double TURRET_FORWARD_OFFSET_DEG = 0.0;
     public static double MAX_TARGET_CHANGE_DEG = 5.0; // optional telemetry reference only
 
-    //approximate hood settling time, measure and tune on the robot
-    public static double HOOD_SETTLE_SECONDS = 0.5; // for hood readiness check
-    public static double HOOD_CHANGE_THRESHOLD = 0.002; // for hood readiness check
     private final Vision vision = Vision.INSTANCE;
     private final Turret turret = Turret.INSTANCE;
     private final Hood hood = Hood.INSTANCE;
@@ -36,12 +32,9 @@ public final class AutoAim implements dev.nextftc.core.subsystems.Subsystem {
     private double distanceInches = Double.NaN;
     private double targetTurretDeg = Double.NaN;
     private double targetHoodPosition = Double.NaN;
+    private double targetHoodAngleDegrees = Double.NaN;
     private double targetRpm = Double.NaN;
 
-    private final ElapsedTime hoodTimer = new ElapsedTime();
-    private double lastHoodCommand = Double.NaN;
-    private boolean hoodSettlingStarted;
-    private boolean hoodReady;
 
     private AutoAim() { }
 
@@ -52,9 +45,8 @@ public final class AutoAim implements dev.nextftc.core.subsystems.Subsystem {
         enabled = false;
         ready = false;
         status = "Disabled";
-        lastHoodCommand = Double.NaN;
-        hoodSettlingStarted = false;
-        hoodReady = false;
+        hood.invalidateReadiness();
+        distanceInches = targetTurretDeg = targetHoodPosition = targetHoodAngleDegrees = targetRpm = Double.NaN;
     }
 
     public void enable() { enabled = true; }
@@ -69,14 +61,14 @@ public final class AutoAim implements dev.nextftc.core.subsystems.Subsystem {
     public double getDistanceInches() { return distanceInches; }
     public double getTargetTurretDegrees() { return targetTurretDeg; }
     public double getTargetHoodPosition() { return targetHoodPosition; }
+    public double getTargetHoodAngleDegrees() { return targetHoodAngleDegrees; }
     public double getTargetFlywheelRPM() { return targetRpm; }
 
     private void safeStop(String reason) {
         ready = false;
-        hoodReady = false;
-        lastHoodCommand = Double.NaN;
+        hood.invalidateReadiness();
         status = reason;
-        distanceInches = targetTurretDeg = targetHoodPosition = targetRpm = Double.NaN;
+        distanceInches = targetTurretDeg = targetHoodPosition = targetHoodAngleDegrees = targetRpm = Double.NaN;
         turret.stop();
         flywheel.stop();
         // Hood servo remains at its last commanded position.
@@ -101,48 +93,53 @@ public final class AutoAim implements dev.nextftc.core.subsystems.Subsystem {
         if (!CALIBRATION_VERIFIED || !validTable()) {
             safeStop("Shot table missing/unverified"); return;
         }
+        if (!hood.hasValidAngleCalibration()) {
+            safeStop("Hood calibration missing/unverified"); return;
+        }
         if (distance < SHOT_TABLE[0][0] || distance > SHOT_TABLE[SHOT_TABLE.length - 1][0]) {
             safeStop("Distance outside calibrated range"); return;
         }
-        double hoodPos = Double.NaN, rpm = Double.NaN;
+        double hoodAngle = Double.NaN, rpm = Double.NaN;
         for (int i = 0; i < SHOT_TABLE.length - 1; i++) {
             double[] a = SHOT_TABLE[i], b = SHOT_TABLE[i + 1];
             if (distance >= a[0] && distance <= b[0]) {
                 double fraction = (distance - a[0]) / (b[0] - a[0]);
-                hoodPos = a[1] + fraction * (b[1] - a[1]);
+                hoodAngle = a[1] + fraction * (b[1] - a[1]);
                 rpm = a[2] + fraction * (b[2] - a[2]);
                 break;
             }
         }
+        double hoodPos;
+        try {
+            hoodPos = hood.servoPositionForAngle(hoodAngle);
+        } catch (IllegalArgumentException | IllegalStateException ex) {
+            safeStop("Hood angle outside calibration"); return;
+        }
         if (!Double.isFinite(hoodPos) || !Double.isFinite(rpm)
-                || hoodPos < Hood.MIN_POSITION || hoodPos > Hood.MAX_POSITION
                 || rpm <= 0 || rpm > Flywheel.RATED_MOTOR_RPM) {
             safeStop("Shot command outside limits"); return;
         }
         distanceInches = distance;
         targetTurretDeg = direction;
         targetHoodPosition = hoodPos;
+        targetHoodAngleDegrees = hoodAngle;
         targetRpm = rpm;
 
         turret.setTargetAngle(direction);
-        if (!hoodSettlingStarted || Math.abs(hoodPos - lastHoodCommand) > HOOD_CHANGE_THRESHOLD) {
-            hoodTimer.reset();
-            hoodSettlingStarted = true;
-            lastHoodCommand = hoodPos;
-        }
-        if (hoodSettlingStarted && hoodTimer.seconds() >= HOOD_SETTLE_SECONDS) {
-            hoodReady = true;
-        }
-
-        hood.setPosition(hoodPos);
+        hood.setLaunchAngle(hoodAngle);
         flywheel.setFlywheelRPM(rpm);
         turret.periodic();
         hood.periodic();
         flywheel.periodic();
-        ready = turret.isAtTarget() && flywheel.isReadyToShoot() && hoodReady;
-        if (ready) status = "Ready (hood time-estimated, not measured";
-        else if (!hoodReady) status = "Waiting for hood to settle";
-        else status = "Aiming/waiting for flywheel";
+        boolean turretReady = turret.isAtTarget();
+        boolean flywheelReady = flywheel.isReadyToShoot();
+        boolean hoodReady = hood.isReady(); // Time-estimated, not position-measured.
+        ready = turretReady && flywheelReady && hoodReady;
+
+        if (ready) status = "Ready to shoot (hood time-estimated)";
+        else if (!turretReady) status = "Waiting for turret";
+        else if (!flywheelReady) status = "Waiting for flywheel";
+        else status = "Waiting for hood to settle";
     }
 
     private boolean validTable() {
@@ -152,7 +149,6 @@ public final class AutoAim implements dev.nextftc.core.subsystems.Subsystem {
             if (row == null || row.length != 3 || !Double.isFinite(row[0])
                     || !Double.isFinite(row[1]) || !Double.isFinite(row[2])
                     || row[0] <= previousDistance || row[0] <= 0
-                    || row[1] < Hood.MIN_POSITION || row[1] > Hood.MAX_POSITION
                     || row[2] <= 0 || row[2] > Flywheel.RATED_MOTOR_RPM) return false;
             previousDistance = row[0];
         }

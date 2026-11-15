@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
+import org.firstinspires.ftc.teamcode.subsystems.Blocker;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
 //import org.firstinspires.ftc.teamcode.subsystems.Feeder;
 import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 import org.firstinspires.ftc.teamcode.subsystems.Hood;
+import org.firstinspires.ftc.teamcode.subsystems.IntakeRamp;
 import org.firstinspires.ftc.teamcode.subsystems.Odom;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
+import org.firstinspires.ftc.teamcode.subsystems.Transfer;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.subsystems.Vision;
 
@@ -44,6 +47,11 @@ public class Robot {
     public final Turret turret;
 
     public final Hood hood;
+
+    public final Transfer transfer;
+    public final IntakeRamp intakeRamp;
+    public final Blocker blocker;
+
     /**
      * Private constructor initializing all subsystem instances from their respective singletons.
      */
@@ -56,5 +64,8 @@ public class Robot {
         flywheel = Flywheel.INSTANCE;
         turret = Turret.INSTANCE;
         hood = Hood.INSTANCE;
+        transfer = Transfer.INSTANCE;
+        intakeRamp = IntakeRamp.INSTANCE;
+        blocker = Blocker.INSTANCE;
     }
 }

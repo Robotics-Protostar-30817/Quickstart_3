@@ -30,6 +30,7 @@ loadScripts(document, 'script');</script>
 <li><a href="../../../../../index.html">Overview</a></li>
 <li class="nav-bar-cell1-rev">Class</li>
 <li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../deprecated-list.html">Deprecated</a></li>
 <li><a href="../../../../../index-all.html">Index</a></li>
 <li><a href="../../../../../search.html">Search</a></li>
 <li><a href="../../../../../help-doc.html#class">Help</a></li>
@@ -61,14 +62,24 @@ loadScripts(document, 'script');</script>
 <li><a href="#MIN_POSITION" tabindex="0">MIN_POSITION</a></li>
 <li><a href="#MAX_POSITION" tabindex="0">MAX_POSITION</a></li>
 <li><a href="#TEST_STEP" tabindex="0">TEST_STEP</a></li>
+<li><a href="#SETTLE_SECONDS" tabindex="0">SETTLE_SECONDS</a></li>
+<li><a href="#CHANGE_THRESHOLD" tabindex="0">CHANGE_THRESHOLD</a></li>
+<li><a href="#ANGLE_CALIBRATION" tabindex="0">ANGLE_CALIBRATION</a></li>
+<li><a href="#ANGLE_CALIBRATION_VERIFIED" tabindex="0">ANGLE_CALIBRATION_VERIFIED</a></li>
 </ol>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
 <li><a href="#init(com.qualcomm.robotcore.hardware.Servo)" tabindex="0">init(Servo)</a></li>
+<li><a href="#invalidateReadiness()" tabindex="0">invalidateReadiness()</a></li>
+<li><a href="#isReady()" tabindex="0">isReady()</a></li>
 <li><a href="#setPosition(double)" tabindex="0">setPosition(double)</a></li>
+<li><a href="#setLaunchAngle(double)" tabindex="0">setLaunchAngle(double)</a></li>
+<li><a href="#servoPositionForAngle(double)" tabindex="0">servoPositionForAngle(double)</a></li>
+<li><a href="#hasValidAngleCalibration()" tabindex="0">hasValidAngleCalibration()</a></li>
 <li><a href="#adjustPosition(double)" tabindex="0">adjustPosition(double)</a></li>
 <li><a href="#getPosition()" tabindex="0">getPosition()</a></li>
+<li><a href="#getTargetLaunchAngleDegrees()" tabindex="0">getTargetLaunchAngleDegrees()</a></li>
 <li><a href="#hasCommand()" tabindex="0">hasCommand()</a></li>
 <li><a href="#hold()" tabindex="0">hold()</a></li>
 <li><a href="#periodic()" tabindex="0">periodic()</a></li>
@@ -112,14 +123,28 @@ Calibrate the linkage and safe range before enabling full travel.</div>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Field</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>static final <a href="Hood.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Hood</a></code></div>
-<div class="col-second even-row-color"><code><a href="#INSTANCE" class="member-name-link">INSTANCE</a></code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>static double</code></div>
-<div class="col-second odd-row-color"><code><a href="#MAX_POSITION" class="member-name-link">MAX_POSITION</a></code></div>
+<div class="col-first even-row-color"><code>static final double[][]</code></div>
+<div class="col-second even-row-color"><code><a href="#ANGLE_CALIBRATION" class="member-name-link">ANGLE_CALIBRATION</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">Replace with measured {servo position, physical launch angle in degrees} pairs.</div>
+</div>
+<div class="col-first odd-row-color"><code>static boolean</code></div>
+<div class="col-second odd-row-color"><code><a href="#ANGLE_CALIBRATION_VERIFIED" class="member-name-link">ANGLE_CALIBRATION_VERIFIED</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>static double</code></div>
-<div class="col-second even-row-color"><code><a href="#MIN_POSITION" class="member-name-link">MIN_POSITION</a></code></div>
+<div class="col-second even-row-color"><code><a href="#CHANGE_THRESHOLD" class="member-name-link">CHANGE_THRESHOLD</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static final <a href="Hood.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Hood</a></code></div>
+<div class="col-second odd-row-color"><code><a href="#INSTANCE" class="member-name-link">INSTANCE</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static double</code></div>
+<div class="col-second even-row-color"><code><a href="#MAX_POSITION" class="member-name-link">MAX_POSITION</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static double</code></div>
+<div class="col-second odd-row-color"><code><a href="#MIN_POSITION" class="member-name-link">MIN_POSITION</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static double</code></div>
+<div class="col-second even-row-color"><code><a href="#SETTLE_SECONDS" class="member-name-link">SETTLE_SECONDS</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>static double</code></div>
 <div class="col-second odd-row-color"><code><a href="#TEST_STEP" class="member-name-link">TEST_STEP</a></code></div>
@@ -146,8 +171,16 @@ Calibrate the linkage and safe range before enabling full travel.</div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Last requested position; not independent position feedback.</div>
 </div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>double</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTargetLaunchAngleDegrees()" class="member-name-link">getTargetLaunchAngleDegrees</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Last requested physical launch angle; not sensor feedback.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#hasCommand()" class="member-name-link">hasCommand</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#hasCommand()" class="member-name-link">hasCommand</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#hasValidAngleCalibration()" class="member-name-link">hasValidAngleCalibration</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#hold()" class="member-name-link">hold</a>()</code></div>
@@ -158,8 +191,22 @@ Calibrate the linkage and safe range before enabling full travel.</div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#init(com.qualcomm.robotcore.hardware.Servo)" class="member-name-link">init</a><wbr>(com.qualcomm.robotcore.hardware.Servo&nbsp;hoodServo)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#invalidateReadiness()" class="member-name-link">invalidateReadiness</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isReady()" class="member-name-link">isReady</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#periodic()" class="member-name-link">periodic</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>double</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#servoPositionForAngle(double)" class="member-name-link">servoPositionForAngle</a><wbr>(double&nbsp;angleDegrees)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setLaunchAngle(double)" class="member-name-link">setLaunchAngle</a><wbr>(double&nbsp;angleDegrees)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Convert physical launch angle to a servo command using linear interpolation.</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setPosition(double)" class="member-name-link">setPosition</a><wbr>(double&nbsp;position)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
@@ -215,6 +262,41 @@ Calibrate the linkage and safe range before enabling full travel.</div>
 </div>
 </section>
 </li>
+<li>
+<section class="detail" id="SETTLE_SECONDS">
+<h3>SETTLE_SECONDS</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">SETTLE_SECONDS</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="CHANGE_THRESHOLD">
+<h3>CHANGE_THRESHOLD</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">CHANGE_THRESHOLD</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="ANGLE_CALIBRATION">
+<h3>ANGLE_CALIBRATION</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">double[][]</span>&nbsp;<span class="element-name">ANGLE_CALIBRATION</span></div>
+<div class="block">Replace with measured {servo position, physical launch angle in degrees} pairs.
+  Positions must strictly increase; angles must be strictly monotonic.
+  Example rows below are placeholders ONLY.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="ANGLE_CALIBRATION_VERIFIED">
+<h3>ANGLE_CALIBRATION_VERIFIED</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">ANGLE_CALIBRATION_VERIFIED</span></div>
+</div>
+</section>
+</li>
 </ul>
 </section>
 </li>
@@ -232,10 +314,52 @@ Calibrate the linkage and safe range before enabling full travel.</div>
 </section>
 </li>
 <li>
+<section class="detail" id="invalidateReadiness()">
+<h3>invalidateReadiness</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">invalidateReadiness</span>()</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="isReady()">
+<h3>isReady</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isReady</span>()</div>
+</div>
+</section>
+</li>
+<li>
 <section class="detail" id="setPosition(double)">
 <h3>setPosition</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setPosition</span><wbr><span class="parameters">(double&nbsp;position)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="setLaunchAngle(double)">
+<h3>setLaunchAngle</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setLaunchAngle</span><wbr><span class="parameters">(double&nbsp;angleDegrees)</span></div>
+<div class="block">Convert physical launch angle to a servo command using linear interpolation.
+  Reject uncalibrated angles and extrapolation; never silently clip an angle.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="servoPositionForAngle(double)">
+<h3>servoPositionForAngle</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">servoPositionForAngle</span><wbr><span class="parameters">(double&nbsp;angleDegrees)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="hasValidAngleCalibration()">
+<h3>hasValidAngleCalibration</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">hasValidAngleCalibration</span>()</div>
 </div>
 </section>
 </li>
@@ -253,6 +377,15 @@ Calibrate the linkage and safe range before enabling full travel.</div>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">getPosition</span>()</div>
 <div class="block">Last requested position; not independent position feedback.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="getTargetLaunchAngleDegrees()">
+<h3>getTargetLaunchAngleDegrees</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">getTargetLaunchAngleDegrees</span>()</div>
+<div class="block">Last requested physical launch angle; not sensor feedback.</div>
 </div>
 </section>
 </li>

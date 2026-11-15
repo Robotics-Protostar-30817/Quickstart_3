@@ -30,6 +30,7 @@ loadScripts(document, 'script');</script>
 <li><a href="../../../../../index.html">Overview</a></li>
 <li class="nav-bar-cell1-rev">Class</li>
 <li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../deprecated-list.html">Deprecated</a></li>
 <li><a href="../../../../../index-all.html">Index</a></li>
 <li><a href="../../../../../search.html">Search</a></li>
 <li><a href="../../../../../help-doc.html#class">Help</a></li>
@@ -58,18 +59,26 @@ loadScripts(document, 'script');</script>
 <li><a href="#field-detail" tabindex="0">Field Details</a>
 <ol class="toc-list">
 <li><a href="#INSTANCE" tabindex="0">INSTANCE</a></li>
+<li><a href="#LOWER_DIRECTION" tabindex="0">LOWER_DIRECTION</a></li>
+<li><a href="#UPPER_DIRECTION" tabindex="0">UPPER_DIRECTION</a></li>
 </ol>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
 <li><a href="#init(com.qualcomm.robotcore.hardware.DcMotorEx,com.qualcomm.robotcore.hardware.DcMotorEx)" tabindex="0">init(DcMotorEx, DcMotorEx)</a></li>
-<li><a href="#setPower(double)" tabindex="0">setPower(double)</a></li>
-<li><a href="#toggleDirection()" tabindex="0">toggleDirection()</a></li>
+<li><a href="#setIntakePower(double)" tabindex="0">setIntakePower(double)</a></li>
+<li><a href="#setFeedPower(double)" tabindex="0">setFeedPower(double)</a></li>
+<li><a href="#stopIntake()" tabindex="0">stopIntake()</a></li>
+<li><a href="#stopFeed()" tabindex="0">stopFeed()</a></li>
 <li><a href="#stop()" tabindex="0">stop()</a></li>
-<li><a href="#getTargetPower()" tabindex="0">getTargetPower()</a></li>
+<li><a href="#getIntakePower()" tabindex="0">getIntakePower()</a></li>
+<li><a href="#getFeedPower()" tabindex="0">getFeedPower()</a></li>
 <li><a href="#getVelocity1()" tabindex="0">getVelocity1()</a></li>
 <li><a href="#getVelocity2()" tabindex="0">getVelocity2()</a></li>
+<li><a href="#setPower(double)" tabindex="0">setPower(double)</a></li>
+<li><a href="#getTargetPower()" tabindex="0">getTargetPower()</a></li>
 <li><a href="#getDirection()" tabindex="0">getDirection()</a></li>
+<li><a href="#toggleDirection()" tabindex="0">toggleDirection()</a></li>
 <li><a href="#periodic()" tabindex="0">periodic()</a></li>
 </ol>
 </li>
@@ -90,12 +99,10 @@ loadScripts(document, 'script');</script>
 </dl>
 <hr>
 <div class="horizontal-scroll">
-<div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">Transfer</span>
+<div class="type-signature"><span class="modifiers">public final class </span><span class="element-name type-name-label">Transfer</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
 implements dev.nextftc.core.subsystems.Subsystem</span></div>
-<div class="block">Transfer subsystem
-
-Controls the two transfer motors.</div>
+<div class="block">Two independent paths: lower floor intake and upper feed to flywheel.</div>
 </div>
 </section>
 <section class="summary">
@@ -112,6 +119,12 @@ Controls the two transfer motors.</div>
 <div class="col-first even-row-color"><code>static final <a href="Transfer.html" title="class in org.firstinspires.ftc.teamcode.subsystems">Transfer</a></code></div>
 <div class="col-second even-row-color"><code><a href="#INSTANCE" class="member-name-link">INSTANCE</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction</code></div>
+<div class="col-second odd-row-color"><code><a href="#LOWER_DIRECTION" class="member-name-link">LOWER_DIRECTION</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction</code></div>
+<div class="col-second even-row-color"><code><a href="#UPPER_DIRECTION" class="member-name-link">UPPER_DIRECTION</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
@@ -120,18 +133,28 @@ Controls the two transfer motors.</div>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button><button id="method-summary-table-tab6" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab6', 3)" class="table-tab">Deprecated Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getDirection()" class="member-name-link">getDirection</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getDirection()" class="member-name-link">getDirection</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>double</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTargetPower()" class="member-name-link">getTargetPower</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getFeedPower()" class="member-name-link">getFeedPower</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>double</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getIntakePower()" class="member-name-link">getIntakePower</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>double</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getTargetPower()" class="member-name-link">getTargetPower</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>double</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getVelocity1()" class="member-name-link">getVelocity1</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
@@ -142,25 +165,35 @@ Controls the two transfer motors.</div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#init(com.qualcomm.robotcore.hardware.DcMotorEx,com.qualcomm.robotcore.hardware.DcMotorEx)" class="member-name-link">init</a><wbr>(com.qualcomm.robotcore.hardware.DcMotorEx&nbsp;motor1,
  com.qualcomm.robotcore.hardware.DcMotorEx&nbsp;motor2)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Initializes both transfer motors.</div>
+<div class="block">motor1 = floor intake; motor2 = flywheel feed.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#periodic()" class="member-name-link">periodic</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setPower(double)" class="member-name-link">setPower</a><wbr>(double&nbsp;power)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Sets the power of both transfer motors.</div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setFeedPower(double)" class="member-name-link">setFeedPower</a><wbr>(double&nbsp;value)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setIntakePower(double)" class="member-name-link">setIntakePower</a><wbr>(double&nbsp;value)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#setPower(double)" class="member-name-link">setPower</a><wbr>(double&nbsp;value)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#stop()" class="member-name-link">stop</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Stops both transfer motors.</div>
-</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toggleDirection()" class="member-name-link">toggleDirection</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Toggles the direction of both transfer motors.</div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#stopFeed()" class="member-name-link">stopFeed</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#stopIntake()" class="member-name-link">stopIntake</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#toggleDirection()" class="member-name-link">toggleDirection</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 </div>
 </div>
 </div>
@@ -190,6 +223,22 @@ Controls the two transfer motors.</div>
 </div>
 </section>
 </li>
+<li>
+<section class="detail" id="LOWER_DIRECTION">
+<h3>LOWER_DIRECTION</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">com.qualcomm.robotcore.hardware.DcMotorSimple.Direction</span>&nbsp;<span class="element-name">LOWER_DIRECTION</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="UPPER_DIRECTION">
+<h3>UPPER_DIRECTION</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">com.qualcomm.robotcore.hardware.DcMotorSimple.Direction</span>&nbsp;<span class="element-name">UPPER_DIRECTION</span></div>
+</div>
+</section>
+</li>
 </ul>
 </section>
 </li>
@@ -204,25 +253,39 @@ Controls the two transfer motors.</div>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">init</span><wbr><span class="parameters">(com.qualcomm.robotcore.hardware.DcMotorEx&nbsp;motor1,
  com.qualcomm.robotcore.hardware.DcMotorEx&nbsp;motor2)</span></div>
-<div class="block">Initializes both transfer motors.</div>
+<div class="block">motor1 = floor intake; motor2 = flywheel feed.</div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="setPower(double)">
-<h3>setPower</h3>
+<section class="detail" id="setIntakePower(double)">
+<h3>setIntakePower</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setPower</span><wbr><span class="parameters">(double&nbsp;power)</span></div>
-<div class="block">Sets the power of both transfer motors.</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setIntakePower</span><wbr><span class="parameters">(double&nbsp;value)</span></div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="toggleDirection()">
-<h3>toggleDirection</h3>
+<section class="detail" id="setFeedPower(double)">
+<h3>setFeedPower</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">toggleDirection</span>()</div>
-<div class="block">Toggles the direction of both transfer motors.</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setFeedPower</span><wbr><span class="parameters">(double&nbsp;value)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="stopIntake()">
+<h3>stopIntake</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">stopIntake</span>()</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="stopFeed()">
+<h3>stopFeed</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">stopFeed</span>()</div>
 </div>
 </section>
 </li>
@@ -231,15 +294,22 @@ Controls the two transfer motors.</div>
 <h3>stop</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">stop</span>()</div>
-<div class="block">Stops both transfer motors.</div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="getTargetPower()">
-<h3>getTargetPower</h3>
+<section class="detail" id="getIntakePower()">
+<h3>getIntakePower</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">getTargetPower</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">getIntakePower</span>()</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="getFeedPower()">
+<h3>getFeedPower</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">getFeedPower</span>()</div>
 </div>
 </section>
 </li>
@@ -260,10 +330,43 @@ Controls the two transfer motors.</div>
 </section>
 </li>
 <li>
+<section class="detail" id="setPower(double)">
+<h3>setPower</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setPower</span><wbr><span class="parameters">(double&nbsp;value)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
+<div class="block">Legacy API for older tests. Prefer independent commands above.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="getTargetPower()">
+<h3>getTargetPower</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">double</span>&nbsp;<span class="element-name">getTargetPower</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
+</div>
+</section>
+</li>
+<li>
 <section class="detail" id="getDirection()">
 <h3>getDirection</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getDirection</span>()</div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getDirection</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="toggleDirection()">
+<h3>toggleDirection</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">toggleDirection</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 </div>
 </section>
 </li>

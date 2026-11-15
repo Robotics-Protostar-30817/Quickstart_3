@@ -8,7 +8,9 @@ import dev.nextftc.core.subsystems.Subsystem;
 
 
 /**
- * Controls the robot's flywheel shooter.
+ * Controls the robot's flywheel shooter. old version for flywheel.
+ * The new class is Flywheel.java
+ * The class is used for testing motors by Cindy
  *
  * <p>The current shooter design uses one goBILDA 5000 Series motor
  * to drive the flywheel. The hood angle is mechanically fixed for
